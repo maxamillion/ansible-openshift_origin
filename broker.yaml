@@ -1,0 +1,32 @@
+---
+- hosts: brokers
+  user: root
+  tasks:
+    - name: Enable OpenShift Origin Nightly yum repo
+      action: template src=templates/openshift-origin-nightly.repo.j2
+              dest=/etc/yum.repos.d/openshift-origin-nightly.repo
+    - name: ruby-devel at latest version
+      action: yum pkg=ruby-devel state=latest
+    - name: mysql-devel at latest version
+      action: yum pkg=mysql-devel state=latest
+    - name: mongodb-devel at latest version
+      action: yum pkg=mongodb-devel state=latest
+    - name: openshift-origin-broker at latest version
+      action: yum pkg=openshift-origin-broker state=latest
+    - name: rubygem-openshift-origin-msg-broker-mcollective at latest version
+      action: yum pkg=rubygem-openshift-origin-msg-broker-mcollective state=latest
+    - name: rubygem-openshift-origin-dns-nsupdate at latest version
+      action: yum pkg=rubygem-openshift-origin-dns-nsupdate state=latest
+    - name: rubygem-openshift-origin-dns-bind at latest version
+      action: yum pkg=rubygem-openshift-origin-dns-bind state=latest
+    - name: rubygem-openshift-origin-controller at latest version
+      action: yum pkg=rubygem-openshift-origin-controller state=latest
+    - name: openshift-origin-broker-util at latest version
+      action: yum pkg=openshift-origin-broker-util state=latest
+    - name: rubygem-passenger at latest version
+      action: yum pkg=rubygem-passenger state=latest
+    - name: openssh at latest version
+      action: yum pkg=openssh state=latest
+    - name: mod_passenger at latest version
+      action: yum pkg=mod_passenger state=latest
+
