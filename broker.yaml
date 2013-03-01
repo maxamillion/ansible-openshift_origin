@@ -82,16 +82,12 @@
       action: yum pkg=rubygem-mocha state=latest
     - name: rubygem-mongo at latest version
       action: yum pkg=rubygem-mongo state=latest
-    - name: rubgyem-mongoid at latest version
-      action: yum pkg=rubygem-mongoid state=latest
     - name: rubygem-multi_json at latest version
       action: yum pkg=rubygem-multi_json state=latest
     - name: rubygem-netrc at latest version
       action: yum pkg=rubygem-netrc state=latest
     - name: rubygem-open4 at latest version
       action: yum pkg=rubygem-open4 state=latest
-    - name: rubygem-origin at latest version
-      action: yum pkg=rubygem-origin state=latest
     - name: rubygem-parseconfig at latest version
       action: yum pkg=rubygem-parseconfig state=latest
     - name: rubygem-rack at latest version
@@ -106,8 +102,6 @@
       action: yum pkg=rubygem-rake state=latest
     - name: rubygem-rdoc at latest version
       action: yum pkg=rubygem-rdoc state=latest
-    - name: rubygem-mysql at latest version
-      action: yum pkg=rubygem-mysql state=latest
     - name: rubygem-regin at latest version
       action: yum pkg=rubygem-regin state=latest
     - name: rubygem-rest-client at latest version
@@ -140,4 +134,9 @@
       action: yum pkg=rubygem-webmock state=latest
     - name: rubygem-fakefs at latest version
       action: yum pkg=rubygem-fakefs state=latest
-
+    - name: mongoid gem installed
+      action: command /usr/bin/gem install mongoid 
+    - name: origin gem installed 
+      action: command /usr/bin/gem install origin 
+    - name: mysql gem installed
+      action: command /usr/bin/gem install mysql
