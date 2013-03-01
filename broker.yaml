@@ -5,6 +5,9 @@
     - name: Enable OpenShift Origin Nightly yum repo
       action: template src=templates/openshift-origin-nightly.repo.j2
               dest=/etc/yum.repos.d/openshift-origin-nightly.repo
+    - name: Enable OpenShift Origin Supplemental yum repo
+      action: template src=templates/openshift-origin-supplemental.repo.j2
+              dest=/etc/yum.repos.d/openshift-origin-supplemental.repo
     - name: ruby-devel at latest version
       action: yum pkg=ruby-devel state=latest
     - name: mysql-devel at latest version
@@ -29,4 +32,112 @@
       action: yum pkg=openssh state=latest
     - name: mod_passenger at latest version
       action: yum pkg=mod_passenger state=latest
+    - name: rubygem-rails at latest version
+      action: yum pkg=rubygem-rails state=latest
+    - name: rubygem-railties at latest version
+      action: yum pkg=rubygem-railties state=latest
+    - name: rubygem-actionpack at latest version
+      action: yum rubygem-actionpack pkg=state=latest
+    - name: rubygem-activemodel at latest version
+      action: yum rubygem-activemodel pkg=state=latest
+    - name: rubygem-activerecord at latest version
+      action: yum pkg=rubygem-activerecord state=latest
+    - name: rubygem-activeresource at latest version
+      action: yum pkg=rubygem-activeresource state=latest
+    - name: rubgem-arel at latest version
+      action: yum pkg=rubygem-arel state=latest
+    - name: rubygem-bigdecimal at latest version
+      action: yum pkg=rubygem-bigdecimal state=latest
+    - name: rubygem-bson at latest version
+      action: yum pkg=rubygem-bson state=latest
+    - name: rubygem-bson_ext at latest version
+      action: yum pkg=rubygem-bson_ext state=latest
+    - name: rubygem-builder at latest version
+      action: yum pkg=rubygem-builder state=latest
+    - name: rubygem-bundler at latest version
+      action: yum pkg=rubygem-bundler state=latest
+    - name: rubygem-cucumber at latest version
+      action: yum pkg=rubygem-cucumber state=latest
+    - name: rubygem-diff-lcs at latest version
+      action: yum pkg=rubygem-diff-lcs state=latest
+    - name: rubygem-dnsruby at latest version
+      action: yum pkg=rubygem-dnsruby state=latest
+    - name: rubygem-erubis at latest version
+      action: yum pkg=rubygem-erubis state=latest
+    - name: rubygem-gherkin at latest version
+      action: yum pkg=rubygem-gherkin state=latest
+    - name: rubygem-hike at latest version
+      action: yum pkg=rubygem-hike state=latest
+    - name: rubygem-i18n at latest version
+      action: yum pkg=rubygem-i18n state=latest
+    - name: rubygem-mail at latest version
+      action: yum pkg=rubygem-mail state=latest
+    - name: rubygem-metaclass at latest version
+      action: yum pkg=rubygem-metaclass state=latest
+    - name: rubygem-mime-types at latest version
+      action: yum pkg=rubygem-mime-types state=latest
+    - name: rubygem-minitest at latest version
+      action: yum pkg=rubygem-minitest state=latest
+    - name: rubgyem-mocha at latest version
+      action: yum pkg=rubygem-mocha state=latest
+    - name: rubygem-mongo at latest version
+      action: yum pkg=rubygem-mongo state=latest
+    - name: rubgyem-mongoid at latest version
+      action: yum pkg=rubygem-mongoid state=latest
+    - name: rubygem-multi_json at latest version
+      action: yum pkg=rubygem-multi_json state=latest
+    - name: rubygem-netrc at latest version
+      action: yum pkg=rubygem-netrc state=latest
+    - name: rubygem-open4 at latest version
+      action: yum pkg=rubygem-open4 state=latest
+    - name: rubygem-origin at latest version
+      action: yum pkg=rubygem-origin state=latest
+    - name: rubygem-parseconfig at latest version
+      action: yum pkg=rubygem-parseconfig state=latest
+    - name: rubygem-rack at latest version
+      action: yum pkg=rubygem-rack state=latest
+    - name: rubygem-rack-cache at latest version
+      action: yum pkg=rubygem-rack-cache state=latest
+    - name: rubygem-rack-ssl at latest version
+      action: yum pkg=rubygem-rack-ssl state=latest
+    - name: rubygem-rack-test at latest version
+      action: yum pkg=rubygem-rack-test state=latest
+    - name: rubygem-rake at latest version
+      action: yum pkg=rubygem-rake state=latest
+    - name: rubygem-rdoc at latest version
+      action: yum pkg=rubygem-rdoc state=latest
+    - name: rubygem-mysql at latest version
+      action: yum pkg=rubygem-mysql state=latest
+    - name: rubygem-regin at latest version
+      action: yum pkg=rubygem-regin state=latest
+    - name: rubygem-rest-client at latest version
+      action: yum pkg=rubygem-rest-client state=latest
+    - name: rubygem-simplecov at latest version
+      action: yum pkg=rubygem-simplecov state=latest
+    - name: rubgyem-simplecov-html at latest version
+      action: yum pkg=rubygem-simplecov state=latest
+    - name: rubygem-sprockets at latest version
+      action: yum pkg=rubygem-sprockets state=latest
+    - name: rubgyem-state_machine at latest version
+      action: yum pkg=rubygem-state_machine state=latest
+    - name: rubygem-stomp at latest version
+      action: yum pkg=rubygem-stomp state=latest
+    - name: rubygem-systemu at latest version
+      action: yum pkg=rubygem-systemu state=latest
+    - name: rubygem-term-ansicolor at latest version
+      action: yum pkg=rubygem-term-ansicolor state=latest
+    - name: rubygem-thor at latest version
+      action: yum pkg=rubygem-thor state=latest
+    - name: rubygem-tilt at latest version
+      action: yum pkg=rubygem-tilt state=latest
+    - name: rubygem-treetop at latest version
+      action: yum pkg=rubygem-treetop state=latest
+    - name: rubygem-tzinfo at latest version
+      action: yum pkg=rubygem-tzinfo state=latest
+    - name: rubygem-xml-simple at latest version
+      action: yum pkg=rubygem-xml-simple state=latest
+    - name: rubygem-webmock at latest version
+      action: yum pkg=rubygem-webmock state=latest
+    - name: rubygem-fakefs at latest version
+      action: yum pkg=rubygem-fakefs state=latest
 

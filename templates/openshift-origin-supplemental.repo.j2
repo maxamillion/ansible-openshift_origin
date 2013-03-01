@@ -1,0 +1,6 @@
+[openshift-origin-supplemental]
+name=OpenShift Origin Supplemental Package
+baseurl=https://mirror.openshift.com/pub/origin-server/{{ ansible_distribution.lower() }}-{{ ansible_distribution_version}}/{{ ansible_architecture }}/
+enabled=1
+gpgcheck=0
+sslverify=false
