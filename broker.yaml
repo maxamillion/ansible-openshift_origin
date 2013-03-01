@@ -37,9 +37,9 @@
     - name: rubygem-railties at latest version
       action: yum pkg=rubygem-railties state=latest
     - name: rubygem-actionpack at latest version
-      action: yum rubygem-actionpack pkg=state=latest
+      action: yum pkg=srubygem-actionpack  tate=latest
     - name: rubygem-activemodel at latest version
-      action: yum rubygem-activemodel pkg=state=latest
+      action: yum pkg=rubygem-activemodel state=latest
     - name: rubygem-activerecord at latest version
       action: yum pkg=rubygem-activerecord state=latest
     - name: rubygem-activeresource at latest version
