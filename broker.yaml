@@ -60,11 +60,11 @@
     - name: Configure ActiveMQ activemq.xml
       template: src=templates/activemq/activemq.xml.j2
                 dest=/etc/activemq/activemq.xml
-    - name: Configure ActiveMQ jetty-realm.properties.xml
-      template: src=templates/activemq/jetty-realm.properties.xml.j2
+    - name: Configure ActiveMQ jetty-realm.properties
+      template: src=templates/activemq/jetty-realm.properties.j2
                 dest=/etc/activemq/jetty-realm.properties.xml
     - name: Configure ActiveMQ tmp-activemq.conf
-      template: src=templates/activemq/tmp-activemq.conf
+      template: src=templates/activemq/tmp-activemq.conf.j2
                 dest=/etc/tmpfiles.d/activemq.conf
 
 
