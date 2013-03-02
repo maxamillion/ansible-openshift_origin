@@ -1,0 +1,49 @@
+// named.conf
+//
+// Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
+// server as a caching only nameserver (as a localhost DNS resolver only).
+//
+// See /usr/share/doc/bind*/sample/ for example named configuration files.
+//
+
+options {
+    listen-on port 53 { any; };
+    directory "/var/named";
+    dump-file "/var/named/data/cache_dump.db";
+    statistics-file "/var/named/data/named_stats.txt";
+    memstatistics-file "/var/named/data/named_mem_stats.txt";
+    allow-query { any; };
+    recursion yes;
+
+    /* Path to ISC DLV key */
+    bindkeys-file "/etc/named.iscdlv.key";
+
+    // set forwarding to the next nearest server (from DHCP response
+    forward only;
+    include "forwarders.conf";
+};
+
+logging {
+    channel default_debug {
+        file "data/named.run";
+        severity dynamic;
+    };
+};
+
+// use the default rndc key
+include "/etc/rndc.key";
+ 
+controls {
+    inet 127.0.0.1 port 953
+    allow { 127.0.0.1; } keys { "rndc-key"; };
+};
+
+include "/etc/named.rfc1912.zones";
+
+include "{{ ansible_domain }}.key";
+
+zone "{{ ansible_domain }}" IN {
+    type master;
+    file "dynamic/{{ ansible_domain }}.db";
+    allow-update { key {{ ansible_domain }} ; } ;
+};
