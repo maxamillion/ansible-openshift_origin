@@ -9,7 +9,7 @@
     ### Step 0 - SELinux Enforcing 
     - name: SELinux Enforcing (Targeted)
       selinux: policy=targeted state=enforcing
-    
+
     ### Setup Origin repos
     - name: Enable OpenShift Origin Nightly yum repo
       template: src=templates/openshift-origin-nightly.repo.j2
@@ -46,10 +46,26 @@
       template: src=templates/named/forwarders.conf.j2
                 dest=/var/named/forwarders.conf
                 backup=yes
-    - name: Configure named.conf
+    - name: Configure named named.conf
       template: src=templates/named/named.conf.j2
                 dest=/etc/named.conf
                 backup=yes
+
+    # Install and configure ActiveMQ
+    - name: Install ActiveMQ
+      action: yum pkg=activemq state=latest
+    - name: Configure ActiveMQ jetty.xml
+      template: src=templates/activemq/jetty.xml.j2
+                dest=/etc/activemq/jetty.xml
+    - name: Configure ActiveMQ activemq.xml
+      template: src=templates/activemq/activemq.xml.j2
+                dest=/etc/activemq/activemq.xml
+    - name: Configure ActiveMQ jetty-realm.properties.xml
+      template: src=templates/activemq/jetty-realm.properties.xml.j2
+                dest=/etc/activemq/jetty-realm.properties.xml
+    - name: Configure ActiveMQ tmp-activemq.conf
+      template: src=templates/activemq/tmp-activemq.conf
+                dest=/etc/tmpfiles.d/activemq.conf
 
 
     ### Big honking broker package list
