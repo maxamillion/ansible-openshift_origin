@@ -2,13 +2,31 @@
 - hosts: brokers
   user: root
   vars:
-    named_forwarder_ip: 5.2.2.2
+    named_forwarder_ip: 4.2.2.2
 
   tasks:
     
     ### Step 0 - SELinux Enforcing 
     - name: SELinux Enforcing (Targeted)
       selinux: policy=targeted state=enforcing
+    - name: Ensure Installed - policycoreutils
+      action: yum pkg=policycoreutils state=installed
+    - name: SELinux - configure sebooleans
+      command:  /usr/sbin/setsebool -P httpd_unified=on 
+                httpd_can_network_connect=on httpd_can_network_relay=on 
+                httpd_run_stickshift=on named_write_master_zones=on 
+                allow_ypbind=on
+      
+
+    ### FirewallD install/config
+    - name: Ensure Install - firewalld
+      action: yum pkg=firewalld state=installed
+    - name: Start and Enable firewalld daemon 
+      service: name=firewalld state=started enabled=yes
+    # We can assume this is already set as an active service
+    - name: FirewallD - permanent add-serivce sshd
+      command: /usr/bin/firewall-cmd --permanent --add-service=ssh
+      
 
     ### Setup Origin repos
     - name: Enable OpenShift Origin Nightly yum repo
@@ -20,16 +38,14 @@
 
     ### Prereqs
     # NTP - sync first, then enable service
-    - name: Install ntpdate 
+    - name: Ensure Install - ntpdate 
       action: yum pkg=ntpdate state=installed
-    - name: Install ntp 
+    - name: Ensure Install - ntp 
       action: yum pkg=ntp state=installed
     - name: Stop ntp daemon for ntpdate sync
       service: name=ntpd state=stopped
     - name: Synchronize Clock with ntpdate
       action: command /usr/sbin/ntpdate 0.fedora.pool.ntp.org
-    - name: Start and Enable ntp daemon 
-      service: name=ntpd state=started enabled=yes
     - name: Start and Enable ntp daemon 
       service: name=ntpd state=started enabled=yes
 
@@ -50,6 +66,10 @@
       template: src=templates/named/named.conf.j2
                 dest=/etc/named.conf
                 backup=yes
+    - name: FirewallD - permanent add-serivce named
+      command: /usr/bin/firewall-cmd --permanent --add-service=dns
+    - name: FirewallD - add-serivce named
+      command: /usr/bin/firewall-cmd --add-service=dns
 
     # Install and configure ActiveMQ
     - name: Install ActiveMQ
@@ -66,6 +86,12 @@
     - name: Configure ActiveMQ tmp-activemq.conf
       template: src=templates/activemq/tmp-activemq.conf.j2
                 dest=/etc/tmpfiles.d/activemq.conf
+    #FIXME - Can't seem to find good docs on what ports need 
+    #        to be opened. Pinning this for later.
+    #- name: FirewallD - permanent - add-port ActiveMQ
+    #  command: /usr/bin/firewall-cmd --permanent --add-port=XXXX
+    #- name: FirewallD - add-port ActiveMQ
+    #  command: /usr/bin/firewall-cmd --add-port=XXXX
 
 
     ### Big honking broker package list
