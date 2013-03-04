@@ -1,0 +1,7 @@
+#!/bin/bash
+
+{{ mongo }} {{ ansible_default_ipv4.address }}/{{ mongodb_name }} \
+    --eval 'db.addUser("{{ mongo_auth_user }}", "{{ mongo_auth_password }}")' \
+&& \
+{{ mongo }} {{ ansible_default_ipv4.address }}/admin \
+    --eval 'db.addUser("{{ mongo_auth_user }}", "{{ mongo_auth_password }}")'

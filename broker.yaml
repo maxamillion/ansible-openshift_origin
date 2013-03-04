@@ -2,7 +2,19 @@
 - hosts: brokers
   user: root
   vars:
+    # paths for executables we don't have ansible modules for
+    firewall_cmd: /usr/bin/firewall-cmd
+    setsebool: /usr/sbin/setsebool
+    gem: /usr/bin/gem 
+
+    # config vars
     named_forwarder_ip: 4.2.2.2
+    mq_provider: activemq
+    mq_server_user: mcollective
+    mq_server_password: marionette
+    mongo_auth_user: openshift
+    mongo_db_name: openshift_broker_dev
+    mongo_auth_password: mooo
 
   tasks:
     
@@ -12,7 +24,7 @@
     - name: Ensure Installed - policycoreutils
       action: yum pkg=policycoreutils state=installed
     - name: SELinux - configure sebooleans
-      command:  /usr/sbin/setsebool -P httpd_unified=on 
+      command:  $setsebool -P httpd_unified=on 
                 httpd_can_network_connect=on httpd_can_network_relay=on 
                 httpd_run_stickshift=on named_write_master_zones=on 
                 allow_ypbind=on
@@ -21,11 +33,13 @@
     ### FirewallD install/config
     - name: Ensure Install - firewalld
       action: yum pkg=firewalld state=installed
+    #FIXME - There are certain states in which this will lock us out of the 
+    #        system. Should template out all the configs to clean this up.
     - name: Start and Enable firewalld daemon 
       service: name=firewalld state=started enabled=yes
     # We can assume this is already set as an active service
     - name: FirewallD - permanent add-serivce sshd
-      command: /usr/bin/firewall-cmd --permanent --add-service=ssh
+      command: $firewall_cmd --permanent --add-service=ssh
       
 
     ### Setup Origin repos
@@ -49,28 +63,6 @@
     - name: Start and Enable ntp daemon 
       service: name=ntpd state=started enabled=yes
 
-    # Install and configure BIND
-    - name: Install bind
-      action: yum pkg=bind state=latest
-    - name: Install bind-utils
-      action: yum pkg=bind-utils state=latest
-    - name: Configure named dynamic_domain.db
-      template: src=templates/named/dynamic-zone.db.j2
-                dest=/var/named/dynamic/$ansible_domain.db
-                backup=yes
-    - name: Configure named forwarders.conf
-      template: src=templates/named/forwarders.conf.j2
-                dest=/var/named/forwarders.conf
-                backup=yes
-    - name: Configure named named.conf
-      template: src=templates/named/named.conf.j2
-                dest=/etc/named.conf
-                backup=yes
-    - name: FirewallD - permanent add-serivce named
-      command: /usr/bin/firewall-cmd --permanent --add-service=dns
-    - name: FirewallD - add-serivce named
-      command: /usr/bin/firewall-cmd --add-service=dns
-
     # Install and configure ActiveMQ
     - name: Install ActiveMQ
       action: yum pkg=activemq state=latest
@@ -89,18 +81,67 @@
     #FIXME - Can't seem to find good docs on what ports need 
     #        to be opened. Pinning this for later.
     #- name: FirewallD - permanent - add-port ActiveMQ
-    #  command: /usr/bin/firewall-cmd --permanent --add-port=XXXX
+    #  command: $firewall_cmd --permanent --add-port=XXXX
     #- name: FirewallD - add-port ActiveMQ
-    #  command: /usr/bin/firewall-cmd --add-port=XXXX
+    #  command: $firewall_cmd --add-port=XXXX
+
+    # Install and configure BIND
+    - name: Install bind
+      action: yum pkg=bind state=latest
+    - name: Install bind-utils
+      action: yum pkg=bind-utils state=latest
+    - name: Configure named dynamic_domain.db
+      template: src=templates/named/dynamic-zone.db.j2
+                dest=/var/named/dynamic/$ansible_domain.db
+                backup=yes
+    - name: Configure named forwarders.conf
+      template: src=templates/named/forwarders.conf.j2
+                dest=/var/named/forwarders.conf
+                backup=yes
+    - name: Configure named named.conf
+      template: src=templates/named/named.conf.j2
+                dest=/etc/named.conf
+                backup=yes
+    - name: FirewallD - permanent add-serivce named
+      command: $firewall_cmd --permanent --add-service=dns
+    - name: FirewallD - add-serivce named
+      command: $firewall_cmd --add-service=dns
+
+    # MongoDB Install and configure 
+    #   This could be broken out into it's own playbook to allow for some
+    #   fancy orchestration and replication set configuration but for now 
+    #   we will keep this simple.
+    - name: Install MongoDB
+      action: yum pkg=mongodb state=latest
+    - name: Install MongoDB Server
+      action: yum pkg=mongodb-server state=latest
+    - name: FirewallD - permanent add-port 27017/tcp
+      command: $firewall_cmd --permanent --add-port=27017/tcp
+    - name: FirewallD - add-port 27017/tcp
+      command: $firewall_cmd --add-port=27017/tcp
+    - name: MongoDB user/pw script template copy
+      template: src=templates/mongodb/set_mongopw.sh.j2
+                dest=/root/00-set_mongopw.sh
+                owner=root group=root mode=0500
+    - name: Run MongoDB user/pw script 
+      action: raw /root/00-set_mongopw.sh
+    - name: Clean up after MongoDB user/pw script
+      file: path=/root/00-set_mongopw.sh state=absent
 
 
-    ### Big honking broker package list
+    ### Dev tools needed by some gem installs for native modules/extensions 
     - name: ruby-devel at latest version
       action: yum pkg=ruby-devel state=latest
     - name: mysql-devel at latest version
       action: yum pkg=mysql-devel state=latest
     - name: mongodb-devel at latest version
       action: yum pkg=mongodb-devel state=latest
+    - name: gcc at latest version
+      action: yum pkg=gcc state=latest
+    - name: make at latest version
+      action: yum pkg=make state=latest
+    
+    ### Big honking broker package list
     - name: openshift-origin-broker at latest version
       action: yum pkg=openshift-origin-broker state=latest
     - name: rubygem-openshift-origin-msg-broker-mcollective at latest version
@@ -222,8 +263,8 @@
     - name: rubygem-fakefs at latest version
       action: yum pkg=rubygem-fakefs state=latest
     - name: mongoid gem installed
-      action: command /usr/bin/gem install mongoid 
+      command: $gem install mongoid 
     - name: origin gem installed 
-      action: command /usr/bin/gem install origin 
+      command: $gem install origin 
     - name: mysql gem installed
-      action: command /usr/bin/gem install mysql
+      command: $gem install mysql
