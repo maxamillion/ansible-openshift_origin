@@ -1,22 +1,27 @@
 ---
-- hosts: brokers
+### broker.yml - OpenShift Origin Broker Ansible Playbook of Plays
+#
+# This is the OpenShift Origin Broker ansible playbook, it contains multiple 
+# plays as can be found below. Each one can be run indendently of one another
+# by utilizing the ansible tags feature, an example of running only the plays
+# tagged with selinux and named is as follows:
+#
+#       $ ansible-playbook broker.yml -t selinux,named
+#
+#   This is for those who want to make modifications and only run the play
+# correlated to that change. Also, without the added overhead of a fanned out 
+# directory structure because at this time it's not quite a large enough
+# playbook that it should be necessary to do so.
+#
+#
+#
+
+- name: SELinux Config
+  hosts: brokers
   user: root
-  vars:
-    # paths for executables we don't have ansible modules for
-    firewall_cmd: /usr/bin/firewall-cmd
-    gem: /usr/bin/gem 
-
-    # config vars
-    named_forwarder_ip: 4.2.2.2
-    mq_provider: activemq
-    mq_server_user: mcollective
-    mq_server_password: marionette
-    mongo_auth_user: openshift
-    mongo_db_name: openshift_broker_dev
-    mongo_auth_password: mooo
-
+  vars_files:
+    - varfiles/broker_vars.yml
   tasks:
-    
     ### Step 0 - SELinux Enforcing 
     - name: SELinux Enforcing (Targeted)
       selinux: policy=targeted state=enforcing
@@ -30,9 +35,15 @@
         - httpd_can_network_relay 
         - httpd_run_stickshift
         - named_write_master_zones 
-        - allow_ypbind
-      
+  tags:
+    - selinux
 
+- name: FirewallD Config
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
     ### FirewallD install/config
     - name: Ensure Install - firewalld
       yum: pkg=firewalld state=installed
@@ -43,8 +54,15 @@
     # We can assume this is already set as an active service
     - name: FirewallD - permanent add-serivce sshd
       command: $firewall_cmd --permanent --add-service=ssh
+  tags:
+    - firewalld
       
-
+- name: Repo Setup
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
     ### Setup Origin repos
     - name: Enable OpenShift Origin Nightly yum repo
       template: src=templates/openshift-origin-nightly.repo.j2
@@ -52,8 +70,15 @@
     - name: Enable OpenShift Origin Supplemental yum repo
       template: src=templates/openshift-origin-supplemental.repo.j2
                 dest=/etc/yum.repos.d/openshift-origin-supplemental.repo
+  tags:
+    - reposetup
 
-    ### Prereqs
+- name: NTP Config
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
     # NTP - sync first, then enable service
     - name: Ensure Install - ntpdate 
       yum: pkg=ntpdate state=installed
@@ -65,7 +90,15 @@
       action: command /usr/sbin/ntpdate 0.fedora.pool.ntp.org
     - name: Start and Enable ntp daemon 
       service: name=ntpd state=started enabled=yes
+  tags:
+    - ntp
 
+- name: ActiveMQ
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
     # Install and configure ActiveMQ
     - name: Install ActiveMQ
       yum: pkg=activemq state=latest
@@ -87,12 +120,21 @@
     #  command: $firewall_cmd --permanent --add-port=XXXX
     #- name: FirewallD - add-port ActiveMQ
     #  command: $firewall_cmd --add-port=XXXX
+  tags:
+    - activemq
 
+- name: named
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
     # Install and configure BIND
     - name: Install bind
-      yum: pkg=bind state=latest
-    - name: Install bind-utils
-      yum: pkg=bind-utils state=latest
+      yum: pkg=$item state=latest
+      with_items:
+        - bind
+        - bind-utils
     - name: Configure named dynamic_domain.db
       template: src=templates/named/dynamic-zone.db.j2
                 dest=/var/named/dynamic/$ansible_domain.db
@@ -109,7 +151,15 @@
       command: $firewall_cmd --permanent --add-service=dns
     - name: FirewallD - add-serivce named
       command: $firewall_cmd --add-service=dns
+  tags:
+    - named
 
+- name: MongoDB
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
     # MongoDB Install and configure 
     #   This could be broken out into it's own playbook to allow for some
     #   fancy orchestration and replication set configuration but for now 
@@ -132,8 +182,16 @@
       action: raw /root/00-set_mongopw.sh
 #    - name: Clean up after MongoDB user/pw script
 #      file: path=/root/00-set_mongopw.sh state=absent
+  tags:
+    - mongo
 
 
+- name: Devel Packages Install
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
     ### Dev tools needed by some gem installs for native modules/extensions 
     - name: Install dev-tool deps for gem installs
       yum: pkg=$item state=latest
@@ -143,7 +201,15 @@
         - mongodb-devel 
         - gcc 
         - make
-    
+  tags:
+    - develpkgs
+
+- name: OpenShift Origin Broker pkgs Install
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
     ### Big honking broker package list
     - name: Install OpenShift Package List
       yum: pkg=$item state=latest
@@ -216,3 +282,5 @@
         - mongoid 
         - origin 
         - mysql
+  tags:
+    - brokerpkgs

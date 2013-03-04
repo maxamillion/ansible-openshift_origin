@@ -1,13 +1,13 @@
 $ORIGIN .
 $TTL 1800
-{{ ansible_domain }} IN SOA ns1.{{ ansible_domain }}. hostmaster.{{ ansible_domain}}. (
+{{ cloud_domain }} IN SOA ns1.{{ cloud_domain }}. hostmaster.{{ cloud_domain }}. (
                          2011112904 ; serial
                          60         ; refresh (1 minute)
                          15         ; retry (15 seconds)
                          1800       ; expire (30 minutes)
                          10         ; minimum (10 seconds)
                           )
-                     NS ns1.{{ ansible_domain }}.
-$ORIGIN {{ ansible_domain }}.
+                     NS ns1.{{ cloud_domain }}.
+$ORIGIN {{ cloud_domain }}.
 ns1	              A        127.0.0.1
 

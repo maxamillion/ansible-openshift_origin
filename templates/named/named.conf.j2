@@ -40,10 +40,10 @@ controls {
 
 include "/etc/named.rfc1912.zones";
 
-include "{{ ansible_domain }}.key";
+include "{{ cloud_domain }}.key";
 
-zone "{{ ansible_domain }}" IN {
+zone "{{ cloud_domain }}" IN {
     type master;
-    file "dynamic/{{ ansible_domain }}.db";
-    allow-update { key {{ ansible_domain }} ; } ;
+    file "dynamic/{{ cloud_domain }}.db";
+    allow-update { key {{ cloud_domain }} ; } ;
 };
