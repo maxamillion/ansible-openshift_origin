@@ -4,7 +4,6 @@
   vars:
     # paths for executables we don't have ansible modules for
     firewall_cmd: /usr/bin/firewall-cmd
-    setsebool: /usr/sbin/setsebool
     gem: /usr/bin/gem 
 
     # config vars
@@ -24,10 +23,14 @@
     - name: Ensure Installed - policycoreutils
       yum: pkg=policycoreutils state=installed
     - name: SELinux - configure sebooleans
-      command:  $setsebool -P httpd_unified=on 
-                httpd_can_network_connect=on httpd_can_network_relay=on 
-                httpd_run_stickshift=on named_write_master_zones=on 
-                allow_ypbind=on
+      seboolean:  name=$item state=true persistent=yes
+      with_items:
+        - httpd_unified
+        - httpd_can_network_connect
+        - httpd_can_network_relay 
+        - httpd_run_stickshift
+        - named_write_master_zones 
+        - allow_ypbind
       
 
     ### FirewallD install/config
@@ -119,14 +122,16 @@
       command: $firewall_cmd --permanent --add-port=27017/tcp
     - name: FirewallD - add-port 27017/tcp
       command: $firewall_cmd --add-port=27017/tcp
+    - name: Start and Enable MongoDB daemon
+      service: name=mongod state=started enabled=yes
     - name: MongoDB user/pw script template copy
       template: src=templates/mongodb/set_mongopw.sh.j2
                 dest=/root/00-set_mongopw.sh
                 owner=root group=root mode=0500
     - name: Run MongoDB user/pw script 
       action: raw /root/00-set_mongopw.sh
-    - name: Clean up after MongoDB user/pw script
-      file: path=/root/00-set_mongopw.sh state=absent
+#    - name: Clean up after MongoDB user/pw script
+#      file: path=/root/00-set_mongopw.sh state=absent
 
 
     ### Dev tools needed by some gem installs for native modules/extensions 
