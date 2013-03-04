@@ -1,6 +1,8 @@
 ---
 ### broker.yml - OpenShift Origin Broker Ansible Playbook of Plays
 #
+# Ansible playbook to deploy OpenShift Origin Broker nightly builds
+#
 # This is the OpenShift Origin Broker ansible playbook, it contains multiple 
 # plays as can be found below. Each one can be run indendently of one another
 # by utilizing the ansible tags feature, an example of running only the plays
@@ -90,8 +92,87 @@
       action: command /usr/sbin/ntpdate 0.fedora.pool.ntp.org
     - name: Start and Enable ntp daemon 
       service: name=ntpd state=started enabled=yes
+    - name: Configure dhclient for DNS
+      template: src=templates/named/dhclient.conf
+                dest=/etc/dhcp/dhclient-oso.conf
+                backup=yes
   tags:
     - ntp
+
+- name: named
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
+    # Install and configure BIND
+    - name: Install bind
+      yum: pkg=$item state=latest
+      with_items:
+        - bind
+        - bind-utils
+    - name: Configure named dynamic_domain.db
+      template: src=templates/named/dynamic-zone.db.j2
+                dest=/var/named/dynamic/$ansible_domain.db
+                backup=yes
+    - name: Configure named forwarders.conf
+      template: src=templates/named/forwarders.conf.j2
+                dest=/var/named/forwarders.conf
+                backup=yes
+    - name: Configure named named.conf
+      template: src=templates/named/named.conf.j2
+                dest=/etc/named.conf
+                backup=yes
+    - name: Setup DNSSEC Keys and Config script
+      template: src=templates/named/named_dnssec_setup.sh.j2
+                dest=/root/00-setup_dnssec.sh
+                owner=root group=root mode=0500
+    - name: Run named DNSSEC script 
+      action: raw /root/00-setup_dnssec.sh
+    - name: Clean up after named DNSSEC script
+      file: path=/root/00-setup_dnssec.sh state=absent
+    - name: FirewallD - permanent add-serivce named
+      command: $firewall_cmd --permanent --add-service=dns
+    - name: FirewallD - add-serivce named
+      command: $firewall_cmd --add-service=dns
+  tags:
+    - named
+
+- name: MongoDB
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
+    # MongoDB Install and configure 
+    #   This could be broken out into it's own playbook to allow for some
+    #   fancy orchestration and replication set configuration but for now 
+    #   we will keep this simple.
+    - name: Install MongoDB
+      yum: pkg=mongodb state=latest
+    - name: Install MongoDB Server
+      yum: pkg=mongodb-server state=latest
+    - name: FirewallD - permanent add-port 27017/tcp
+      command: $firewall_cmd --permanent --add-port=27017/tcp
+    - name: FirewallD - add-port 27017/tcp
+      command: $firewall_cmd --add-port=27017/tcp
+    - name: Ensure MongoDB daemon stopped
+      service: name=mongod state=stopped
+    - name: Configure MongoDB
+      template: src=templates/mongodb/mongodb.conf.j2
+                dest=/etc/mongodb.conf backup=yes
+    - name: Start and Enable MongoDB daemon
+      service: name=mongod state=started enabled=yes
+    - name: MongoDB user/pw script template copy
+      template: src=templates/mongodb/set_mongopw.sh.j2
+                dest=/root/00-set_mongopw.sh
+                owner=root group=root mode=0500
+    - name: Run MongoDB user/pw script 
+      action: raw /root/00-set_mongopw.sh
+#    - name: Clean up after MongoDB user/pw script
+#      file: path=/root/00-set_mongopw.sh state=absent
+  tags:
+    - mongo
 
 - name: ActiveMQ
   hosts: brokers
@@ -122,69 +203,6 @@
     #  command: $firewall_cmd --add-port=XXXX
   tags:
     - activemq
-
-- name: named
-  hosts: brokers
-  user: root
-  vars_files:
-    - varfiles/broker_vars.yml
-  tasks:
-    # Install and configure BIND
-    - name: Install bind
-      yum: pkg=$item state=latest
-      with_items:
-        - bind
-        - bind-utils
-    - name: Configure named dynamic_domain.db
-      template: src=templates/named/dynamic-zone.db.j2
-                dest=/var/named/dynamic/$ansible_domain.db
-                backup=yes
-    - name: Configure named forwarders.conf
-      template: src=templates/named/forwarders.conf.j2
-                dest=/var/named/forwarders.conf
-                backup=yes
-    - name: Configure named named.conf
-      template: src=templates/named/named.conf.j2
-                dest=/etc/named.conf
-                backup=yes
-    - name: FirewallD - permanent add-serivce named
-      command: $firewall_cmd --permanent --add-service=dns
-    - name: FirewallD - add-serivce named
-      command: $firewall_cmd --add-service=dns
-  tags:
-    - named
-
-- name: MongoDB
-  hosts: brokers
-  user: root
-  vars_files:
-    - varfiles/broker_vars.yml
-  tasks:
-    # MongoDB Install and configure 
-    #   This could be broken out into it's own playbook to allow for some
-    #   fancy orchestration and replication set configuration but for now 
-    #   we will keep this simple.
-    - name: Install MongoDB
-      yum: pkg=mongodb state=latest
-    - name: Install MongoDB Server
-      yum: pkg=mongodb-server state=latest
-    - name: FirewallD - permanent add-port 27017/tcp
-      command: $firewall_cmd --permanent --add-port=27017/tcp
-    - name: FirewallD - add-port 27017/tcp
-      command: $firewall_cmd --add-port=27017/tcp
-    - name: Start and Enable MongoDB daemon
-      service: name=mongod state=started enabled=yes
-    - name: MongoDB user/pw script template copy
-      template: src=templates/mongodb/set_mongopw.sh.j2
-                dest=/root/00-set_mongopw.sh
-                owner=root group=root mode=0500
-    - name: Run MongoDB user/pw script 
-      action: raw /root/00-set_mongopw.sh
-#    - name: Clean up after MongoDB user/pw script
-#      file: path=/root/00-set_mongopw.sh state=absent
-  tags:
-    - mongo
-
 
 - name: Devel Packages Install
   hosts: brokers

@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# Get the domain (defined in varfiles/broker_vars.yml)
+domain={{ cloud_domain }}
+keyfile=/var/named/${domain}.key
+
+# Remove old keys
+rm -vf /var/named/K${domain}*
+
+# Generate keys
+pushd /var/named
+  dnssec-keygen -a HMAC-MD5 -b 512 -n USER -r /dev/urandom ${domain}
+  KEY="$(grep Key: K${domain}*.private | cut -d ' ' -f 2)"
+popd
+
+# Verify we have a key for the broker to communicate with
+rndc-confgen -a -r /dev/urandom
+
+# Get SELinux and perms in order 
+restorecon -v /etc/rndc.* /etc/named.*
+chown -v root:named /etc/rndc.key
+chmod -v 640 /etc/rndc.key
+
+# Put the config in place
+cat <<EOF > /var/named/${domain}.key
+key ${domain} {
+  algorithm HMAC-MD5;
+  secret "${KEY}";
+};
+EOF
+
+# More SELinux and perms
+chown -Rv named:named /var/named
+restorecon -rv /var/named
