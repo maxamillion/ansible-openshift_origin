@@ -92,10 +92,6 @@
       action: command /usr/sbin/ntpdate 0.fedora.pool.ntp.org
     - name: Start and Enable ntp daemon 
       service: name=ntpd state=started enabled=yes
-    - name: Configure dhclient for DNS
-      template: src=templates/named/dhclient.conf
-                dest=/etc/dhcp/dhclient-oso.conf
-                backup=yes
   tags:
     - ntp
 
@@ -135,6 +131,10 @@
       command: $firewall_cmd --permanent --add-service=dns
     - name: FirewallD - add-serivce named
       command: $firewall_cmd --add-service=dns
+    - name: Configure dhclient for DNS
+      template: src=templates/named/dhclient.conf.j2
+                dest=/etc/dhcp/dhclient-oso.conf
+                backup=yes
   tags:
     - named
 
@@ -169,8 +169,8 @@
                 owner=root group=root mode=0500
     - name: Run MongoDB user/pw script 
       action: raw /root/00-set_mongopw.sh
-#    - name: Clean up after MongoDB user/pw script
-#      file: path=/root/00-set_mongopw.sh state=absent
+    - name: Clean up after MongoDB user/pw script
+      file: path=/root/00-set_mongopw.sh state=absent
   tags:
     - mongo
 
@@ -195,12 +195,12 @@
     - name: Configure ActiveMQ tmp-activemq.conf
       template: src=templates/activemq/tmp-activemq.conf.j2
                 dest=/etc/tmpfiles.d/activemq.conf
-    #FIXME - Can't seem to find good docs on what ports need 
-    #        to be opened. Pinning this for later.
-    #- name: FirewallD - permanent - add-port ActiveMQ
-    #  command: $firewall_cmd --permanent --add-port=XXXX
-    #- name: FirewallD - add-port ActiveMQ
-    #  command: $firewall_cmd --add-port=XXXX
+    - name: FirewallD - permanent - add-port ActiveMQ
+      command: $firewall_cmd --permanent --add-port=61613/tcp
+    - name: FirewallD - add-port ActiveMQ
+      command: $firewall_cmd --add-port=61613/tcp
+    - name: Start and Enable ActiveMQ
+      service: name=activemq state=started enabled=yes
   tags:
     - activemq
 
@@ -302,3 +302,46 @@
         - mysql
   tags:
     - brokerpkgs
+
+- name: OpenShift Origin Web Admin Console
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
+    - name: Install OpenShift Origin Console pkgs
+      yum: pkg=$item state=latest
+      with_items:
+        - rubygem-openshift-origin-console
+        - openshift-origin-console
+    - name: Configure OpenShift Origin Console
+      template: src=templates/console/console.conf.j2
+                dest=$console_conf_path
+                owner=apache group=apache mode=0644
+    - name: Bundle install and build Rails assets
+      script: scripts/console_bundle_install.sh
+    - name: SELinux settings for OpenShift Origin Console
+      seboolean:  name=$item state=true persistent=yes
+      with_items:
+       - httpd_can_network_connect
+       - httpd_can_network_relay
+       - httpd_read_user_content
+       - httpd_enable_homedirs
+       - httpd_execmem
+  tags:
+    - console
+
+- name: Post-Install Configure of OpenShift Origin Broker
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/broker_vars.yml
+  tasks:
+    - name: broker.conf
+      template: src=templates/broker/broker.conf.j2
+                dest=/etc/openshift/broker.conf
+                owner=apache group=apache mode=0644
+    - name: broker-dev.conf
+      template: src=templates/broker/broker.conf.j2
+                dest=/etc/openshift/broker-dev.conf
+                owner=apache group=apache mode=0644

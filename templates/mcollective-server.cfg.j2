@@ -12,11 +12,12 @@ registerinterval = 30
 securityprovider = psk
 plugin.psk = unset
 
-connector = stomp
-plugin.stomp.host = localhost
-plugin.stomp.port = 61613
-plugin.stomp.user = mcollective
-plugin.stomp.password = reallybadpassword
+connector = activemq
+plugin.activemq.pool.size = 1
+plugin.activemq.pool.1.host = {{ mq_q_fqdn }}
+plugin.activemq.pool.1.port = 61613
+plugin.activemq.pool.1.user = {{ mq_server_user }}
+plugin.activemq.pool.1.password = {{ mq_server_password }}
 
 # Facts
 factsource = yaml

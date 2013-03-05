@@ -2,14 +2,27 @@
 firewall_cmd: /usr/bin/firewall-cmd
 gem: /usr/bin/gem
 mongo: /usr/bin/mongo
+rake: /usr/bin/rake
+bundle: /usr/bin/bundle
 
 # config vars
 named_forwarder_ip: "8.8.8.8; 8.8.4.4"
 cloud_domain: example.com
+
+mq_fqdn: $ansible_fqdn
 mq_provider: activemq
 mq_server_user: mcollective
 mq_server_password: marionette
+
 mongo_auth_user: openshift
 mongo_db_name: openshift_broker_dev
+mongo_db_fqdn: $ansible_fqdn
 mongo_auth_password: mooo
 
+console_conf_path: /etc/openshift/console.conf
+
+broker_auth_salt: "ClWqe5zKtEW4CJEMyjzQ"
+broker_auth_key_passwd: ""
+broker_fqdn: $ansible_fqdn
+
+node_fqdn: $ansible_fqdn
