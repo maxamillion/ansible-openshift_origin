@@ -51,11 +51,13 @@
     - name: Ensure Install - firewalld
       yum: pkg=firewalld state=installed
     - name: Broker firewalld config
-      copy: src=files/broker_firewalld.xml
+      copy: src=files/broker/broker_firewalld.xml
             dest=/etc/firewalld/zones/broker.xml
             owner=root group=root mode=0644
-    - name: Start/Restart and Enable firewalld daemon 
-      service: name=firewalld state=restarted enabled=yes
+    - name: Ensure firewalld Started and Enabled
+      service: name=firewalld state=started enabled=yes
+    - name: Reload Firewalld
+      service: name=firewalld state=reloaded enabled=yes
   tags:
     - firewalld
       
@@ -213,6 +215,8 @@
 - name: OpenShift Origin Broker pkgs Install
   hosts: brokers
   user: root
+  vars_files:
+    - varfiles/origin_vars.yml
   tasks:
     ### Big honking broker package list
     - name: Install OpenShift Package List
@@ -305,7 +309,7 @@
                 dest=$console_conf_path
                 owner=apache group=apache mode=0644
     - name: Bundle install and build Rails assets
-      script: scripts/console_bundle_install.sh
+      script: scripts/broker/console_bundle_install.sh
     - name: SELinux settings for OpenShift Origin Console
       seboolean:  name=$item state=true persistent=yes
       with_items:
@@ -332,15 +336,15 @@
                 dest=/etc/openshift/broker-dev.conf
                 owner=apache group=apache mode=0644
     - name: Generate broker auth keys
-      script: scripts/gen_broker_auth_keys.sh
+      script: scripts/broker/gen_broker_auth_keys.sh
     - name: Generate broker rsync keys
-      script: scripts/gen_broker_rsync_keys.sh
+      script: scripts/broker/gen_broker_rsync_keys.sh
     - name: Install base servername.conf
       template: src=templates/broker/broker_servername.conf.j2
                 dest=/etc/httpd/conf.d/000000_openshift_origin_broker_servername.conf
                 owner=root group=root mode=0644
     - name: Configure mcollective broker plugin 
-      copy: src=files/msg-broker-mcollective.conf
+      copy: src=files/broker/msg-broker-mcollective.conf
                 dest=/etc/openshift/plugins.d/openshift-origin-msg-broker-mcollective.conf
                 owner=root group=root mode=0644
     - name: Broker Auth Plugin
@@ -356,7 +360,7 @@
                 dest=/etc/openshift/plugins.d/openshift-origin-dns-nsupdate.conf
                 owner=root group=root mode=0644
     - name: Broker bundle install 
-      script: scripts/broker_bundle_install.sh
+      script: scripts/broker/broker_bundle_install.sh
     - name: start and enable openshift-broker service 
       service: name=openshift-broker state=started enabled=yes
     - name: start and enabled httpd

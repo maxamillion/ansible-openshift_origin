@@ -73,6 +73,8 @@
     - name: Enable OpenShift Origin Supplemental yum repo
       template: src=templates/openshift-origin-supplemental.repo.j2
                 dest=/etc/yum.repos.d/openshift-origin-supplemental.repo
+    - name: Enable Jenkins yum repo
+      copy: src=files/node/jenkins.repo dest=/etc/yum.repos.d/jenkins.repo
   tags:
     - reposetup
 
@@ -96,24 +98,6 @@
   tags:
     - ntp
 
-- name: Devel Packages Install
-  hosts: nodes
-  user: root
-  vars_files:
-    - varfiles/origin_vars.yml
-  tasks:
-    ### Dev tools needed by some gem installs for native modules/extensions 
-    - name: Install dev-tool deps for gem installs
-      yum: pkg=$item state=latest
-      with_items:
-        - ruby-devel 
-        - mysql-devel 
-        - mongodb-devel 
-        - gcc 
-        - make
-  tags:
-    - develpkgs
-
 - name: OpenShift Origin Node pkgs Install
   hosts: nodes
   user: root
@@ -127,18 +111,29 @@
         - openshift-origin-node-proxy
         - openshift-origin-port-proxy
         - openshift-origin-msg-node-mcollective
+        - openshift-origin-cartridge-abstract
+        - openshift-origin-cartridge-10gen-mms-agent-0.1
+        - openshift-origin-cartridge-cron-1.4
+        - openshift-origin-cartridge-diy-0.1
+        - openshift-origin-cartridge-haproxy-1.4
+        - openshift-origin-cartridge-mongodb-2.2
+        - openshift-origin-cartridge-mysql-5.1
+        - openshift-origin-cartridge-nodejs-0.6
+        - openshift-origin-cartridge-jenkins-1.4
+        - openshift-origin-cartridge-jenkins-client-1.4
+        - openshift-origin-cartridge-community-python-2.7
+        - openshift-origin-cartridge-community-python-3.3
+        - openshift-origin-cartridge-postgresql-9.2
+        - openshift-origin-cartridge-ruby-1.9
+        - openshift-origin-cartridge-php-5.4
+        - openshift-origin-cartridge-perl-5.16
+        - openshift-origin-cartridge-phpmyadmin-3.5
         - git
         - make
         - cronie
 
-    ### Install gems not packaged in Fedora (we should package these)
-    - name: Install gems not in Fedora repos
-      command: $gem install $item 
-      with_items: 
-        - mongoid 
-        - origin 
-        - mysql
-  tags:
+
+ tags:
     - nodepkgs
 
 - name: Post-Install Configure of OpenShift Origin Node
@@ -150,8 +145,84 @@
     - name: node.conf
       template: src=templates/node/node.conf.j2
                 dest=/etc/openshift/node.conf
-                owner=apache group=apache mode=0644
-    - name: start and enabled httpd
-      service: name=httpd state=started enabled=yes
+                owner=root group=root mode=0644
+    - name: openshift_origin_node_severname.conf
+      template: src=templates/node/openshift-origin-node_servername.conf.j2
+                dest=/etc/httpd/conf.d/000001_openshift_origin_node_servername.conf
+                owner=root group=root mode=0644
+    - name: mcollective server config
+      template: src=templates/mcollective-server.cfg.j2
+                dest=/etc/mcollective/server.cfg
+                owner=root group=root mode=0644
+    - name: mcollective client config
+      template: src=templates/mcollective-client.cfg.j2
+                dest=/etc/mcollective/client.cfg
+                owner=root group=root mode=0644
+    - name: Initialize quota db
+      command: /usr/sbin/oo-init-quota creates=${gear_root_mount}/aquota.user
+    - name: openshift node pam sshd config
+      template: src=templates/node/pam.sshd-fedora.j2
+                dest=/etc/pam.d/sshd
+                owner=root group=root mode=0644
+    - name: openshift node pam runuser
+      copy: src=files/node/pam.runuser-fedora
+            dest=/etc/pam.d/runuser owner=root group=root mode=0644
+    - name: openshift node pam runuser-l
+      copy: src=files/node/pam.runuser-l-fedora
+            dest=/etc/pam.d/runuser-l owner=root group=root mode=0644
+    - name: openshift node pam su
+      copy: src=files/node/pam.su-fedora
+            dest=/etc/pam.d/su owner=root group=root mode=0644
+    - name: openshift node pam system-auth-ac
+      copy: src=files/node/pam.system-auth-ac-fedora
+            dest=/etc/pam.d/system-auth-ac owner=root group=root mode=0644
+    - name: openshift node pam-namespace sandbox.conf
+      template: src=templates/node/namespace-d-sandbox.conf.j2
+            dest=/etc/security/namespace.d/sandbox.conf 
+            owner=root group=root mode=0644
+    - name: openshift node pam-namespace tmp.conf
+      template: src=templates/node/namespace-d-tmp.conf.j2
+            dest=/etc/security/namespace.d/tmp.conf 
+            owner=root group=root mode=0644
+    - name: openshift node pam-namespace vartmp.conf
+      template: src=templates/node/namespace-d-vartmp.conf.j2
+            dest=/etc/security/namespace.d/vartmp.conf 
+            owner=root group=root mode=0644
+    - name: openshift sysctl tweaks
+      script: scripts/node_sysctl.sh
+    - name: openshift node sshd config
+      copy: src=files/node/sshd_config dest=/etc/ssh/sshd_config
+            owner=root group=root mode=0600
+    - name: broker and console route for node
+      copy: src=files/node/node_routes.txt
+            dest=/tmp/nodes.broker_routes.txt
+            owner=root group=root mode=0644
+    - name: regen node routes
+      script: scripts/regen_node_routes.sh 
+    - name: start/enable cgconfig service
+      service: name=cgconfig state=started enabled=yes
+      when_string: $configure_cgroups == 'true'
+    - name: start/enable cgred service
+      service: name=cgred state=started enabled=yes
+      when_string: $configure_cgroups == 'true'
+    - name: start/enable openshift-cgroups service
+      service: name=openshift-cgroup state=started enabled=yes
+      when_string: $configure_cgroups == 'true'
+    - name: start/enable openshift-port-proxy service
+      service: name=openshift-port-proxy state=started enabled=yes
+      when_string: $configure_cgroups == 'true'
+    - name: start/enable crond
+      service: name=crond state=started enabled=yes
+    - name: start/enable openshift-gears
+      service: name=openshift-gears state=started enabled=yes
+    - name: start/enable openshift-node-web-proxy
+      service: name=openshift-node-web-proxy state=started enabled=yes
+    - name: start/enable mcollective
+      service: name=mcollective state=started enabled=yes
+    - name: Restore SELinux context $gear_root_mount
+      command: $restorecon -Rv $gear_root_mount
+    - name: Restore SELinux context $gear_httpd_dir
+      command: $restorecon -Rv $gear_httpd_dir
+
   tags:
     - postinstallconf

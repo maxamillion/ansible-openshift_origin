@@ -2,5 +2,4 @@ BIND_SERVER="{{ ansible_default_ipv4.address }}"
 BIND_PORT=53
 BIND_KEYNAME="{{ cloud_domain }}"
 BIND_ZONE="{{ cloud_domain }}"
-#FIXME - need to sort this out
-#BIND_KEYVALUE=
+BIND_KEYVALUE="{{ named_tsig_priv_key }}"
