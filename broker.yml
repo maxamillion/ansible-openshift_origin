@@ -213,8 +213,6 @@
 - name: OpenShift Origin Broker pkgs Install
   hosts: brokers
   user: root
-  vars_files:
-    - varfiles/origin_vars.yml
   tasks:
     ### Big honking broker package list
     - name: Install OpenShift Package List
