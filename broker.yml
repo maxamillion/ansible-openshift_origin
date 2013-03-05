@@ -50,13 +50,12 @@
     ### FirewallD install/config
     - name: Ensure Install - firewalld
       yum: pkg=firewalld state=installed
-    #FIXME - There are certain states in which this will lock us out of the 
-    #        system. Should template out all the configs to clean this up.
+    - name: Broker firewalld config
+      file: src=files/broker_firewall.xml
+            dest=/etc/firewalld/zones/public.xml
+            owner=root group=root mode=0644
     - name: Start and Enable firewalld daemon 
       service: name=firewalld state=started enabled=yes
-    # We can assume this is already set as an active service
-    - name: FirewallD - permanent add-serivce sshd
-      command: $firewall_cmd --permanent --add-service=ssh
   tags:
     - firewalld
       
@@ -128,10 +127,6 @@
       action: raw /root/00-setup_dnssec.sh
     - name: Clean up after named DNSSEC script
       file: path=/root/00-setup_dnssec.sh state=absent
-    - name: FirewallD - permanent add-serivce named
-      command: $firewall_cmd --permanent --add-service=dns
-    - name: FirewallD - add-serivce named
-      command: $firewall_cmd --add-service=dns
     - name: Configure dhclient for DNS
       template: src=templates/named/dhclient.conf.j2
                 dest=/etc/dhcp/dhclient-oso.conf
@@ -153,10 +148,6 @@
       yum: pkg=mongodb state=latest
     - name: Install MongoDB Server
       yum: pkg=mongodb-server state=latest
-    - name: FirewallD - permanent add-port 27017/tcp
-      command: $firewall_cmd --permanent --add-port=27017/tcp
-    - name: FirewallD - add-port 27017/tcp
-      command: $firewall_cmd --add-port=27017/tcp
     - name: Ensure MongoDB daemon stopped
       service: name=mongod state=stopped
     - name: Configure MongoDB
@@ -196,10 +187,6 @@
     - name: Configure ActiveMQ tmp-activemq.conf
       template: src=templates/activemq/tmp-activemq.conf.j2
                 dest=/etc/tmpfiles.d/activemq.conf
-    - name: FirewallD - permanent - add-port ActiveMQ
-      command: $firewall_cmd --permanent --add-port=61613/tcp
-    - name: FirewallD - add-port ActiveMQ
-      command: $firewall_cmd --add-port=61613/tcp
     - name: Start and Enable ActiveMQ
       service: name=activemq state=started enabled=yes
   tags:
