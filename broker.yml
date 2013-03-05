@@ -22,7 +22,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     ### Step 0 - SELinux Enforcing 
     - name: SELinux Enforcing (Targeted)
@@ -45,7 +45,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     ### FirewallD install/config
     - name: Ensure Install - firewalld
@@ -63,7 +63,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     ### Setup Origin repos
     - name: Enable OpenShift Origin Nightly yum repo
@@ -79,7 +79,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     # NTP - sync first, then enable service
     - name: Ensure Install - ntpdate 
@@ -99,7 +99,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     # Install and configure BIND
     - name: Install bind
@@ -138,7 +138,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     # MongoDB Install and configure 
     #   This could be broken out into it's own playbook to allow for some
@@ -170,7 +170,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     # Install and configure ActiveMQ
     - name: Install ActiveMQ
@@ -196,7 +196,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     ### Dev tools needed by some gem installs for native modules/extensions 
     - name: Install dev-tool deps for gem installs
@@ -214,7 +214,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     ### Big honking broker package list
     - name: Install OpenShift Package List
@@ -295,7 +295,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     - name: Install OpenShift Origin Console pkgs
       yum: pkg=$item state=latest
@@ -323,7 +323,7 @@
   hosts: brokers
   user: root
   vars_files:
-    - varfiles/broker_vars.yml
+    - varfiles/origin_vars.yml
   tasks:
     - name: broker.conf
       template: src=templates/broker/broker.conf.j2
