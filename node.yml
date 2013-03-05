@@ -1,0 +1,157 @@
+---
+### node.yml - OpenShift Origin Node Ansible Playbook of Plays
+#
+# Ansible playbook to deploy OpenShift Origin Node nightly builds
+#
+# This is the OpenShift Origin Node ansible playbook, it contains multiple 
+# plays as can be found below. Each one can be run indendently of one another
+# by utilizing the ansible tags feature, an example of running only the plays
+# tagged with selinux and named is as follows:
+#
+#       $ ansible-playbook node.yml -t selinux,postinstallconf
+#
+#   This is for those who want to make modifications and only run the play
+# correlated to that change. Also, without the added overhead of a fanned out 
+# directory structure because at this time it's not quite a large enough
+# playbook that it should be necessary to do so.
+#
+#
+#
+
+- name: SELinux Config
+  hosts: nodes
+  user: root
+  vars_files:
+    - varfiles/origin_vars.yml
+  tasks:
+    ### Step 0 - SELinux Enforcing 
+    - name: SELinux Enforcing (Targeted)
+      selinux: policy=targeted state=enforcing
+    - name: Ensure Installed - policycoreutils
+      yum: pkg=policycoreutils state=installed
+    - name: SELinux - configure sebooleans
+      seboolean:  name=$item state=true persistent=yes
+      with_items:
+        - httpd_run_stickshift
+        - allow_polyinstantiation
+        - httpd_can_network_connect
+        - httpd_can_network_relay
+        - httpd_read_user_content
+        - httpd_enable_homedirs
+        - httpd_execmem
+  tags:
+    - selinux
+
+- name: FirewallD Config
+  hosts: nodes
+  user: root
+  vars_files:
+    - varfiles/origin_vars.yml
+  tasks:
+    ### FirewallD install/config
+    - name: Ensure Install - firewalld
+      yum: pkg=firewalld state=installed
+    - name: Node firewalld config
+      copy: src=files/node_firewalld.xml
+            dest=/etc/firewalld/zones/node.xml
+            owner=root group=root mode=0644
+    - name: Start and Enable firewalld daemon 
+      service: name=firewalld state=started enabled=yes
+  tags:
+    - firewalld
+      
+- name: Repo Setup
+  hosts: nodes
+  user: root
+  vars_files:
+    - varfiles/origin_vars.yml
+  tasks:
+    ### Setup Origin repos
+    - name: Enable OpenShift Origin Nightly yum repo
+      template: src=templates/openshift-origin-nightly.repo.j2
+              dest=/etc/yum.repos.d/openshift-origin-nightly.repo
+    - name: Enable OpenShift Origin Supplemental yum repo
+      template: src=templates/openshift-origin-supplemental.repo.j2
+                dest=/etc/yum.repos.d/openshift-origin-supplemental.repo
+  tags:
+    - reposetup
+
+- name: NTP Config
+  hosts: nodes
+  user: root
+  vars_files:
+    - varfiles/origin_vars.yml
+  tasks:
+    # NTP - sync first, then enable service
+    - name: Ensure Install - ntpdate 
+      yum: pkg=ntpdate state=installed
+    - name: Ensure Install - ntp 
+      yum: pkg=ntp state=installed
+    - name: Stop ntp daemon for ntpdate sync
+      service: name=ntpd state=stopped
+    - name: Synchronize Clock with ntpdate
+      action: command /usr/sbin/ntpdate 0.fedora.pool.ntp.org
+    - name: Start and Enable ntp daemon 
+      service: name=ntpd state=started enabled=yes
+  tags:
+    - ntp
+
+- name: Devel Packages Install
+  hosts: nodes
+  user: root
+  vars_files:
+    - varfiles/origin_vars.yml
+  tasks:
+    ### Dev tools needed by some gem installs for native modules/extensions 
+    - name: Install dev-tool deps for gem installs
+      yum: pkg=$item state=latest
+      with_items:
+        - ruby-devel 
+        - mysql-devel 
+        - mongodb-devel 
+        - gcc 
+        - make
+  tags:
+    - develpkgs
+
+- name: OpenShift Origin Node pkgs Install
+  hosts: nodes
+  user: root
+  tasks:
+    - name: Install OpenShift Package List
+      yum: pkg=$item state=latest
+      with_items:
+        - rubygem-openshift-origin-node
+        - openshift-origin-node-util
+        - pam_openshift
+        - openshift-origin-node-proxy
+        - openshift-origin-port-proxy
+        - openshift-origin-msg-node-mcollective
+        - git
+        - make
+        - cronie
+
+    ### Install gems not packaged in Fedora (we should package these)
+    - name: Install gems not in Fedora repos
+      command: $gem install $item 
+      with_items: 
+        - mongoid 
+        - origin 
+        - mysql
+  tags:
+    - nodepkgs
+
+- name: Post-Install Configure of OpenShift Origin Node
+  hosts: nodes
+  user: root
+  vars_files:
+    - varfiles/origin_vars.yml
+  tasks:
+    - name: node.conf
+      template: src=templates/node/node.conf.j2
+                dest=/etc/openshift/node.conf
+                owner=apache group=apache mode=0644
+    - name: start and enabled httpd
+      service: name=httpd state=started enabled=yes
+  tags:
+    - postinstallconf

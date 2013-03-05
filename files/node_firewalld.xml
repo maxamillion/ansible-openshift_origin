@@ -2,12 +2,9 @@
 <zone>
   <short>Broker</short>
   <description>For use with OpenShift Origin Broker. Only selected incoming connections are accepted.</description>
-  <service name="mdns"/>
-  <service name="dhcpv6-client"/>
-  <service name="dns"/>
   <service name="ssh"/>
   <service name="http"/>
   <service name="https"/>
-  <port protocol="tcp" port="27017"/>
-  <port protocol="tcp" port="61613"/>
+  <port protocol="tcp" port="8000"/>
+  <port protocol="tcp" port="8443"/>
 </zone>

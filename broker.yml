@@ -51,11 +51,11 @@
     - name: Ensure Install - firewalld
       yum: pkg=firewalld state=installed
     - name: Broker firewalld config
-      file: src=files/broker_firewall.xml
-            dest=/etc/firewalld/zones/public.xml
+      copy: src=files/broker_firewalld.xml
+            dest=/etc/firewalld/zones/broker.xml
             owner=root group=root mode=0644
-    - name: Start and Enable firewalld daemon 
-      service: name=firewalld state=started enabled=yes
+    - name: Start/Restart and Enable firewalld daemon 
+      service: name=firewalld state=restarted enabled=yes
   tags:
     - firewalld
       
