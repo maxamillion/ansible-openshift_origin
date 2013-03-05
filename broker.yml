@@ -329,8 +329,6 @@
        - httpd_read_user_content
        - httpd_enable_homedirs
        - httpd_execmem
-    - name: Start and Enabled openshift-origin-console service
-      service: name=openshift-origin-console state=started enabled=yes
   tags:
     - console
 
@@ -355,23 +353,28 @@
     - name: Install base servername.conf
       template: src=templates/broker/broker_servername.conf.j2
                 dest=/etc/httpd/conf.d/000000_openshift_origin_broker_servername.conf
-                user=root group=root owner=0644
+                owner=root group=root mode=0644
     - name: Configure mcollective broker plugin 
-      template: src=templates/broker/msg-broker-mcollective.conf.j2
+      copy: src=files/msg-broker-mcollective.conf
                 dest=/etc/openshift/plugins.d/openshift-origin-msg-broker-mcollective.conf
+                owner=root group=root mode=0644
     - name: Broker Auth Plugin
       template: src=templates/broker/plugins/auth/mongo/mongo.conf.plugin.j2
                 dest=/etc/openshift/plugins.d/openshift-origin-auth-mongo.conf
-                user=root group=root owner=0644
+                owner=root group=root mode=0644
     - name: Remote User Auth Plugin
       template: src=templates/broker/plugins/auth/basic/htpasswd.j2
                 dest=/etc/openshift/plugins.d/openshift-origin-auth-remote-user.conf
-                user=root group=root owner=0644
+                owner=root group=root mode=0644
     - name: nsupdate plugin conf
       template: src=templates/broker/plugins/dns/nsupdate/nsupdate.conf.j2
                 dest=/etc/openshift/plugins.d/openshift-origin-dns-nsupdate.conf
-                user=root group=root owner=0644
+                owner=root group=root mode=0644
     - name: Broker bundle install 
       script: scripts/broker_bundle_install.sh
-    - name: enabled openshift-broker service enabled
+    - name: start and enable openshift-broker service 
       service: name=openshift-broker state=started enabled=yes
+    - name: start and enabled httpd
+      service: name=httpd state=started enabled=yes
+  tags:
+    - postinstallconf
