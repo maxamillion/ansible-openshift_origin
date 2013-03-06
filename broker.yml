@@ -235,6 +235,7 @@
         - openshift-origin-broker-util 
         - rubygem-passenger 
         - openssh 
+        - httpd
         - mod_passenger 
         - rubygem-rails
         - rubygem-railties
