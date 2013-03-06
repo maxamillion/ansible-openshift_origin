@@ -29,6 +29,8 @@
       selinux: policy=targeted state=enforcing
     - name: Ensure Installed - policycoreutils
       yum: pkg=policycoreutils state=installed
+    - name: Ensure Installed - policycoreutils-python
+      yum: pkg=policycoreutils-python state=installed
     - name: SELinux - configure sebooleans
       seboolean:  name=$item state=true persistent=yes
       with_items:
