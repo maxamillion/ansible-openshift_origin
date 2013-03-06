@@ -7,27 +7,28 @@ bundle: /usr/bin/bundle
 restorecon: /sbin/restorecon
 
 # config vars
+broker_auth_salt: "ClWqe5zKtEW4CJEMyjzQ"
+broker_auth_key_passwd: ""
+broker_fqdn: broker.example.com
+
 named_forwarder_ip: "8.8.8.8; 8.8.4.4"
 named_tsig_priv_key: ""
 cloud_domain: example.com
 
-mq_fqdn: ${ansible_fqdn}
+mq_fqdn: ${broker_fqdn}
 mq_provider: activemq
 mq_server_user: mcollective
 mq_server_password: marionette
 
 mongo_auth_user: openshift
 mongo_db_name: openshift_broker_dev
-mongo_db_fqdn: ${ansible_fqdn}
+mongo_db_fqdn: ${broker_fqdn}
 mongo_auth_password: mooo
 
 console_conf_path: /etc/openshift/console.conf
 
-broker_auth_salt: "ClWqe5zKtEW4CJEMyjzQ"
-broker_auth_key_passwd: ""
-broker_fqdn: ${ansible_fqdn}
 
-node_fqdn: ${ansible_fqdn}
+node_fqdn: ${broker_fqdn}
 node_ip: ${ansible_default_ipv4.address}
 
 os_unmanaged_users: "root,adm,apache"

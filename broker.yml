@@ -18,6 +18,18 @@
 #
 #
 
+- name: Broker pre-install configs
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/origin_vars.yml
+  tasks:
+    - name: Hostname config
+      template: src=templates/broker/hostname.j2 dest=/etc/hostname
+                owner=root group=root mode=0644 backup=yes
+  tags:
+    - preinstallconf
+
 - name: SELinux Config
   hosts: brokers
   user: root
@@ -93,7 +105,9 @@
     - name: Stop ntp daemon for ntpdate sync
       service: name=ntpd state=stopped
     - name: Synchronize Clock with ntpdate
-      action: command /usr/sbin/ntpdate 0.fedora.pool.ntp.org
+      action: command /usr/sbin/ntpdate clock.redhat.com
+      async: 10
+      poll: 2
     - name: Start and Enable ntp daemon 
       service: name=ntpd state=started enabled=yes
   tags:
