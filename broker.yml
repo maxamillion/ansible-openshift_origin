@@ -135,6 +135,8 @@
       template: src=templates/named/dhclient.conf.j2
                 dest=/etc/dhcp/dhclient-oso.conf
                 backup=yes
+    - name: restart/enable named daemon
+      service: name=named state=started enabled=yes
   tags:
     - named
 
