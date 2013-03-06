@@ -33,7 +33,7 @@
       seboolean:  name=$item state=true persistent=yes
       with_items:
         - httpd_run_stickshift
-        - allow_polyinstantiation
+        - polyinstantiation_enabled
         - httpd_can_network_connect
         - httpd_can_network_relay
         - httpd_read_user_content
@@ -52,7 +52,7 @@
     - name: Ensure Install - firewalld
       yum: pkg=firewalld state=installed
     - name: Node firewalld config
-      copy: src=files/node_firewalld.xml
+      copy: src=files/node/node_firewalld.xml
             dest=/etc/firewalld/zones/node.xml
             owner=root group=root mode=0644
     - name: Start and Enable firewalld daemon 
@@ -131,9 +131,7 @@
         - git
         - make
         - cronie
-
-
- tags:
+  tags:
     - nodepkgs
 
 - name: Post-Install Configure of OpenShift Origin Node
@@ -158,8 +156,11 @@
       template: src=templates/mcollective-client.cfg.j2
                 dest=/etc/mcollective/client.cfg
                 owner=root group=root mode=0644
+    - name: Find root mount point of gear dir
+      shell: /bin/df -P /var/lib/openshift | tail -1 | awk '{ print $6 }'
+      register: gear_root_mount
     - name: Initialize quota db
-      command: /usr/sbin/oo-init-quota creates=${gear_root_mount}/aquota.user
+      command: /usr/sbin/oo-init-quota creates=${gear_root_mount.stdout}/aquota.user
     - name: openshift node pam sshd config
       template: src=templates/node/pam.sshd-fedora.j2
                 dest=/etc/pam.d/sshd
@@ -189,7 +190,7 @@
             dest=/etc/security/namespace.d/vartmp.conf 
             owner=root group=root mode=0644
     - name: openshift sysctl tweaks
-      script: scripts/node_sysctl.sh
+      script: scripts/node/node_sysctl.sh
     - name: openshift node sshd config
       copy: src=files/node/sshd_config dest=/etc/ssh/sshd_config
             owner=root group=root mode=0600
@@ -198,7 +199,7 @@
             dest=/tmp/nodes.broker_routes.txt
             owner=root group=root mode=0644
     - name: regen node routes
-      script: scripts/regen_node_routes.sh 
+      script: scripts/node/regen_node_routes.sh 
     - name: start/enable cgconfig service
       service: name=cgconfig state=started enabled=yes
       when_string: $configure_cgroups == 'true'
@@ -206,7 +207,7 @@
       service: name=cgred state=started enabled=yes
       when_string: $configure_cgroups == 'true'
     - name: start/enable openshift-cgroups service
-      service: name=openshift-cgroup state=started enabled=yes
+      service: name=openshift-cgroups state=started enabled=yes
       when_string: $configure_cgroups == 'true'
     - name: start/enable openshift-port-proxy service
       service: name=openshift-port-proxy state=started enabled=yes
@@ -219,8 +220,8 @@
       service: name=openshift-node-web-proxy state=started enabled=yes
     - name: start/enable mcollective
       service: name=mcollective state=started enabled=yes
-    - name: Restore SELinux context $gear_root_mount
-      command: $restorecon -Rv $gear_root_mount
+    - name: Restore SELinux context $gear_root_dir
+      command: $restorecon -Rv $gear_root_dir
     - name: Restore SELinux context $gear_httpd_dir
       command: $restorecon -Rv $gear_httpd_dir
 
