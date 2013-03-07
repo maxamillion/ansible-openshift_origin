@@ -325,7 +325,15 @@
         - rubygem-fakefs
       async: 5400
       poll: 10
+  tags:
+    - brokerpkgs
 
+- name: OpenShift Origin Broker gems Install
+  hosts: brokers
+  user: root
+  vars_files:
+    - varfiles/origin_vars.yml
+  tasks:
     ### Install gems not packaged in Fedora (we should package these)
     - name: Install gems not in Fedora repos
       command: $gem install $item 
@@ -336,7 +344,7 @@
       async: 5400
       poll: 10
   tags:
-    - brokerpkgs
+    - brokergems
 
 - name: OpenShift Origin Web Admin Console
   hosts: brokers
@@ -382,8 +390,10 @@
                 owner=apache group=apache mode=0644
     - name: Generate broker auth keys
       script: scripts/broker/gen_broker_auth_keys.sh
+              creates=${broker_auth_pubkey_path}
     - name: Generate broker rsync keys
       script: scripts/broker/gen_broker_rsync_keys.sh
+              creates=${broker_rsync_key_path}
     - name: Install base servername.conf
       template: src=templates/broker/broker_servername.conf.j2
                 dest=/etc/httpd/conf.d/000000_openshift_origin_broker_servername.conf

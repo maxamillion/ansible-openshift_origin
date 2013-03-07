@@ -10,6 +10,8 @@ restorecon: /sbin/restorecon
 broker_auth_salt: "ClWqe5zKtEW4CJEMyjzQ"
 broker_auth_key_passwd: ""
 broker_fqdn: broker.example.com
+broker_auth_pubkey_path: /etc/openshift/server_pub.pem
+broker_rsync_key_path: /etc/openshift/rsync_id_rsa
 
 named_forwarder_ip: "8.8.8.8; 8.8.4.4"
 named_tsig_priv_key: ""
