@@ -27,6 +27,12 @@
     - name: Hostname config
       template: src=templates/node/hostname.j2 dest=/etc/hostname
                 owner=root group=root mode=0644 backup=yes
+    - name: check for hostname in /etc/hosts
+      shell: grep ${node_fqdn} /etc/hosts; echo $?
+      register: e_nocheckhosts
+    - name: conditionaly set fqdn in /etc/hosts
+      shell: printf "${node_fqdn}\n" >> /etc/hosts
+      when_string: ${e_nocheckhosts.stdout} != "0"
   tags:
     - preinstallconf
 
@@ -72,7 +78,7 @@
     - name: Start and Enable firewalld daemon 
       service: name=firewalld state=started enabled=yes
     - name: Synchronize Clock with ntpdate
-      action: command /usr/sbin/ntpdate clock.redhat.com
+      command: /usr/sbin/ntpdate clock.redhat.com
       async: 10
       poll: 2
   tags:
@@ -110,7 +116,7 @@
     - name: Stop ntp daemon for ntpdate sync
       service: name=ntpd state=stopped
     - name: Synchronize Clock with ntpdate
-      action: command /usr/sbin/ntpdate clock.redhat.com
+      command: /usr/sbin/ntpdate clock.redhat.com
     - name: Start and Enable ntp daemon 
       service: name=ntpd state=started enabled=yes
   tags:
@@ -176,10 +182,10 @@
                 dest=/etc/mcollective/client.cfg
                 owner=root group=root mode=0644
     - name: Find root mount point of gear dir
-      shell: /bin/df -P /var/lib/openshift | tail -1 | awk '{ print $6 }'
+      shell: df -P /var/lib/openshift | tail -1 | awk '{ print $6 }'
       register: gear_root_mount
     - name: Initialize quota db
-      command: /usr/sbin/oo-init-quota creates=${gear_root_mount.stdout}/aquota.user
+      shell: oo-init-quota creates=${gear_root_mount.stdout}/aquota.user
     - name: openshift node pam sshd config
       template: src=templates/node/pam.sshd-fedora.j2
                 dest=/etc/pam.d/sshd
