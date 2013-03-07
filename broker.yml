@@ -76,11 +76,16 @@
       copy: src=files/broker/broker_firewalld.xml
             dest=/etc/firewalld/zones/broker.xml
             owner=root group=root mode=0644
+      notify:
+        - Reload Firewalld
     - name: Ensure firewalld Started and Enabled
       service: name=firewalld state=started enabled=yes
+      async: 15
+      poll: 5
+  handlers:
     - name: Reload Firewalld
       service: name=firewalld state=reloaded enabled=yes
-      async: 10
+      async: 15
       poll: 5
   tags:
     - firewalld

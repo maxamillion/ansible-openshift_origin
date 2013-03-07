@@ -77,11 +77,16 @@
       copy: src=files/node/node_firewalld.xml
             dest=/etc/firewalld/zones/node.xml
             owner=root group=root mode=0644
+      notify: 
+        - Reload Firewalld
     - name: Start and Enable firewalld daemon 
       service: name=firewalld state=started enabled=yes
+      async: 15
+      poll: 5
+  handlers:
     - name: Reload Firewalld
       service: name=firewalld state=reloaded enabled=yes
-      async: 10
+      async: 15
       poll: 5
   tags:
     - firewalld
@@ -245,6 +250,8 @@
       service: name=openshift-gears state=started enabled=yes
     - name: start/enable openshift-node-web-proxy
       service: name=openshift-node-web-proxy state=started enabled=yes
+    - name: start/enable activemq
+      service: name=activemq state=started enabled=yes
     - name: start/enable mcollective
       service: name=mcollective state=started enabled=yes
     - name: Restore SELinux context $gear_root_dir
