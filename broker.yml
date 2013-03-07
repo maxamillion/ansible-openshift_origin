@@ -341,8 +341,6 @@
         - mongoid 
         - origin 
         - mysql
-      async: 5400
-      poll: 10
   tags:
     - brokergems
 
