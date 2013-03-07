@@ -28,11 +28,13 @@
       template: src=templates/broker/hostname.j2 dest=/etc/hostname
                 owner=root group=root mode=0644 backup=yes
     - name: check for hostname in /etc/hosts
-      shell: grep ${broker_fqdn} /etc/hosts; echo $?
+      shell: grep '${ansible_default_ipv4.address} ${broker_fqdn}' /etc/hosts
+      ignore_errors: yes 
       register: e_nocheckhosts
-    - name: conditionaly set fqdn in /etc/hosts
-      shell: printf "${broker_fqdn}\n" >> /etc/hosts
-      when_string: ${e_nocheckhosts.stdout} != "0"
+    - name: conditionally set /etc/hosts
+      shell: printf "${ansible_default_ipv4.address} ${broker_fqdn}\n" >>
+             /etc/hosts
+      only_if: ${e_nocheckhosts.rc} != 0
   tags:
     - preinstallconf
 
@@ -78,6 +80,8 @@
       service: name=firewalld state=started enabled=yes
     - name: Reload Firewalld
       service: name=firewalld state=reloaded enabled=yes
+      async: 10
+      poll: 5
   tags:
     - firewalld
       
@@ -112,8 +116,6 @@
       service: name=ntpd state=stopped
     - name: Synchronize Clock with ntpdate
       command: /usr/sbin/ntpdate clock.redhat.com
-      async: 10
-      poll: 5
     - name: Start and Enable ntp daemon 
       service: name=ntpd state=started enabled=yes
   tags:
