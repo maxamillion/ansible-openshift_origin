@@ -163,6 +163,9 @@
         - make
         - cronie
         - httpd
+      async: 5400
+      poll: 10
+
   tags:
     - nodepkgs
 

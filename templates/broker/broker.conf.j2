@@ -13,7 +13,7 @@ MONGO_REPLICA_SETS=false
 # Replica set example: "<host-1>:<port-1> <host-2>:<port-2> ..."
 MONGO_HOST_PORT="{{ mongo_db_fqdn }}:27017"
 MONGO_USER="{{ mongo_auth_user }}"
-MONGO_PASSWORD="{{ mong_auth_password }}"
+MONGO_PASSWORD="{{ mongo_auth_password }}"
 MONGO_DB="{{ mongo_db_name }}"
 
 #Enables gear/filesystem resource usage tracking
@@ -28,7 +28,7 @@ ENABLE_ANALYTICS="false"
 ENABLE_USER_ACTION_LOG="true"
 USER_ACTION_LOG_FILE="/var/log/openshift/user_action.log"
 
-AUTH_SALT="{{ mongo_auth_salt }}"
+AUTH_SALT="{{ broker_auth_salt }}"
 AUTH_PRIVKEYFILE="/etc/openshift/server_priv.pem"
 AUTH_PRIVKEYPASS="{{ broker_auth_key_passwd }}"
 AUTH_PUBKEYFILE="/etc/openshift/server_pub.pem"

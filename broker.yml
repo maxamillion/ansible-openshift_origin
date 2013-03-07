@@ -188,14 +188,23 @@
                 dest=/etc/mongodb.conf backup=yes
     - name: Start and Enable MongoDB daemon
       service: name=mongod state=started enabled=yes
+    - name: Check for mongo auth
+      shell: egrep '^auth = true' /etc/mongodb.conf
+      ignore_errors: yes 
+      register: e_nocheckmongoauth
     - name: MongoDB user/pw script template copy
       template: src=templates/mongodb/set_mongopw.sh.j2
                 dest=/root/00-set_mongopw.sh
                 owner=root group=root mode=0500
+      only_if: ${e_nocheckmongoauth.rc} != 0
     - name: Run MongoDB user/pw script 
       action: raw /root/00-set_mongopw.sh
+      only_if: ${e_nocheckmongoauth.rc} != 0
     - name: Clean up after MongoDB user/pw script
       file: path=/root/00-set_mongopw.sh state=absent
+    - name: Enable mongo auth
+      shell: printf "auth = true" >> /etc/mongodb.conf
+      only_if: ${e_nocheckmongoauth.rc} != 0
   tags:
     - mongo
 
@@ -314,6 +323,8 @@
         - rubygem-xml-simple
         - rubygem-webmock
         - rubygem-fakefs
+      async: 5400
+      poll: 10
 
     ### Install gems not packaged in Fedora (we should package these)
     - name: Install gems not in Fedora repos
@@ -322,6 +333,8 @@
         - mongoid 
         - origin 
         - mysql
+      async: 5400
+      poll: 10
   tags:
     - brokerpkgs
 
