@@ -45,5 +45,5 @@ include "{{ cloud_domain }}.key";
 zone "{{ cloud_domain }}" IN {
     type master;
     file "dynamic/{{ cloud_domain }}.db";
-    allow-update { key {{ cloud_domain }} ; } ;
+    allow-update { key {{ cloud_domain }} ; };
 };
