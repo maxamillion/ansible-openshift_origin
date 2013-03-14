@@ -72,21 +72,17 @@
     ### FirewallD install/config
     - name: Ensure Install - firewalld
       yum: pkg=firewalld state=installed
-    - name: Broker firewalld config
-      copy: src=files/broker/broker_firewalld.xml
-            dest=/etc/firewalld/zones/broker.xml
-            owner=root group=root mode=0644
-      notify:
-        - Reload Firewalld
     - name: Ensure firewalld Started and Enabled
       service: name=firewalld state=started enabled=yes
       async: 15
       poll: 5
-  handlers:
-    - name: Reload Firewalld
-      service: name=firewalld state=reloaded enabled=yes
-      async: 15
-      poll: 5
+    - name: Check for firewalld configs
+      script: scripts/broker/broker_check_firewalld.sh
+      ignore_errors: yes 
+      register: e_nocheckfirewalld
+    - name: Broker firewalld config
+      script: scripts/broker/broker_firewalld.sh
+      only_if: ${e_nocheckfirewalld.rc} != 0
   tags:
     - firewalld
       
@@ -416,7 +412,9 @@
       script: scripts/broker/broker_bundle_install.sh
     - name: start and enable openshift-broker service 
       service: name=openshift-broker state=started enabled=yes
-    - name: start and enabled httpd
+    - name: start and enable httpd
       service: name=httpd state=started enabled=yes
+    - name: start and enable openshift-console
+      service: name=openshift-console state=started enabled=yes
   tags:
     - postinstallconf

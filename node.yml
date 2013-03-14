@@ -73,21 +73,17 @@
     ### FirewallD install/config
     - name: Ensure Install - firewalld
       yum: pkg=firewalld state=installed
-    - name: Node firewalld config
-      copy: src=files/node/node_firewalld.xml
-            dest=/etc/firewalld/zones/node.xml
-            owner=root group=root mode=0644
-      notify: 
-        - Reload Firewalld
     - name: Start and Enable firewalld daemon 
       service: name=firewalld state=started enabled=yes
       async: 15
       poll: 5
-  handlers:
-    - name: Reload Firewalld
-      service: name=firewalld state=reloaded enabled=yes
-      async: 15
-      poll: 5
+    - name: Check for firewalld configs
+      script: scripts/node/node_check_firewalld.sh
+      ignore_errors: yes
+      register: e_nocheckfirewalld
+    - name: Node firewalld config
+      script: scripts/node/node_firewalld.sh
+      only_if: ${e_nocheckfirewalld.rc} != 0
   tags:
     - firewalld
       
