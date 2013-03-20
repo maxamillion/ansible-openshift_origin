@@ -25,10 +25,13 @@ The module can be obtained from the
 [github repository](https://github.com/maxamillion/ansible-openshift_origin).
 
 1. Download the [Zip file from github](https://github.com/maxamillion/ansible-openshift_origin/archive/master.zip)
-2. For broker installs run 'ansible-playbook brokers broker.yaml' ('brokers' is
+
+(See "Configuration" and "Using" sections below for details)
+2. For broker installs run 'ansible-playbook broker.yaml' ('brokers' is
 a host group)
-3. For node installs run 'ansible-playbook nodes node.yaml' ('nodes' is a host 
+3. For node installs run 'ansible-playbook node.yaml' ('nodes' is a host 
 group)
+
 
 Reminder: This is currently only supporting a single-node install so 'brokers' 
 and 'nodes' should both contain the same, single, ip address or hostname in the
