@@ -50,6 +50,23 @@ Example:
     [nodes]
     192.168.1.100
 
+# Using 
+
+Once the configuration step is complete you can then run these configs with or
+without a non-default inventory file.
+
+Example with default inventory file (/etc/ansible/hosts):
+    
+    ansible-playbook broker.yml
+
+    ansible-playbook node.yml
+
+Example with non-default inventory file (/tmp/myhosts):
+    
+    ansible-playbook broker.yml -i /tmp/myhosts
+
+    ansible-playbook node.yml -i /tmp/myhosts
+
 # Web Console
 
 Once the installation is complete, navigate to your machine (we'll assume here 
