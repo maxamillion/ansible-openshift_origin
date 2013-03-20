@@ -136,7 +136,7 @@
         - bind-utils
     - name: Configure named dynamic_domain.db
       template: src=templates/named/dynamic-zone.db.j2
-                dest=/var/named/dynamic/$ansible_domain.db
+                dest=/var/named/dynamic/${cloud_domain}.db
                 backup=yes
     - name: Configure named forwarders.conf
       template: src=templates/named/forwarders.conf.j2
