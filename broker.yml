@@ -258,12 +258,14 @@
     - name: Install OpenShift Package List
       yum: pkg=$item state=latest
       with_items:
+        - rhc
         - openshift-origin-broker
         - rubygem-openshift-origin-msg-broker-mcollective 
         - rubygem-openshift-origin-dns-nsupdate 
         - rubygem-openshift-origin-dns-bind 
         - rubygem-openshift-origin-dns-bind 
         - rubygem-openshift-origin-controller 
+        - rubygem-openshift-origin-auth-mongo
         - openshift-origin-broker-util 
         - rubygem-passenger 
         - openssh 
@@ -402,7 +404,7 @@
                 owner=root group=root mode=0644
     - name: Remote User Auth Plugin
       template: src=templates/broker/plugins/auth/basic/htpasswd.j2
-                dest=/etc/openshift/plugins.d/openshift-origin-auth-remote-user.conf
+                dest=/etc/openshift/plugins.d/openshift-origin-auth-remote-user.example
                 owner=root group=root mode=0644
     - name: nsupdate plugin conf
       template: src=templates/broker/plugins/dns/nsupdate/nsupdate.conf.j2
