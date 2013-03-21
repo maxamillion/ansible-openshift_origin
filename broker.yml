@@ -185,7 +185,7 @@
     - name: Start and Enable MongoDB daemon
       service: name=mongod state=started enabled=yes
     - name: Check for mongo auth
-      command: ${egrep} '^auth = true\n' /etc/mongodb.conf
+      command: ${egrep} '^auth = true' /etc/mongodb.conf
       ignore_errors: yes 
       register: e_nocheckmongoauth
     - name: MongoDB user/pw script template copy
@@ -196,10 +196,10 @@
     - name: Run MongoDB user/pw script 
       action: raw /root/00-set_mongopw.sh
       only_if: ${e_nocheckmongoauth.rc} != 0
-    - name: Clean up after MongoDB user/pw script
-      file: path=/root/00-set_mongopw.sh state=absent
+#    - name: Clean up after MongoDB user/pw script
+#      file: path=/root/00-set_mongopw.sh state=absent
     - name: Enable mongo auth
-      shell: printf "auth = true" >> /etc/mongodb.conf
+      shell: printf "auth = true\n" >> /etc/mongodb.conf
       only_if: ${e_nocheckmongoauth.rc} != 0
   tags:
     - mongo

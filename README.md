@@ -39,6 +39,7 @@ inventory file.
 
 # Configuration
 
+## Ansible
 You will either need to make entries in your /etc/ansible/hosts file for a 
 [brokers] and a [nodes] section, or optionally create a hosts file and use the 
 ansible -i option to point to your custom inventory file.
@@ -52,6 +53,13 @@ Example:
 
     [nodes]
     192.168.1.100
+
+
+## rhc - OpenShift command line util
+If you are going to use the rhc client you will need to create a config,
+there is a config example called express.conf.example in the docs dir of this
+repo
+
 
 # Using 
 

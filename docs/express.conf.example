@@ -1,0 +1,14 @@
+# This file should be placed in ~/.openshift/ and the fields should be changed
+# to reflect your specific OpenShift Origin environment.
+
+# Remote API server
+# This will be your broker node if you've created a multi-node Origin deployment
+libra_server = 'localhost'
+
+# Default ssh key file
+ssh_key_file = 'some_idrsa_pub'
+
+# Default rhlogin to use if none is specified
+# This will allow you to not need to pass -l to the rhc command line util
+default_rhlogin=openshift_dev@example.com
+

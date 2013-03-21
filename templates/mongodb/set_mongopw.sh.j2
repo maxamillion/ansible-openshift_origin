@@ -1,7 +1,16 @@
 #!/bin/bash
 
 {{ mongo }} {{ ansible_default_ipv4.address }}/{{ mongo_db_name }} \
-    --eval 'db.addUser("{{ mongo_auth_user }}", "{{ mongo_auth_password }}")' \
+    --eval 'db.addUser("{{ mongo_auth_user }}", "{{ mongo_auth_passwd }}")' \
 && \
 {{ mongo }} {{ ansible_default_ipv4.address }}/admin \
-    --eval 'db.addUser("{{ mongo_auth_user }}", "{{ mongo_auth_password }}")'
+    --eval 'db.addUser("{{ mongo_auth_user }}", "{{ mongo_auth_passwd }}")'
+
+mongo_auth_pass_hash=$(ruby -e \
+  "require 'digest/md5'; puts \
+  Digest::MD5.hexdigest(Digest::MD5.hexdigest(\"{{ mongo_admin_passwd }}\") + \
+  \"{{ broker_auth_salt }}\")")
+
+{{ mongo }} {{ mongo_db_name }} --username {{ mongo_auth_user }} \
+    --password {{ mongo_auth_passwd }} --eval \
+    "db.auth_user.update({\"_id\":\"admin\"}, {\"_id\":\"admin\",\"user\":\"admin\",\"password_hash\":\"${mongo_auth_pass_hash}\"}, true)"

@@ -26,7 +26,9 @@ mq_server_password: marionette
 mongo_auth_user: openshift
 mongo_db_name: openshift_broker_dev
 mongo_db_fqdn: ${broker_fqdn}
-mongo_auth_password: mooo
+mongo_auth_passwd: mooo
+mongo_admin_user: admin
+mongo_admin_passwd: admin
 
 console_conf_path: /etc/openshift/console.conf
 
