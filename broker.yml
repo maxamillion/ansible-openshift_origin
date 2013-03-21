@@ -196,8 +196,8 @@
     - name: Run MongoDB user/pw script 
       action: raw /root/00-set_mongopw.sh
       only_if: ${e_nocheckmongoauth.rc} != 0
-#    - name: Clean up after MongoDB user/pw script
-#      file: path=/root/00-set_mongopw.sh state=absent
+    - name: Clean up after MongoDB user/pw script
+      file: path=/root/00-set_mongopw.sh state=absent
     - name: Enable mongo auth
       shell: printf "auth = true\n" >> /etc/mongodb.conf
       only_if: ${e_nocheckmongoauth.rc} != 0
