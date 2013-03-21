@@ -185,7 +185,7 @@
     - name: Start and Enable MongoDB daemon
       service: name=mongod state=started enabled=yes
     - name: Check for mongo auth
-      shell: egrep '^auth = true' /etc/mongodb.conf
+      command: ${egrep} '^auth = true\n' /etc/mongodb.conf
       ignore_errors: yes 
       register: e_nocheckmongoauth
     - name: MongoDB user/pw script template copy

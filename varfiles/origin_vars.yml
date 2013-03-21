@@ -5,6 +5,7 @@ mongo: /usr/bin/mongo
 rake: /usr/bin/rake
 bundle: /usr/bin/bundle
 restorecon: /sbin/restorecon
+egrep: /usr/bin/egrep
 
 # config vars
 broker_auth_salt: "ClWqe5zKtEW4CJEMyjzQ"
