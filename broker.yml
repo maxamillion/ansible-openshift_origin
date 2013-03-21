@@ -30,11 +30,11 @@
     - name: check for hostname in /etc/hosts
       shell: grep '${ansible_default_ipv4.address} ${broker_fqdn}' /etc/hosts
       ignore_errors: yes 
-      register: e_nocheckhosts
+      register: e_checkhosts
     - name: conditionally set /etc/hosts
       shell: printf "${ansible_default_ipv4.address} ${broker_fqdn}\n" >>
              /etc/hosts
-      only_if: ${e_nocheckhosts.rc} != 0
+      only_if: ${e_checkhosts.rc} != 0
   tags:
     - preinstallconf
 
@@ -79,10 +79,10 @@
     - name: Check for firewalld configs
       script: scripts/broker/broker_check_firewalld.sh
       ignore_errors: yes 
-      register: e_nocheckfirewalld
+      register: e_checkfirewalld
     - name: Broker firewalld config
       script: scripts/broker/broker_firewalld.sh
-      only_if: ${e_nocheckfirewalld.rc} != 0
+      only_if: ${e_checkfirewalld.rc} != 0
   tags:
     - firewalld
       
@@ -187,20 +187,20 @@
     - name: Check for mongo auth
       command: ${egrep} '^auth = true' /etc/mongodb.conf
       ignore_errors: yes 
-      register: e_nocheckmongoauth
+      register: e_checkmongoauth
     - name: MongoDB user/pw script template copy
       template: src=templates/mongodb/set_mongopw.sh.j2
                 dest=/root/00-set_mongopw.sh
                 owner=root group=root mode=0500
-      only_if: ${e_nocheckmongoauth.rc} != 0
+      only_if: ${e_checkmongoauth.rc} != 0
     - name: Run MongoDB user/pw script 
       action: raw /root/00-set_mongopw.sh
-      only_if: ${e_nocheckmongoauth.rc} != 0
+      only_if: ${e_checkmongoauth.rc} != 0
     - name: Clean up after MongoDB user/pw script
       file: path=/root/00-set_mongopw.sh state=absent
     - name: Enable mongo auth
       shell: printf "auth = true\n" >> /etc/mongodb.conf
-      only_if: ${e_nocheckmongoauth.rc} != 0
+      only_if: ${e_checkmongoauth.rc} != 0
   tags:
     - mongo
 
