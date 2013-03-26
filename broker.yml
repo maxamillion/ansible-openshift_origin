@@ -179,6 +179,8 @@
       yum: pkg=mongodb-server state=latest
     - name: Ensure MongoDB daemon stopped
       service: name=mongod state=stopped
+    - name: Ensure ruby installed for MongoDB Auth conf
+      yum: pkg=ruby state=installed
     - name: Check for mongo auth
       command: ${egrep} '^auth = true' /etc/mongodb.conf
       ignore_errors: yes 
