@@ -179,15 +179,16 @@
       yum: pkg=mongodb-server state=latest
     - name: Ensure MongoDB daemon stopped
       service: name=mongod state=stopped
-    - name: Configure MongoDB
-      template: src=templates/mongodb/mongodb.conf.j2
-                dest=/etc/mongodb.conf backup=yes
-    - name: Start and Enable MongoDB daemon
-      service: name=mongod state=started enabled=yes
     - name: Check for mongo auth
       command: ${egrep} '^auth = true' /etc/mongodb.conf
       ignore_errors: yes 
       register: e_checkmongoauth
+    - name: Configure MongoDB
+      template: src=templates/mongodb/mongodb.conf.j2
+                dest=/etc/mongodb.conf backup=yes
+      only_if: ${e_checkmongoauth.rc} != 0
+    - name: Start and Enable MongoDB daemon
+      service: name=mongod state=started enabled=yes
     - name: MongoDB user/pw script template copy
       template: src=templates/mongodb/set_mongopw.sh.j2
                 dest=/root/00-set_mongopw.sh
@@ -406,6 +407,9 @@
       template: src=templates/broker/plugins/auth/basic/htpasswd.j2
                 dest=/etc/openshift/plugins.d/openshift-origin-auth-remote-user.example
                 owner=root group=root mode=0644
+    - name: Register dnssec key for nsupdate plugin
+      shell: "${awk} '/^Key:/{print $2}' /var/named/K${cloud_domain}*.private"
+      register: nsupdate_key
     - name: nsupdate plugin conf
       template: src=templates/broker/plugins/dns/nsupdate/nsupdate.conf.j2
                 dest=/etc/openshift/plugins.d/openshift-origin-dns-nsupdate.conf
