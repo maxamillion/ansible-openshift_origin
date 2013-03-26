@@ -7,6 +7,6 @@ pushd /var/www/openshift/console/
   bundle install
   rm -fr tmp/cache/*
   rake assets:precompile
-  chown -R ./*
+  chown -R apache:apache ./*
 popd
 
