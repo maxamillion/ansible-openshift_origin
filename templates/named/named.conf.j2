@@ -40,6 +40,11 @@ controls {
 
 include "/etc/named.rfc1912.zones";
 
+zone "{{ infra_domain }}.com" IN {
+    type master;
+    file "{{ infra_domain }}.db";
+};
+
 include "{{ cloud_domain }}.key";
 
 zone "{{ cloud_domain }}" IN {
@@ -47,3 +52,4 @@ zone "{{ cloud_domain }}" IN {
     file "dynamic/{{ cloud_domain }}.db";
     allow-update { key {{ cloud_domain }} ; };
 };
+

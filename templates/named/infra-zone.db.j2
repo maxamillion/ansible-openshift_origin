@@ -1,0 +1,15 @@
+$ORIGIN .
+$TTL 1800       ; 30 minutes
+{{ infra_domain             IN SOA  ns1.{{ infra_domain }}. hostmaster.{{ infra_domain }}. (
+        2011112908 ; serial
+        60         ; refresh (1 minute)
+        15         ; retry (15 seconds)
+        1800       ; expire (30 minutes)
+        10         ; minimum (10 seconds)
+        )
+      NS        ns1.{{ infra_domain }}.com.
+$ORIGIN example.com.
+ns1                     A       {{ ansible_default_ipv4.address }}
+broker                  A       {{ ansible_default_ipv4.address }}
+msg1                    A       {{ ansible_default_ipv4.address }}
+node1                   A       {{ ansible_default_ipv4.address }}

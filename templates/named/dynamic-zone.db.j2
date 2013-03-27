@@ -9,5 +9,5 @@ $TTL 1800
                           )
                      NS ns1.{{ cloud_domain }}.
 $ORIGIN {{ cloud_domain }}.
-ns1	              A        127.0.0.1
+ns1	              A        {{ ansible_default_ipv4.address }}
 

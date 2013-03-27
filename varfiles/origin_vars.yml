@@ -17,7 +17,12 @@ broker_rsync_key_path: /etc/openshift/rsync_id_rsa
 
 named_forwarder_ip: "8.8.8.8; 8.8.4.4"
 named_tsig_priv_key: ""
-cloud_domain: example.com
+
+# infra-domain - infrastrcture domain
+infra_domain: example.com
+
+# cloud_domain - subdomain for PaaS Cloud apps to live under
+cloud_domain: app.example.com
 
 mq_fqdn: ${broker_fqdn}
 mq_provider: activemq
