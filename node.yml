@@ -190,6 +190,8 @@
     - name: Find root mount point of gear dir
       shell: df -P /var/lib/openshift | tail -1 | awk '{ print $6 }'
       register: gear_root_mount
+    - name: Verify origin-node-util installed for quota init
+      yum: pkg=openshift-origin-node-util state=installed
     - name: Initialize quota db
       shell: oo-init-quota creates=${gear_root_mount.stdout}/aquota.user
     - name: openshift node pam sshd config
@@ -231,15 +233,34 @@
             owner=root group=root mode=0644
     - name: regen node routes
       script: scripts/node/regen_node_routes.sh 
+    - name: Restore SELinux context $gear_root_dir
+      command: $restorecon -Rv $gear_root_dir
+    - name: Restore SELinux context $gear_httpd_dir
+      command: $restorecon -Rv $gear_httpd_dir
+  tags:
+    - postinstallconf
+
+- name: Enable Daemons
+  hosts: nodes
+  user: root
+  vars_files:
+    - varfiles/origin_vars.yml
+  tasks:
+    - name: Verify libcgroup-tools are installed for cgconfig/cgred
+      yum: pkg=libcgroup-tools state=installed
     - name: start/enable cgconfig service
       service: name=cgconfig state=started enabled=yes
       when_string: $configure_cgroups == 'true'
     - name: start/enable cgred service
       service: name=cgred state=started enabled=yes
       when_string: $configure_cgroups == 'true'
+    - name: Verify origin-node rubygem installed for openshift-cgroups
+      yum: pkg=rubygem-openshift-origin-node state=installed
     - name: start/enable openshift-cgroups service
       service: name=openshift-cgroups state=started enabled=yes
       when_string: $configure_cgroups == 'true'
+    - name: Verify origin-port-proxy installed
+      yum: pkg=openshift-origin-port-proxy state=installed
     - name: start/enable openshift-port-proxy service
       service: name=openshift-port-proxy state=started enabled=yes
       when_string: $configure_cgroups == 'true'
@@ -253,10 +274,5 @@
       service: name=activemq state=started enabled=yes
     - name: start/enable mcollective
       service: name=mcollective state=started enabled=yes
-    - name: Restore SELinux context $gear_root_dir
-      command: $restorecon -Rv $gear_root_dir
-    - name: Restore SELinux context $gear_httpd_dir
-      command: $restorecon -Rv $gear_httpd_dir
-
   tags:
-    - postinstallconf
+    - daemons

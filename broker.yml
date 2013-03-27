@@ -387,6 +387,11 @@
       template: src=templates/broker/broker.conf.j2
                 dest=/etc/openshift/broker-dev.conf
                 owner=apache group=apache mode=0644
+    - name: Verify openssh and openssl installed for keygen
+      yum: pkg=$item state=latest
+      with_items:
+        - openssl
+        - openssh
     - name: Generate broker auth keys
       script: scripts/broker/gen_broker_auth_keys.sh
               creates=${broker_auth_pubkey_path}
@@ -416,6 +421,11 @@
       template: src=templates/broker/plugins/dns/nsupdate/nsupdate.conf.j2
                 dest=/etc/openshift/plugins.d/openshift-origin-dns-nsupdate.conf
                 owner=root group=root mode=0644
+    - name: Verify origin-broker and rubygem-bundler are installed
+      yum: pkg=$item state=latest
+      with_items:
+        - openshift-origin-broker
+        - rubygem-bundler
     - name: Broker bundle install 
       script: scripts/broker/broker_bundle_install.sh
     - name: start and enable openshift-broker service 
