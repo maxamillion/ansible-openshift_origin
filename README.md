@@ -141,6 +141,6 @@ If you'd like, just open an issue against this on github and I'll get to is asap
 If you'd like to try for more immediate feedback, feel free to ping me on irc. I
 only frequent freenode and am in more channels than is healthy, but below are 
 the ones I spend the most time in and/or paying attention to:
-IRC Nick: maxamillion
-IRC Channels: #openshift-dev #openshift #ansible #fedora #fedora-devel #rhel 
-IRC Network: irc.freenode.net
+- IRC Nick: maxamillion
+- IRC Channels: #openshift-dev #openshift #ansible #fedora #fedora-devel #rhel 
+- IRC Network: irc.freenode.net
