@@ -60,6 +60,13 @@ If you are going to use the rhc client you will need to create a config,
 there is a config example called express.conf.example in the docs dir of this
 repo
 
+You can also use the rhc wizard by pointing it to your broker node.
+
+Example:
+
+    ## NOTE: Need the -k because we're using a self signed cert in our example.
+    rhc -k setup --server=192.168.1.100
+
 
 # Using 
 
@@ -108,6 +115,22 @@ try the operation you were attempting again and it should succeed, if not and
 you're getting an decent amount of information in 
 /var/log/openshift/broker/production.log please feel free to open an issue on 
 github or contact me, info below.
+
+UPDATE: 2013-03-28
+   It appears that there's something wrong with dbus or NetworkManager, every 
+OpenShift::DNSException that's thrown will get logged and then after a certain
+amount of time later you will see something similar to this in
+/var/log/messages
+    
+    Mar 28 13:35:13 localhost dbus-daemon[448]: dbus[448]: [system] Activating service name='org.freedesktop.nm_dispatcher' (using servicehelper)
+    Mar 28 13:35:13 localhost dbus[448]: [system] Activating service name='org.freedesktop.nm_dispatcher' (using servicehelper)
+    Mar 28 13:35:13 localhost dbus-daemon[448]: dbus[448]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+    Mar 28 13:35:13 localhost dbus[448]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+
+If you try to create another app after getting an OpenShift::DNSException but 
+before seeing at dbus event, it will continue to fail. Still investigating, also
+note this doesn't seem to effect all installations/environments. YMMV.
+
 
 # Contact Info
 
