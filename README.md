@@ -55,19 +55,6 @@ Example:
     192.168.1.100
 
 
-## rhc - OpenShift command line util
-If you are going to use the rhc client you will need to create a config,
-there is a config example called express.conf.example in the docs dir of this
-repo
-
-You can also use the rhc wizard by pointing it to your broker node.
-
-Example:
-
-    ## NOTE: Need the -k because we're using a self signed cert in our example.
-    rhc -k setup --server=192.168.1.100
-
-
 # Using 
 
 Once the configuration step is complete you can then run these configs with or
@@ -92,6 +79,21 @@ that the DNS pointer is broker.example.com) to https://broker.example.com/consol
 and the default username/password is admin/admin .... you SHOULD CHANGE THIS 
 IMMEDIATELY if you plan to do anything of any amount of seriousness with your 
 deployment.
+
+# rhc - OpenShift command line util
+If you are going to use the rhc client you will need to create a config,
+there is a config example called express.conf.example in the docs dir of this
+repo
+
+You can also use the rhc wizard by pointing it to your broker node.
+
+The password for the command line utility will be the same as the web console.
+
+Example:
+
+    ## NOTE: Need the -k because we're using a self signed cert in our example.
+    rhc -k setup --server=192.168.1.100
+
 
 # Notes
 
