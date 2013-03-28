@@ -86,3 +86,36 @@ and the default username/password is admin/admin .... you SHOULD CHANGE THIS
 IMMEDIATELY if you plan to do anything of any amount of seriousness with your 
 deployment.
 
+# Notes
+
+Just some fun little "gotchyas" that are being worked through, but in the mean
+time warrant some amount of mention. This section will be updated as necessary.
+
+0. This is a pet project that I've been fortunate enough to carve off a little 
+time to work on during my $dayjob because my job, boss, and company are awesome.
+As with any pet project, it might get stale but I will do my best to keep it 
+up to date as well as expand on it as time goes on to handle more sophisticated
+configrations and deployments.
+
+1. Sometimes ActiveMQ doesn't start, no idea why but it just doesn't. SystemD 
+and Ansible return that it's started but it hasn't, I only notice this on first
+run deployment. If you run notice any odd issues with the broker, check 
+'systemctl status activemq.service' and verify it's running.
+
+2. Strange OpenShift::DNSException error that is intermittent. It's known to be
+happening but the root cause is still being traked down. If you get this error, 
+try the operation you were attempting again and it should succeed, if not and 
+you're getting an decent amount of information in 
+/var/log/openshift/broker/production.log please feel free to open an issue on 
+github or contact me, info below.
+
+# Contact Info
+
+If you'd like, just open an issue against this on github and I'll get to is asap.
+
+If you'd like to try for more immediate feedback, feel free to ping me on irc. I
+only frequent freenode and am in more channels than is healthy, but below are 
+the ones I spend the most time in and/or paying attention to:
+IRC Nick: maxamillion
+IRC Channels: #openshift-dev #openshift #ansible #fedora #fedora-devel #rhel 
+IRC Network: irc.freenode.net
