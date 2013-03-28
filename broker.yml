@@ -134,9 +134,13 @@
       with_items:
         - bind
         - bind-utils
-    - name: Configure named dynamic_domain.db
+    - name: Configure named dynamic-domain.db
       template: src=templates/named/dynamic-zone.db.j2
                 dest=/var/named/dynamic/${cloud_domain}.db
+                backup=yes
+    - name: Configure named infra-zone.db
+      template: src=templates/named/infra-zone.db.j2
+                dest=/var/named/${infra_domain}.db
                 backup=yes
     - name: Configure named forwarders.conf
       template: src=templates/named/forwarders.conf.j2

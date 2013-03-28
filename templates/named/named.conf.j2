@@ -40,7 +40,7 @@ controls {
 
 include "/etc/named.rfc1912.zones";
 
-zone "{{ infra_domain }}.com" IN {
+zone "{{ infra_domain }}" IN {
     type master;
     file "{{ infra_domain }}.db";
 };
