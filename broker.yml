@@ -421,9 +421,9 @@
     - name: Register dnssec key for nsupdate plugin
       shell: "${awk} '/^Key:/{print $2}' /var/named/K${cloud_domain}*.private"
       register: nsupdate_key
-    - name: nsupdate plugin conf
-      template: src=templates/broker/plugins/dns/nsupdate/nsupdate.conf.j2
-                dest=/etc/openshift/plugins.d/openshift-origin-dns-nsupdate.conf
+    - name: bind dns plugin conf
+      template: src=templates/broker/plugins/dns/bind/dns-bind.conf.j2
+                dest=/etc/openshift/plugins.d/openshift-origin-dns-bind.conf
                 owner=root group=root mode=0644
     - name: Verify origin-broker and rubygem-bundler are installed
       yum: pkg=$item state=latest

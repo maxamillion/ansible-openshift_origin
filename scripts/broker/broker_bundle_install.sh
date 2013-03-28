@@ -6,4 +6,5 @@ pushd /var/www/openshift/broker/
   rm -f Gemfile.lock
   bundle install
   rm -fr tmp/cache/*
+  chown apache:apache Gemfile.lock
 popd
