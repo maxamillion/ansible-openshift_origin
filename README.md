@@ -118,8 +118,9 @@ you're getting an decent amount of information in
 /var/log/openshift/broker/production.log please feel free to open an issue on 
 github or contact me, info below. Error will look similar to the following:
 
-    Cartridge dnsruby can't connect to 192.168.59.162:53 from 0.0.0.0:61670, use_tcp=false, exception = Errno::EACCES, Permission denied - bind(2)
 
+    Cartridge dnsruby can't connect to 192.168.59.162:53 from 0.0.0.0:61670, 
+    use_tcp=false, exception = Errno::EACCES, Permission denied - bind(2)
 
 
 UPDATE: 2013-03-28
