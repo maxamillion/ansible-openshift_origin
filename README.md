@@ -123,20 +123,11 @@ github or contact me, info below. Error will look similar to the following:
     use_tcp=false, exception = Errno::EACCES, Permission denied - bind(2)
 
 
-UPDATE: 2013-03-28
-   It appears that there's something wrong with dbus or NetworkManager, every 
-DNS(dnsruby) error that's thrown will get logged and then after a certain
-amount of time later you will see something similar to this in
-/var/log/messages
-    
-    Mar 28 13:35:13 localhost dbus-daemon[448]: dbus[448]: [system] Activating service name='org.freedesktop.nm_dispatcher' (using servicehelper)
-    Mar 28 13:35:13 localhost dbus[448]: [system] Activating service name='org.freedesktop.nm_dispatcher' (using servicehelper)
-    Mar 28 13:35:13 localhost dbus-daemon[448]: dbus[448]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
-    Mar 28 13:35:13 localhost dbus[448]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
-
-If you try to create another app after getting an OpenShift::DNSException but 
-before seeing at dbus event, it will continue to fail. Still investigating, also
-note this doesn't seem to effect all installations/environments. YMMV.
+UPDATE: 2013-04-01
+    This issue was previously thought to be closely related to a dbus event but
+it appears to pop up in other scenarios where that dbus event is not present in
+the logs. The root cause is still unknown, but it looks as though it is related
+to using dhcp on the all-in-one broker/node. Still investigating as I find time.
 
 
 # Contact Info
