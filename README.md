@@ -111,16 +111,20 @@ and Ansible return that it's started but it hasn't, I only notice this on first
 run deployment. If you run notice any odd issues with the broker, check 
 'systemctl status activemq.service' and verify it's running.
 
-2. Strange OpenShift::DNSException error that is intermittent. It's known to be
+2. Strange DNS(dnsruby) error that is intermittent. It's known to be
 happening but the root cause is still being traked down. If you get this error, 
 try the operation you were attempting again and it should succeed, if not and 
 you're getting an decent amount of information in 
 /var/log/openshift/broker/production.log please feel free to open an issue on 
-github or contact me, info below.
+github or contact me, info below. Error will look similar to the following:
+
+    Cartridge dnsruby can't connect to 192.168.59.162:53 from 0.0.0.0:61670, use_tcp=false, exception = Errno::EACCES, Permission denied - bind(2)
+
+
 
 UPDATE: 2013-03-28
    It appears that there's something wrong with dbus or NetworkManager, every 
-OpenShift::DNSException that's thrown will get logged and then after a certain
+DNS(dnsruby) error that's thrown will get logged and then after a certain
 amount of time later you will see something similar to this in
 /var/log/messages
     
