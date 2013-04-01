@@ -129,6 +129,13 @@ it appears to pop up in other scenarios where that dbus event is not present in
 the logs. The root cause is still unknown, but it looks as though it is related
 to using dhcp on the all-in-one broker/node. Still investigating as I find time.
 
+UPDATE2: 2013-04-01
+    Looks like it's related to running on a machine that recieved it's ip 
+address via NetworkManager. Not full confirmed but I've set a static ip using 
+the "classic" network scripts in /etc/sysconfig/network-scripts/ and have not 
+run into this problem at all (yet). Originally thought it might be dhcp, but the
+error occurred with NetworkManager assigning a static ip.
+
 
 # Contact Info
 
