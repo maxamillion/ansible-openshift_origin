@@ -248,6 +248,7 @@
       yum: pkg=$item state=latest
       with_items:
         - ruby-devel 
+        - audit
         - mysql-devel 
         - mongodb-devel 
         - gcc 
@@ -273,6 +274,7 @@
         - rubygem-openshift-origin-dns-bind 
         - rubygem-openshift-origin-controller 
         - rubygem-openshift-origin-auth-mongo
+        - rubygem-openshift-origin-auth-remote-user
         - openshift-origin-broker-util 
         - rubygem-passenger 
         - openssh 
