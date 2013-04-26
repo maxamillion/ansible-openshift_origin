@@ -60,6 +60,7 @@
         - httpd_run_stickshift
         - named_write_master_zones 
         - httpd_verify_dns
+        - nis_enabled # Replaced allow_ypbind as per booleans.subs_dist
   tags:
     - selinux
 
