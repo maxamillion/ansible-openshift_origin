@@ -94,14 +94,12 @@
     - varfiles/origin_vars.yml
   tasks:
     ### Setup Origin repos
-    - name: Enable OpenShift Origin Nightly yum repo
-      template: src=templates/openshift-origin-nightly.repo.j2
-              dest=/etc/yum.repos.d/openshift-origin-nightly.repo
-    - name: Enable OpenShift Origin Supplemental yum repo
-      template: src=templates/openshift-origin-supplemental.repo.j2
-                dest=/etc/yum.repos.d/openshift-origin-supplemental.repo
-    - name: Enable Jenkins yum repo
-      copy: src=files/node/jenkins.repo dest=/etc/yum.repos.d/jenkins.repo
+    - name: Enable OpenShift Origin RPi Repo
+      template: src=files/openshift-origin-rpi.repo
+              dest=/etc/yum.repos.d/openshift-origin-rpi.repo
+    - name: Enable MongoDB armv5 Repo
+      template: src=files/armv5-mongo.repo
+              dest=/etc/yum.repos.d/armv5-mongo.repo
   tags:
     - reposetup
 
@@ -145,9 +143,6 @@
         - openshift-origin-cartridge-haproxy-1.4
         - openshift-origin-cartridge-mongodb-2.2
         - openshift-origin-cartridge-mysql-5.1
-        - openshift-origin-cartridge-nodejs-0.6
-        - openshift-origin-cartridge-jenkins-1.4
-        - openshift-origin-cartridge-jenkins-client-1.4
         - openshift-origin-cartridge-community-python-2.7
         - openshift-origin-cartridge-community-python-3.3
         - openshift-origin-cartridge-postgresql-9.2

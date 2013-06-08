@@ -1,0 +1,7 @@
+[armv5-mongodb]
+name=MongoDB armv5
+baseurl=http://maxamillion.fedorapeople.org/openshift-origin-arm/fedora/rpi-f18-armv5/
+enabled=1
+gpgcheck=0
+sslverify=false
+

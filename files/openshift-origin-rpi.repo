@@ -1,0 +1,7 @@
+[openshift-origin-rpi-noarch]
+name=OpenShift Origin RPi noarch
+baseurl=http://maxamillion.fedorapeople.org/openshift-origin-arm/pidora/18/noarch/
+enabled=1
+gpgcheck=0
+sslverify=false
+

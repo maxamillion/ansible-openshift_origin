@@ -94,12 +94,12 @@
     - varfiles/origin_vars.yml
   tasks:
     ### Setup Origin repos
-    - name: Enable OpenShift Origin Nightly yum repo
-      template: src=templates/openshift-origin-nightly.repo.j2
-              dest=/etc/yum.repos.d/openshift-origin-nightly.repo
-    - name: Enable OpenShift Origin Supplemental yum repo
-      template: src=templates/openshift-origin-supplemental.repo.j2
-                dest=/etc/yum.repos.d/openshift-origin-supplemental.repo
+    - name: Enable OpenShift Origin RPi Repo
+      template: src=files/openshift-origin-rpi.repo
+              dest=/etc/yum.repos.d/openshift-origin-rpi.repo
+    - name: Enable MongoDB armv5 Repo
+      template: src=files/armv5-mongo.repo
+              dest=/etc/yum.repos.d/armv5-mongo.repo
   tags:
     - reposetup
 
