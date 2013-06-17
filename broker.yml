@@ -87,42 +87,6 @@
   tags:
     - firewalld
       
-- name: Repo Setup
-  hosts: brokers
-  user: root
-  vars_files:
-    - varfiles/origin_vars.yml
-  tasks:
-    ### Setup Origin repos
-    - name: Enable OpenShift Origin Nightly yum repo
-      template: src=templates/openshift-origin-nightly.repo.j2
-              dest=/etc/yum.repos.d/openshift-origin-nightly.repo
-    - name: Enable OpenShift Origin Supplemental yum repo
-      template: src=templates/openshift-origin-supplemental.repo.j2
-                dest=/etc/yum.repos.d/openshift-origin-supplemental.repo
-  tags:
-    - reposetup
-
-- name: NTP Config
-  hosts: brokers
-  user: root
-  vars_files:
-    - varfiles/origin_vars.yml
-  tasks:
-    # NTP - sync first, then enable service
-    - name: Ensure Install - ntpdate 
-      yum: pkg=ntpdate state=installed
-    - name: Ensure Install - ntp 
-      yum: pkg=ntp state=installed
-    - name: Stop ntp daemon for ntpdate sync
-      service: name=ntpd state=stopped
-    - name: Synchronize Clock with ntpdate
-      command: /usr/sbin/ntpdate clock.redhat.com
-    - name: Start and Enable ntp daemon 
-      service: name=ntpd state=started enabled=yes
-  tags:
-    - ntp
-
 - name: named
   hosts: brokers
   user: root
@@ -211,32 +175,6 @@
       only_if: ${e_checkmongoauth.rc} != 0
   tags:
     - mongo
-
-- name: ActiveMQ
-  hosts: brokers
-  user: root
-  vars_files:
-    - varfiles/origin_vars.yml
-  tasks:
-    # Install and configure ActiveMQ
-    - name: Install ActiveMQ
-      yum: pkg=activemq state=latest
-    - name: Configure ActiveMQ jetty.xml
-      template: src=templates/activemq/jetty.xml.j2
-                dest=/etc/activemq/jetty.xml
-    - name: Configure ActiveMQ activemq.xml
-      template: src=templates/activemq/activemq.xml.j2
-                dest=/etc/activemq/activemq.xml
-    - name: Configure ActiveMQ jetty-realm.properties
-      template: src=templates/activemq/jetty-realm.properties.j2
-                dest=/etc/activemq/jetty-realm.properties.xml
-    - name: Configure ActiveMQ tmp-activemq.conf
-      template: src=templates/activemq/tmp-activemq.conf.j2
-                dest=/etc/tmpfiles.d/activemq.conf
-    - name: Start and Enable ActiveMQ
-      service: name=activemq state=started enabled=yes
-  tags:
-    - activemq
 
 - name: Devel Packages Install
   hosts: brokers

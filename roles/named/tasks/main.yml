@@ -1,0 +1,56 @@
+---
+### main.yml - named role for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+
+- name: Install bind
+  yum: pkg=$item state=latest
+  with_items:
+    - bind
+    - bind-utils
+
+- name: Configure named dynamic-domain.db
+  template: src=dynamic-zone.db.j2
+            dest=/var/named/dynamic/${cloud_domain}.db
+            backup=yes
+  notify:
+  - restart named
+- name: Configure named infra-zone.db
+  template: src=infra-zone.db.j2
+            dest=/var/named/${infra_domain}.db
+            backup=yes
+  notify:
+  - restart named
+- name: Configure named forwarders.conf
+  template: src=forwarders.conf.j2
+            dest=/var/named/forwarders.conf
+            backup=yes
+  notify:
+  - restart named
+- name: Configure named named.conf
+  template: src=named.conf.j2
+            dest=/etc/named.conf
+            backup=yes
+  notify:
+  - restart named
+
+## FIXME: - Need a more clean way to do this
+- name: Setup DNSSEC Keys and Config script
+  template: src=named_dnssec_setup.sh.j2
+            dest=/root/00-setup_dnssec.sh
+            owner=root group=root mode=0500
+- name: Run named DNSSEC script 
+  action: raw /root/00-setup_dnssec.sh
+- name: Clean up after named DNSSEC script
+  file: path=/root/00-setup_dnssec.sh state=absent
+
+
+- name: Configure dhclient for DNS
+  template: src=dhclient.conf.j2
+            dest=/etc/dhcp/dhclient-oso.conf
+            backup=yes
+  notify:
+  - restart named
+- name: restart/enable named daemon
+  service: name=named state=started enabled=yes

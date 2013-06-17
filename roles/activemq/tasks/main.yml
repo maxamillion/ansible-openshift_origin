@@ -1,0 +1,30 @@
+---
+### main.yml - ActiveMQ role for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+- name: Install ActiveMQ
+  yum: pkg=activemq state=latest
+- name: Configure ActiveMQ jetty.xml
+  template: src=jetty.xml.j2
+            dest=/etc/activemq/jetty.xml
+  notify:
+    - restart activemq
+- name: Configure ActiveMQ activemq.xml
+  template: src=activemq.xml.j2
+            dest=/etc/activemq/activemq.xml
+  notify:
+    - restart activemq
+- name: Configure ActiveMQ jetty-realm.properties
+  template: src=jetty-realm.properties.j2
+            dest=/etc/activemq/jetty-realm.properties.xml
+  notify:
+    - restart activemq
+- name: Configure ActiveMQ tmp-activemq.conf
+  template: src=tmp-activemq.conf.j2
+            dest=/etc/tmpfiles.d/activemq.conf
+  notify:
+    - restart activemq
+- name: Start and Enable ActiveMQ
+  service: name=activemq state=started enabled=yes
+ 

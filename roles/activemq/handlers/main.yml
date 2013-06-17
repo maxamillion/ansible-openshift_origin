@@ -1,0 +1,8 @@
+---
+### main.yml - ActiveMQ handlers for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+
+- name: restart activemq
+  service: name=activemq state=restarted
