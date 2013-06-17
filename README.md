@@ -3,14 +3,11 @@
 Author: Adam Miller
 
 #NOTE - THIS IS A WORK IN PROGRESS, THINK "ALPHA" QUALITY.
-This playbook has been a little stagnant and pending the state of the Origin 
-code at the point in which you deploy, things may or may not work. I'm going to
-refactor a lot of this playbook to be more sophisticated and more widely 
-consumable but it will depend on Ansible version 1.2 which is not yet out.
+This playbook is currently undergoing a refactor for the ansible 1.2 newly 
+introduced "roles" layout for playbooks. If you'd like to find the old version
+then feel free to checkout the branch named v0.9.
 
-Once I start that work (hoping to be able to before Ansible 1.2 lands), it will
-be in another branch of this repo (which I will link here in case anyone is 
-interested).
+I will update this as I find time.
 
 # About
 
