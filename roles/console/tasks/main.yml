@@ -1,42 +1,39 @@
 ---
-### main.yml - ActiveMQ role for an OpenShift Origin deployment 
+### main.yml - console role for an OpenShift Origin deployment 
 #
 # Ansible playbook to deploy OpenShift Origin using nightly builds
 #
 
-- name: Ensure Install - firewalld
-  yum: pkg=firewalld state=installed
-- name: Start and Enable firewalld daemon
-  service: name=firewalld state=started enabled=yes
-  async: 10
-  poll: 2
-- name: Configure Persistent FirewallD for ActiveMQ
-  shell: firewall-cmd --permanent --add-port 61613/tcp
-- name: Configure Running FirewallD for ActiveMQ
+- name: Configure Persistent FirewallD for console
+  shell: firewall-cmd --permanent --add-port
+- name: Configure Running FirewallD for console
   shell: firewall-cmd --add-port 61613/tcp
 
-- name: Install ActiveMQ
+- name: Ensure Install - console pkgs
   yum: pkg=activemq state=latest
-- name: Configure ActiveMQ jetty.xml
-  template: src=jetty.xml.j2
-            dest=/etc/activemq/jetty.xml
-  notify:
-    - restart activemq
-- name: Configure ActiveMQ activemq.xml
-  template: src=activemq.xml.j2
-            dest=/etc/activemq/activemq.xml
-  notify:
-    - restart activemq
-- name: Configure ActiveMQ jetty-realm.properties
-  template: src=jetty-realm.properties.j2
-            dest=/etc/activemq/jetty-realm.properties.xml
-  notify:
-    - restart activemq
-- name: Configure ActiveMQ tmp-activemq.conf
-  template: src=tmp-activemq.conf.j2
-            dest=/etc/tmpfiles.d/activemq.conf
-  notify:
-    - restart activemq
-- name: Start and Enable ActiveMQ
-  service: name=activemq state=started enabled=yes
- 
+  with_items:
+    - rubygem-openshift-origin-console
+    - gcc
+    - make
+    - openshift-origin-console
+
+- name: Configure OpenShift Origin Console
+  template: src=console.conf.j2 dest=$console_conf_path
+            owner=apache group=apache mode=0644
+  notify: restart console
+
+- name: Bundle install and build Rails assets
+  script: scripts/broker/console_bundle_install.sh
+  notify: restart console
+
+- name: SELinux settings for OpenShift Origin Console
+  seboolean:  name=$item state=true persistent=yes
+  with_items:
+   - httpd_can_network_connect
+   - httpd_can_network_relay
+   - httpd_read_user_content
+   - httpd_enable_homedirs
+   - httpd_execmem
+
+- name: start and enable openshift-console
+  service: name=openshift-console state=started enabled=yes
