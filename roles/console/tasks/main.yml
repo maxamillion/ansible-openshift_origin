@@ -4,10 +4,14 @@
 # Ansible playbook to deploy OpenShift Origin using nightly builds
 #
 
-- name: Configure Persistent FirewallD for console
-  shell: firewall-cmd --permanent --add-port
-- name: Configure Running FirewallD for console
-  shell: firewall-cmd --add-port 61613/tcp
+- name: Configure Persistent FirewallD for http console
+  shell: firewall-cmd --permanent --add-port http
+- name: Configure Persistent FirewallD for https console
+  shell: firewall-cmd --permanent --add-port https
+- name: Configure FirewallD for http console
+  shell: firewall-cmd --add-port http
+- name: Configure FirewallD for https console
+  shell: firewall-cmd --add-port https
 
 - name: Ensure Install - console pkgs
   yum: pkg=activemq state=latest
