@@ -3,6 +3,18 @@
 #
 # Ansible playbook to deploy OpenShift Origin using nightly builds
 #
+
+- name: Ensure Install - firewalld
+  yum: pkg=firewalld state=installed
+- name: Start and Enable firewalld daemon
+  service: name=firewalld state=started enabled=yes
+  async: 10
+  poll: 2
+- name: Configure Persistent FirewallD for ActiveMQ
+  shell: firewall-cmd --permanent --add-port 61613/tcp
+- name: Configure Running FirewallD for ActiveMQ
+  shell: firewall-cmd --add-port 61613/tcp
+
 - name: Install ActiveMQ
   yum: pkg=activemq state=latest
 - name: Configure ActiveMQ jetty.xml
