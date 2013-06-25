@@ -1,0 +1,53 @@
+---
+### main.yml - mongod role for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+
+- name: Ensure Install - firewalld
+  yum: pkg=firewalld state=installed
+- name: Start and Enable firewalld daemon
+  service: name=firewalld state=started enabled=yes
+  async: 10
+  poll: 2
+- name: Configure Persistent FirewallD for mongod
+  shell: firewall-cmd --permanent --add-port 27017
+- name: Configure Running FirewallD for mongod
+  shell: firewall-cmd --add-port 27017
+
+- name: Install MongoDB
+  yum: pkg=mongodb state=latest
+- name: Install MongoDB Server
+  yum: pkg=mongodb-server state=latest
+- name: Ensure MongoDB daemon stopped
+  service: name=mongod state=stopped
+
+- name: Ensure ruby installed for MongoDB Auth conf
+  yum: pkg=ruby state=installed
+- name: Check for mongo auth
+  command: ${egrep} '^auth = true' /etc/mongodb.conf
+  ignore_errors: yes
+  register: e_checkmongoauth
+
+# FIXME - This is ugly, should find something better.
+- name: Configure MongoDB
+  template: src=mongodb.conf.j2 dest=/etc/mongodb.conf backup=yes
+  only_if: ${e_checkmongoauth.rc} != 0
+
+- name: Start and Enable MongoDB daemon
+  service: name=mongod state=started enabled=yes
+
+- name: MongoDB user/pw script template copy
+  template: src=set_mongopw.sh.j2 dest=/root/00-set_mongopw.sh
+            owner=root group=root mode=0500
+  only_if: ${e_checkmongoauth.rc} != 0
+- name: Run MongoDB user/pw script
+  action: raw /root/00-set_mongopw.sh
+  only_if: ${e_checkmongoauth.rc} != 0
+- name: Clean up after MongoDB user/pw script
+  file: path=/root/00-set_mongopw.sh state=absent
+- name: Enable mongo auth
+  shell: printf "auth = true\n" >> /etc/mongodb.conf
+  only_if: ${e_checkmongoauth.rc} != 0
+  notify: restart mongod
+
