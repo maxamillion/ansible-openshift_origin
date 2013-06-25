@@ -4,12 +4,6 @@
 # Ansible playbook to deploy OpenShift Origin using nightly builds
 #
 
-- name: Ensure Install - firewalld
-  yum: pkg=firewalld state=installed
-- name: Start and Enable firewalld daemon
-  service: name=firewalld state=started enabled=yes
-  async: 10
-  poll: 2
 - name: Configure Persistent FirewallD for BIND
   shell: firewall-cmd --permanent --add-service dns
 - name: Configure Running FirewallD for BIND

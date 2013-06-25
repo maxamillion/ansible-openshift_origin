@@ -1,0 +1,11 @@
+---
+### main.yml - avahi role for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+
+# Ensure avahi installed and configured
+- name: Ensure Install - avahi-cname-manager
+  yum: pkg=avahi-cname-manager state=installed
+
+#FIXME - need to spend a little more time on avahi before I write this
