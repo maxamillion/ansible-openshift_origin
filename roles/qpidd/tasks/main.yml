@@ -1,0 +1,25 @@
+---
+### main.yml - QpidD role for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+
+- name: Configure Persistent FirewallD for qpidd
+  shell: firewall-cmd --permanent --add-port 5672/tcp
+- name: Configure Running FirewallD for qpidd
+  shell: firewall-cmd --add-port 5673/tcp
+
+- name: Install qpidd
+  yum: pkg=qpid-cpp-server state=latest
+  with_items:
+    - qpid-cpp-server
+    - mcollective-qpid-plugin
+
+- name: Start and Enable qpidd
+  service: name=qpidd state=started enabled=yes
+
+- name: Configure qpidd
+  template: src=qpidd.conf.j2 dest=/etc/qpidd.conf
+            owner=root group=root mode=0644
+  notify: restart qpidd
+

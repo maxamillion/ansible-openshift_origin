@@ -1,0 +1,8 @@
+---
+### main.yml - qpidd handlers for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+
+- name: restart qpidd
+  service: name=qpidd state=restarted

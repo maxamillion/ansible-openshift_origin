@@ -1,0 +1,186 @@
+---
+## main.yml - OpenShift Origin Broker role for an OpenShift Origin deployment
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+#
+- name: Hostname config
+  template: src=templates/broker/hostname.j2 dest=/etc/hostname
+            owner=root group=root mode=0644 backup=yes
+- name: check for hostname in /etc/hosts
+  shell: grep '${ansible_default_ipv4.address} ${broker_fqdn}' /etc/hosts
+  ignore_errors: yes 
+  register: e_checkhosts
+- name: conditionally set /etc/hosts
+  shell: printf "${ansible_default_ipv4.address} ${broker_fqdn}\n" >>
+         /etc/hosts
+  only_if: ${e_checkhosts.rc} != 0
+
+- name: SELinux - configure sebooleans
+  seboolean:  name=$item state=true persistent=yes
+  with_items:
+    - httpd_unified
+    - httpd_can_network_connect
+    - httpd_can_network_relay 
+    - httpd_run_stickshift
+    - named_write_master_zones 
+    - httpd_verify_dns
+    - nis_enabled # Replaced allow_ypbind as per booleans.subs_dist
+  tags:
+    - selinux
+
+- name: Configure Persistent FirewallD for http console
+  shell: firewall-cmd --permanent --add-port http
+- name: Configure Persistent FirewallD for https console
+  shell: firewall-cmd --permanent --add-port https
+- name: Configure FirewallD for http console
+  shell: firewall-cmd --add-port http
+- name: Configure FirewallD for https console
+  shell: firewall-cmd --add-port https
+      
+
+### Dev tools needed by some gem installs for native modules/extensions 
+- name: Install dev-tool deps for gem installs
+  yum: pkg=$item state=latest
+  with_items:
+    - ruby-devel 
+    - audit
+    - mysql-devel 
+    - mongodb-devel 
+    - gcc 
+    - make
+
+### Big honking broker package list
+#FIXME - This can't be right, I don't even remember why this list is like this
+- name: Install OpenShift Package List
+  yum: pkg=$item state=latest
+  with_items:
+    - rhc
+    - openshift-origin-broker
+    - rubygem-openshift-origin-msg-broker-mcollective 
+    - rubygem-openshift-origin-dns-nsupdate 
+    - rubygem-openshift-origin-dns-bind 
+    - rubygem-openshift-origin-dns-bind 
+    - rubygem-openshift-origin-controller 
+    - rubygem-openshift-origin-auth-mongo
+    - rubygem-openshift-origin-auth-remote-user
+    - openshift-origin-broker-util 
+    - rubygem-passenger 
+    - openssh 
+    - httpd
+    - mod_passenger 
+    - rubygem-rails
+    - rubygem-railties
+    - rubygem-actionpack
+    - rubygem-activemodel
+    - rubygem-activerecord
+    - rubygem-activeresource
+    - rubygem-arel
+    - rubygem-bigdecimal
+    - rubygem-bson
+    - rubygem-bson_ext
+    - rubygem-builder
+    - rubygem-bundler
+    - rubygem-cucumber
+    - rubygem-diff-lcs
+    - rubygem-dnsruby
+    - rubygem-erubis
+    - rubygem-gherkin
+    - rubygem-hike
+    - rubygem-i18n
+    - rubygem-mail
+    - rubygem-metaclass
+    - rubygem-mime-types
+    - rubygem-minitest
+    - rubygem-mocha
+    - rubygem-mongo
+    - rubygem-multi_json
+    - rubygem-netrc
+    - rubygem-open4
+    - rubygem-parseconfig
+    - rubygem-rack
+    - rubygem-rack-cache
+    - rubygem-rack-ssl
+    - rubygem-rack-test
+    - rubygem-rake
+    - rubygem-rdoc
+    - rubygem-regin
+    - rubygem-rest-client
+    - rubygem-simplecov
+    - rubygem-sprockets
+    - rubygem-state_machine
+    - rubygem-stomp
+    - rubygem-systemu
+    - rubygem-term-ansicolor
+    - rubygem-thor
+    - rubygem-tilt
+    - rubygem-treetop
+    - rubygem-tzinfo
+    - rubygem-xml-simple
+    - rubygem-webmock
+    - rubygem-fakefs
+    async: 5400
+    poll: 10
+
+### Install gems not packaged in Fedora (we should package these)
+#FIXME - Need to get these into Fedora proper
+- name: Install gems not in Fedora repos
+  command: $gem install $item 
+  with_items: 
+    - mongoid 
+    - origin 
+    - mysql
+
+- name: broker.conf
+  template: src=broker.conf.j2 dest=/etc/openshift/broker.conf
+            owner=apache group=apache mode=0644
+- name: broker-dev.conf
+  template: src=broker.conf.j2 dest=/etc/openshift/broker-dev.conf
+            owner=apache group=apache mode=0644
+- name: Verify openssh and openssl installed for keygen
+  yum: pkg=$item state=latest
+  with_items:
+    - openssl
+    - openssh
+- name: Generate broker auth keys
+  script: scripts/broker/gen_broker_auth_keys.sh
+          creates=${broker_auth_pubkey_path}
+- name: Generate broker rsync keys
+  script: scripts/broker/gen_broker_rsync_keys.sh
+          creates=${broker_rsync_key_path}
+- name: Install base servername.conf
+  template: src=templates/broker/broker_servername.conf.j2
+            dest=/etc/httpd/conf.d/000000_openshift_origin_broker_servername.conf
+            owner=root group=root mode=0644
+- name: Configure mcollective broker plugin 
+  copy: src=files/broker/msg-broker-mcollective.conf
+            dest=/etc/openshift/plugins.d/openshift-origin-msg-broker-mcollective.conf
+            owner=root group=root mode=0644
+- name: Broker Auth Plugin
+  template: src=templates/broker/plugins/auth/mongo/mongo.conf.plugin.j2
+            dest=/etc/openshift/plugins.d/openshift-origin-auth-mongo.conf
+            owner=root group=root mode=0644
+- name: Remote User Auth Plugin
+  template: src=templates/broker/plugins/auth/basic/htpasswd.j2
+            dest=/etc/openshift/plugins.d/openshift-origin-auth-remote-user.example
+            owner=root group=root mode=0644
+- name: Register dnssec key for nsupdate plugin
+  shell: "${awk} '/^Key:/{print $2}' /var/named/K${cloud_domain}*.private"
+  register: nsupdate_key
+- name: bind dns plugin conf
+  template: src=templates/broker/plugins/dns/bind/dns-bind.conf.j2
+            dest=/etc/openshift/plugins.d/openshift-origin-dns-bind.conf
+            owner=root group=root mode=0644
+- name: Verify origin-broker and rubygem-bundler are installed
+  yum: pkg=$item state=latest
+  with_items:
+    - openshift-origin-broker
+    - rubygem-bundler
+- name: Broker bundle install 
+  script: scripts/broker/broker_bundle_install.sh
+- name: start and enable openshift-broker service 
+  service: name=openshift-broker state=started enabled=yes
+- name: start and enable httpd
+  service: name=httpd state=started enabled=yes
+- name: start and enable openshift-console
+  service: name=openshift-console state=started enabled=yes

@@ -12,6 +12,14 @@
   template: src=openshift-origin-supplemental.repo.j2
             dest=/etc/yum.repos.d/openshift-origin-supplemental.repo
 
+# SELinux Stuff 
+- name: SELinux Enforcing (Targeted)
+  selinux: policy=targeted state=enforcing
+- name: Ensure Installed - policycoreutils
+  yum: pkg=policycoreutils state=installed
+- name: Ensure Installed - policycoreutils-python
+  yum: pkg=policycoreutils-python state=installed
+
 # Default firewalld configs
 - name: Ensure Install - firewalld
   yum: pkg=firewalld state=installed
