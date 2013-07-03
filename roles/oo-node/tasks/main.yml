@@ -104,19 +104,19 @@
 
 ### Post pkginstall config
 - name: node.conf
-  template: src=templates/node/node.conf.j2
+  template: src=node.conf.j2
             dest=/etc/openshift/node.conf
             owner=root group=root mode=0644
 - name: openshift_origin_node_severname.conf
-  template: src=templates/node/openshift-origin-node_servername.conf.j2
+  template: src=openshift-origin-node_servername.conf.j2
             dest=/etc/httpd/conf.d/000001_openshift_origin_node_servername.conf
             owner=root group=root mode=0644
 - name: mcollective server config
-  template: src=templates/mcollective-server.cfg.j2
+  template: src=mcollective-server.cfg.j2
             dest=/etc/mcollective/server.cfg
             owner=root group=root mode=0644
 - name: mcollective client config
-  template: src=templates/mcollective-client.cfg.j2
+  template: src=mcollective-client.cfg.j2
             dest=/etc/mcollective/client.cfg
             owner=root group=root mode=0644
 - name: Find root mount point of gear dir
@@ -127,39 +127,38 @@
 - name: Initialize quota db
   shell: oo-init-quota creates=${gear_root_mount.stdout}/aquota.user
 - name: openshift node pam sshd config
-  template: src=templates/node/pam.sshd-fedora.j2
+  template: src=pam.sshd-fedora.j2
             dest=/etc/pam.d/sshd
             owner=root group=root mode=0644
 - name: openshift node pam runuser
-  copy: src=files/node/pam.runuser-fedora
+  copy: src=pam.runuser-fedora
         dest=/etc/pam.d/runuser owner=root group=root mode=0644
 - name: openshift node pam runuser-l
-  copy: src=files/node/pam.runuser-l-fedora
+  copy: src=pam.runuser-l-fedora
         dest=/etc/pam.d/runuser-l owner=root group=root mode=0644
 - name: openshift node pam su
-  copy: src=files/node/pam.su-fedora
+  copy: src=pam.su-fedora
         dest=/etc/pam.d/su owner=root group=root mode=0644
 - name: openshift node pam system-auth-ac
-  copy: src=files/node/pam.system-auth-ac-fedora
+  copy: src=pam.system-auth-ac-fedora
         dest=/etc/pam.d/system-auth-ac owner=root group=root mode=0644
 - name: openshift node pam-namespace sandbox.conf
-  template: src=templates/node/namespace-d-sandbox.conf.j2
+  template: src=namespace-d-sandbox.conf.j2
         dest=/etc/security/namespace.d/sandbox.conf
         owner=root group=root mode=0644
 - name: openshift node pam-namespace tmp.conf
-  template: src=templates/node/namespace-d-tmp.conf.j2
+  template: src=namespace-d-tmp.conf.j2
         dest=/etc/security/namespace.d/tmp.conf
         owner=root group=root mode=0644
 - name: openshift node pam-namespace vartmp.conf
-  template: src=templates/node/namespace-d-vartmp.conf.j2
+  template: src=namespace-d-vartmp.conf.j2
         dest=/etc/security/namespace.d/vartmp.conf
         owner=root group=root mode=0644
 - name: openshift node sshd config
-  copy: src=files/node/sshd_config dest=/etc/ssh/sshd_config
+  copy: src=sshd_config dest=/etc/ssh/sshd_config
         owner=root group=root mode=0600
 - name: broker and console route for node
-  copy: src=files/node/node_routes.txt
-        dest=/tmp/nodes.broker_routes.txt
+  copy: src=node_routes.txt dest=/tmp/nodes.broker_routes.txt
         owner=root group=root mode=0644
 - name: regen node routes
   script: scripts/node/regen_node_routes.sh
