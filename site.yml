@@ -11,12 +11,12 @@
 
 - hosts: brokers
   roles:
-  - role: oo-broker
-  - role: console
+    - role: oo-broker
+    - role: console
 
 - hosts: support_nodes
   roles:
-  - role: mongod
-  - role: qpidd
-  - role: named
+    - role: mongod
+    - role: qpidd
+    - role: named
 
