@@ -1,0 +1,22 @@
+# This file is the inventory list of servers to be used in our
+# OpenShift Origin installation. 
+#
+# Currently only a single-node setup is supported but work towards breaking
+# this out to more sophisticated setups will follow
+
+## The Nodes are where the OpenShift gears and applications will run
+## - replace the ip addresses with your config
+[node]
+192.168.122.10
+
+
+## The broker is where the OpenShift orchestration occurs
+## - replace the ip addresses with your config
+[broker]
+192.168.122.10
+
+## The support_nodes are where various supporting infrastructure services
+## will be run within our OpenShift environment
+## - replace the ip addresses with your config
+[support_nodes]
+192.168.122.10

@@ -1,0 +1,22 @@
+---
+# This Playbook would deploy the entire OpenShift Origin environment
+
+- hosts: all
+  roles:
+   - role: common
+
+- hosts: nodes
+  roles:
+    - role: oo-node
+
+- hosts: brokers
+  roles:
+  - role: oo-broker
+  - role: console
+
+- hosts: support_nodes
+  roles:
+  - role: mongod
+  - role: qpidd
+  - role: named
+
