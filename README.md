@@ -68,9 +68,13 @@ Example with default inventory file (/etc/ansible/hosts):
     
     ansible-playbook site.yml
 
-Example with non-default inventory file (/tmp/myhosts):
+Example with non-default inventory file (inventory.txt):
     
     ansible-playbook site.yml -i inventory.txt
+
+Example running only against nodes (note: this is a tag from the site.yml):
+
+    ansible-playbook site.yml -i inventory.txt -t nodes 
 
 If you would like to use the Fedora 19 cloud images provided 
 [here](https://fedoraproject.org/en/get-fedora-options#clouds) then you should

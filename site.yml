@@ -4,19 +4,30 @@
 - hosts: all
   roles:
    - role: common
+  tags:
+    - common
+    - nodes
+    - brokers
+    - support_nodes
 
 - hosts: nodes
   roles:
     - role: oo-node
+  tags:
+    - nodes
 
 - hosts: brokers
   roles:
     - role: oo-broker
     - role: console
+  tags:
+    - brokers
 
 - hosts: support_nodes
   roles:
     - role: mongod
     - role: qpidd
     - role: named
+  tags:
+    - suuport_nodes
 
