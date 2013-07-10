@@ -1,12 +1,14 @@
 # paths for executables we don't have ansible modules for
 firewall_cmd: /usr/bin/firewall-cmd
-gem: /usr/bin/gem
-mongo: /usr/bin/mongo
 rake: /usr/bin/rake
 bundle: /usr/bin/bundle
 restorecon: /sbin/restorecon
 egrep: /usr/bin/egrep
 awk: /usr/bin/awk
+
+#FIXME - gem and mongo have ansible modules now
+gem: /usr/bin/gem
+mongo: /usr/bin/mongo
 
 # config vars
 broker_auth_salt: "ClWqe5zKtEW4CJEMyjzQ"
@@ -24,6 +26,7 @@ infra_domain: example.com
 # cloud_domain - subdomain for PaaS Cloud apps to live under
 cloud_domain: app.example.com
 
+#FIXME - activemq doesn't work in F19, using qpid instead
 mq_fqdn: ${broker_fqdn}
 mq_provider: activemq
 mq_server_user: mcollective

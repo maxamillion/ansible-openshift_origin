@@ -21,8 +21,8 @@ Operating System (with SELinux, cgroups, and PAM magic under the hood).
 
 # Requirements
 
-* Fedora 18 - at least @standard if using a kickstart installation.
-* Ansible >= 0.9
+* Fedora 19 - at least @standard if using a kickstart installation.
+* Ansible >= 1.2
 
 # Installation
 
@@ -31,12 +31,7 @@ The module can be obtained from the
 
 1. Download the [Zip file from github](https://github.com/maxamillion/ansible-openshift_origin/archive/master.zip)
 
-(See "Configuration" and "Using" sections below for details)
-2. For broker installs run 'ansible-playbook broker.yaml' ('brokers' is
-a host group)
-3. For node installs run 'ansible-playbook node.yaml' ('nodes' is a host 
-group)
-
+(See "Configuration" and "Using" sections below for details) 
 
 Reminder: This is currently only supporting a single-node install so 'brokers' 
 and 'nodes' should both contain the same, single, ip address or hostname in the
@@ -46,8 +41,9 @@ inventory file.
 
 ## Ansible
 You will either need to make entries in your /etc/ansible/hosts file for a 
-[brokers] and a [nodes] section, or optionally create a hosts file and use the 
-ansible -i option to point to your custom inventory file.
+[brokers], [nodes], and [support_nodes] sections, or optionally create a 
+hosts file and use the ansible -i option to point to your custom inventory 
+file. (The inventory.txt in this git repo is such a file)
 
 NOTE: This is currently only for single node deployments
 
@@ -59,6 +55,9 @@ Example:
     [nodes]
     192.168.1.100
 
+    [support_nodes]
+    192.168.1.100
+
 
 # Using 
 
@@ -67,15 +66,19 @@ without a non-default inventory file.
 
 Example with default inventory file (/etc/ansible/hosts):
     
-    ansible-playbook broker.yml
-
-    ansible-playbook node.yml
+    ansible-playbook site.yml
 
 Example with non-default inventory file (/tmp/myhosts):
     
-    ansible-playbook broker.yml -i /tmp/myhosts
+    ansible-playbook site.yml -i inventory.txt
 
-    ansible-playbook node.yml -i /tmp/myhosts
+If you would like to use the Fedora 19 cloud images provided 
+[here](https://fedoraproject.org/en/get-fedora-options#clouds) then you should
+use sudo with the default fedora user provided with these images:
+
+    ansible-playbook site.yml -s -u fedora -i inventory.txt
+    
+
 
 # Web Console
 
@@ -110,36 +113,6 @@ time to work on during my $dayjob because my job, boss, and company are awesome.
 As with any pet project, it might get stale but I will do my best to keep it 
 up to date as well as expand on it as time goes on to handle more sophisticated
 configrations and deployments.
-
-1. Sometimes ActiveMQ doesn't start, no idea why but it just doesn't. SystemD 
-and Ansible return that it's started but it hasn't, I only notice this on first
-run deployment. If you run notice any odd issues with the broker, check 
-'systemctl status activemq.service' and verify it's running.
-
-2. Strange DNS(dnsruby) error that is intermittent. It's known to be
-happening but the root cause is still being traked down. If you get this error, 
-try the operation you were attempting again and it should succeed, if not and 
-you're getting an decent amount of information in 
-/var/log/openshift/broker/production.log please feel free to open an issue on 
-github or contact me, info below. Error will look similar to the following:
-
-
-    Cartridge dnsruby can't connect to 192.168.59.162:53 from 0.0.0.0:61670, 
-    use_tcp=false, exception = Errno::EACCES, Permission denied - bind(2)
-
-
-UPDATE: 2013-04-01
-    This issue was previously thought to be closely related to a dbus event but
-it appears to pop up in other scenarios where that dbus event is not present in
-the logs. The root cause is still unknown, but it looks as though it is related
-to using dhcp on the all-in-one broker/node. Still investigating as I find time.
-
-UPDATE2: 2013-04-01
-    Looks like it's related to running on a machine that recieved it's ip 
-address via NetworkManager. Not full confirmed but I've set a static ip using 
-the "classic" network scripts in /etc/sysconfig/network-scripts/ and have not 
-run into this problem at all (yet). Originally thought it might be dhcp, but the
-error occurred with NetworkManager assigning a static ip.
 
 
 # Contact Info

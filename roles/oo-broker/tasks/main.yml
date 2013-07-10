@@ -119,8 +119,8 @@
     - rubygem-xml-simple
     - rubygem-webmock
     - rubygem-fakefs
-    async: 5400
-    poll: 10
+  async: 5400
+  poll: 10
 
 ### Install gems not packaged in Fedora (we should package these)
 #FIXME - Need to get these into Fedora proper

@@ -6,17 +6,16 @@
 
 ## The Nodes are where the OpenShift gears and applications will run
 ## - replace the ip addresses with your config
-[node]
-192.168.122.10
-
+[nodes]
+10.3.1.58
 
 ## The broker is where the OpenShift orchestration occurs
 ## - replace the ip addresses with your config
-[broker]
-192.168.122.10
+[brokers]
+10.3.1.58
 
 ## The support_nodes are where various supporting infrastructure services
 ## will be run within our OpenShift environment
 ## - replace the ip addresses with your config
 [support_nodes]
-192.168.122.10
+10.3.1.58
