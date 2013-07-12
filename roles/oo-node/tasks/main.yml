@@ -106,6 +106,16 @@
   async: 5400
   poll: 10
 
+### Install mq_provider
+- name: Install MCollective Provider
+  yum: pkg=mcollective-qpid-plugin state=installed
+  when: $mq_provider == "qpid"
+- name: Install MCollective Provider
+  yum: pkg=activemq state=installed
+  when: $mq_provider == "activemq"
+
+
+
 ### Post pkginstall config
 - name: node.conf
   template: src=node.conf.j2
@@ -171,28 +181,27 @@
 - name: Restore SELinux context $gear_httpd_dir
   command: $restorecon -Rv $gear_httpd_dir
 
-
 ### Verify all services are up
 - name: Verify libcgroup-tools are installed for cgconfig/cgred
   yum: pkg=libcgroup-tools state=installed
 - name: start/enable cgconfig service
   service: name=cgconfig state=started enabled=yes
-  when_string: $configure_cgroups == 'true'
+  when: $configure_cgroups == 'true'
 - name: start/enable cgred service
   service: name=cgred state=started enabled=yes
-  when_string: $configure_cgroups == 'true'
+  when: $configure_cgroups == 'true'
 - name: Verify origin-node rubygem installed for openshift-cgroups
   yum: pkg=rubygem-openshift-origin-node state=installed
 - name: start/enable openshift-cgroups service
   service: name=openshift-cgroups state=started enabled=yes
-  when_string: $configure_cgroups == 'true'
+  when: $configure_cgroups == 'true'
   #FIXME - BZ#982808 https://bugzilla.redhat.com/show_bug.cgi?id=982808
   ignore_errors: yes 
 - name: Verify origin-port-proxy installed
   yum: pkg=openshift-origin-port-proxy state=installed
 - name: start/enable openshift-port-proxy service
   service: name=openshift-port-proxy state=started enabled=yes
-  when_string: $configure_cgroups == 'true'
+  when: $configure_cgroups == 'true'
 - name: start/enable crond
   service: name=crond state=started enabled=yes
 - name: start/enable openshift-gears
