@@ -4,6 +4,10 @@
 # Ansible playbook to deploy OpenShift Origin using nightly builds
 #
 #
+
+- name: Setup OpenShift Origin Nightly Supplemental Repo
+  copy: src=jenkins.repo dest=/etc/yum.repos.d/jenkins.repo
+
 - name: Hostname config
   template: src=hostname.j2 dest=/etc/hostname
             owner=root group=root mode=0644 backup=yes
@@ -182,6 +186,8 @@
 - name: start/enable openshift-cgroups service
   service: name=openshift-cgroups state=started enabled=yes
   when_string: $configure_cgroups == 'true'
+  #FIXME - BZ#982808 https://bugzilla.redhat.com/show_bug.cgi?id=982808
+  ignore_errors: yes 
 - name: Verify origin-port-proxy installed
   yum: pkg=openshift-origin-port-proxy state=installed
 - name: start/enable openshift-port-proxy service

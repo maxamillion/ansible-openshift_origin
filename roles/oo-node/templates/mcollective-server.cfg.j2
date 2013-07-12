@@ -22,7 +22,7 @@ plugin.activemq.pool.1.password = {{ mq_server_password }}
 {% endif %}
 
 
-{% if mq_provider == "activemq" %}
+{% if mq_provider == "qpid" %}
 connector = qpid
 plugin.qpid.host= {{ mq_fqdn }}
 plugin.qpid.secure=false
