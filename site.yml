@@ -20,6 +20,7 @@
   roles:
     - role: oo-broker
     - role: console
+    - role: mcollective-client
   tags:
     - brokers
 
