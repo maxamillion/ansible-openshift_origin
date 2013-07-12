@@ -193,8 +193,6 @@
   service: name=openshift-gears state=started enabled=yes
 - name: start/enable openshift-node-web-proxy
   service: name=openshift-node-web-proxy state=started enabled=yes
-- name: start/enable activemq
-  service: name=activemq state=started enabled=yes
 - name: start/enable mcollective
   service: name=mcollective state=started enabled=yes
 

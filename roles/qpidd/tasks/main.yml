@@ -7,7 +7,7 @@
 - name: Configure Persistent FirewallD for qpidd
   shell: firewall-cmd --permanent --add-port 5672/tcp
 - name: Configure Running FirewallD for qpidd
-  shell: firewall-cmd --add-port 5673/tcp
+  shell: firewall-cmd --add-port 5672/tcp
 
 - name: Install qpidd
   yum: pkg=qpid-cpp-server state=latest

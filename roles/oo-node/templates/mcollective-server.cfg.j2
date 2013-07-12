@@ -12,12 +12,22 @@ registerinterval = 30
 securityprovider = psk
 plugin.psk = unset
 
+{% if mq_provider == "activemq" %}
 connector = activemq
 plugin.activemq.pool.size = 1
 plugin.activemq.pool.1.host = {{ mq_fqdn }}
 plugin.activemq.pool.1.port = 61613
 plugin.activemq.pool.1.user = {{ mq_server_user }}
 plugin.activemq.pool.1.password = {{ mq_server_password }}
+{% endif %}
+
+
+{% if mq_provider == "activemq" %}
+connector = qpid
+plugin.qpid.host= {{ mq_fqdn }}
+plugin.qpid.secure=false
+plugin.qpid.timeout=5
+{% endif %}
 
 # Facts
 factsource = yaml
