@@ -109,10 +109,12 @@
 ### Install mq_provider
 - name: Install MCollective Provider
   yum: pkg=mcollective-qpid-plugin state=installed
-  when: $mq_provider == "qpid"
+  when: mq_provider == "qpid"
+  tags:
+    - mq
 - name: Install MCollective Provider
   yum: pkg=activemq state=installed
-  when: $mq_provider == "activemq"
+  when: mq_provider == "activemq"
 
 
 
