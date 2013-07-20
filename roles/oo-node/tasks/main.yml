@@ -12,16 +12,16 @@
   template: src=hostname.j2 dest=/etc/hostname
             owner=root group=root mode=0644 backup=yes
 - name: check for hostname in /etc/hosts
-  shell: grep '${ansible_default_ipv4.address} ${broker_fqdn}' /etc/hosts
+  shell: grep '{{ansible_default_ipv4.address}} {{broker_fqdn}}' /etc/hosts
   ignore_errors: yes 
   register: e_checkhosts
 - name: conditionally set /etc/hosts
-  shell: printf "${ansible_default_ipv4.address} ${broker_fqdn}\n" >>
+  shell: printf "{{ansible_default_ipv4.address}} {{broker_fqdn}}\n" >>
          /etc/hosts
-  only_if: ${e_checkhosts.rc} != 0
+  when: e_checkhosts.rc != 0
 
 - name: SELinux - configure sebooleans
-  seboolean:  name=$item state=true persistent=yes
+  seboolean:  name={{item}} state=true persistent=yes
   with_items:
     - httpd_run_stickshift
     - polyinstantiation_enabled
@@ -65,7 +65,7 @@
 
 ### Dev tools needed by some gem installs for native modules/extensions 
 - name: Install dev-tool deps for gem installs
-  yum: pkg=$item state=latest
+  yum: pkg={{item}} state=latest
   with_items:
     - ruby-devel 
     - audit
@@ -76,9 +76,10 @@
 
 ### Install pkgs for OpenShift Origin Node
 - name: Install OpenShift Package List
-  yum: pkg=$item state=latest
+  yum: pkg={{item}} state=latest
   with_items:
     - rubygem-openshift-origin-node
+    - rubygem-openshift-origin-container-selinux
     - openshift-origin-node-util
     - pam_openshift
     - openshift-origin-node-proxy
@@ -116,6 +117,14 @@
   yum: pkg=activemq state=installed
   when: mq_provider == "activemq"
 
+### Install libvirt bits for sanboxing
+- name: Install libvirt requirements
+  yum: pkg={{item}} state=installed
+  with_items:
+    - libvirt-daemon
+    - libvirt-sandbox
+- name: Start and Enable libvirtd
+  service: name=libvirtd state=started enabled=yes
 
 
 ### Post pkginstall config
@@ -141,7 +150,7 @@
 - name: Verify origin-node-util installed for quota init
   yum: pkg=openshift-origin-node-util state=installed
 - name: Initialize quota db
-  shell: oo-init-quota creates=${gear_root_mount.stdout}/aquota.user
+  shell: oo-init-quota creates={{gear_root_mount.stdout}}/aquota.user
 - name: openshift node pam sshd config
   template: src=pam.sshd-fedora.j2
             dest=/etc/pam.d/sshd
@@ -178,32 +187,32 @@
         owner=root group=root mode=0644
 - name: regen node routes
   script: scripts/node/regen_node_routes.sh
-- name: Restore SELinux context $gear_root_dir
-  command: $restorecon -Rv $gear_root_dir
-- name: Restore SELinux context $gear_httpd_dir
-  command: $restorecon -Rv $gear_httpd_dir
+- name: Restore SELinux context "{{gear_root_dir}}"
+  command: "{{restorecon}} -Rv {{gear_root_dir}}"
+- name: Restore SELinux context "{{gear_httpd_dir}}"
+  command: "{{restorecon}} -Rv {{gear_httpd_dir}}"
 
 ### Verify all services are up
 - name: Verify libcgroup-tools are installed for cgconfig/cgred
   yum: pkg=libcgroup-tools state=installed
 - name: start/enable cgconfig service
   service: name=cgconfig state=started enabled=yes
-  when: $configure_cgroups == 'true'
+  when: configure_cgroups == 'true'
 - name: start/enable cgred service
   service: name=cgred state=started enabled=yes
-  when: $configure_cgroups == 'true'
+  when: configure_cgroups == 'true'
 - name: Verify origin-node rubygem installed for openshift-cgroups
   yum: pkg=rubygem-openshift-origin-node state=installed
 - name: start/enable openshift-cgroups service
   service: name=openshift-cgroups state=started enabled=yes
-  when: $configure_cgroups == 'true'
+  when: configure_cgroups == 'true'
   #FIXME - BZ#982808 https://bugzilla.redhat.com/show_bug.cgi?id=982808
   ignore_errors: yes 
 - name: Verify origin-port-proxy installed
   yum: pkg=openshift-origin-port-proxy state=installed
 - name: start/enable openshift-port-proxy service
   service: name=openshift-port-proxy state=started enabled=yes
-  when: $configure_cgroups == 'true'
+  when: configure_cgroups == 'true'
 - name: start/enable crond
   service: name=crond state=started enabled=yes
 - name: start/enable openshift-gears

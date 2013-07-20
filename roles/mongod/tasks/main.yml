@@ -19,14 +19,14 @@
 - name: Ensure ruby installed for MongoDB Auth conf
   yum: pkg=ruby state=installed
 - name: Check for mongo auth
-  command: ${egrep} '^auth = true' /etc/mongodb.conf
+  command: "{{egrep}} '^auth = true' /etc/mongodb.conf"
   ignore_errors: yes
   register: e_checkmongoauth
 
 # FIXME - This is ugly, should find something better.
 - name: Configure MongoDB
   template: src=mongodb.conf.j2 dest=/etc/mongodb.conf backup=yes
-  only_if: ${e_checkmongoauth.rc} != 0
+  when: e_checkmongoauth.rc != 0
 
 - name: Start and Enable MongoDB daemon
   service: name=mongod state=started enabled=yes
@@ -34,14 +34,14 @@
 - name: MongoDB user/pw script template copy
   template: src=set_mongopw.sh.j2 dest=/tmp/00-set_mongopw.sh
             owner=root group=root mode=0500
-  only_if: ${e_checkmongoauth.rc} != 0
+  when: e_checkmongoauth.rc != 0
 - name: Run MongoDB user/pw script
   action: raw /tmp/00-set_mongopw.sh
-  only_if: ${e_checkmongoauth.rc} != 0
+  when: e_checkmongoauth.rc != 0
 - name: Clean up after MongoDB user/pw script
   file: path=/tmp/00-set_mongopw.sh state=absent
 - name: Enable mongo auth
   shell: printf "auth = true\n" >> /etc/mongodb.conf
-  only_if: ${e_checkmongoauth.rc} != 0
+  when: e_checkmongoauth.rc != 0
   notify: restart mongod
 

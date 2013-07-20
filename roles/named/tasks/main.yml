@@ -10,20 +10,20 @@
   shell: firewall-cmd --add-service dns
 
 - name: Install bind
-  yum: pkg=$item state=latest
+  yum: pkg={{item}} state=latest
   with_items:
     - bind
     - bind-utils
 
 - name: Configure named dynamic-domain.db
   template: src=dynamic-zone.db.j2
-            dest=/var/named/dynamic/${cloud_domain}.db
+            dest=/var/named/dynamic/{{cloud_domain}}.db
             backup=yes
   notify:
   - restart named
 - name: Configure named infra-zone.db
   template: src=infra-zone.db.j2
-            dest=/var/named/${infra_domain}.db
+            dest=/var/named/{{infra_domain}}.db
             backup=yes
   notify:
   - restart named

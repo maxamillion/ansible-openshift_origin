@@ -8,16 +8,16 @@
   template: src=hostname.j2 dest=/etc/hostname
             owner=root group=root mode=0644 backup=yes
 - name: check for hostname in /etc/hosts
-  shell: grep '${ansible_default_ipv4.address} ${broker_fqdn}' /etc/hosts
+  shell: grep '{{ansible_default_ipv4.address}} {{broker_fqdn}}' /etc/hosts
   ignore_errors: yes 
   register: e_checkhosts
 - name: conditionally set /etc/hosts
-  shell: printf "${ansible_default_ipv4.address} ${broker_fqdn}\n" >>
+  shell: printf "{{ansible_default_ipv4.address}} {{broker_fqdn}}\n" >>
          /etc/hosts
-  only_if: ${e_checkhosts.rc} != 0
+  when: e_checkhosts.rc != 0
 
 - name: SELinux - configure sebooleans
-  seboolean:  name=$item state=true persistent=yes
+  seboolean:  name={{item}} state=true persistent=yes
   with_items:
     - httpd_unified
     - httpd_can_network_connect
@@ -41,7 +41,7 @@
 
 ### Dev tools needed by some gem installs for native modules/extensions 
 - name: Install dev-tool deps for gem installs
-  yum: pkg=$item state=latest
+  yum: pkg={{item}} state=latest
   with_items:
     - ruby-devel 
     - audit
@@ -53,7 +53,7 @@
 ### Big honking broker package list
 #FIXME - This can't be right, I don't even remember why this list is like this
 - name: Install OpenShift Package List
-  yum: pkg=$item state=latest
+  yum: pkg={{item}} state=latest
   with_items:
     - rhc
     - openshift-origin-broker
@@ -125,7 +125,7 @@
 ### Install gems not packaged in Fedora (we should package these)
 #FIXME - Need to get these into Fedora proper
 - name: Install gems not in Fedora repos
-  command: $gem install $item 
+  command: "{{gem}} install {{item}}"
   with_items: 
     - mongoid 
     - origin 
@@ -138,16 +138,16 @@
   template: src=broker.conf.j2 dest=/etc/openshift/broker-dev.conf
             owner=apache group=apache mode=0644
 - name: Verify openssh and openssl installed for keygen
-  yum: pkg=$item state=latest
+  yum: pkg={{item}} state=latest
   with_items:
     - openssl
     - openssh
 - name: Generate broker auth keys
   script: gen_broker_auth_keys.sh
-          creates=${broker_auth_pubkey_path}
+          creates={{broker_auth_pubkey_path}}
 - name: Generate broker rsync keys
   script: gen_broker_rsync_keys.sh
-          creates=${broker_rsync_key_path}
+          creates={{broker_rsync_key_path}}
 - name: Install base servername.conf
   template: src=broker_servername.conf.j2
             dest=/etc/httpd/conf.d/000000_openshift_origin_broker_servername.conf
@@ -165,14 +165,14 @@
             dest=/etc/openshift/plugins.d/openshift-origin-auth-remote-user.example
             owner=root group=root mode=0644
 - name: Register dnssec key for nsupdate plugin
-  shell: "${awk} '/^Key:/{print $2}' /var/named/K${cloud_domain}*.private"
+  shell: "{{awk}} '/^Key:/{print $2}' /var/named/K${cloud_domain}*.private"
   register: nsupdate_key
 - name: bind dns plugin conf
   template: src=dns-bind.conf.j2
             dest=/etc/openshift/plugins.d/openshift-origin-dns-bind.conf
             owner=root group=root mode=0644
 - name: Verify origin-broker and rubygem-bundler are installed
-  yum: pkg=$item state=latest
+  yum: pkg={{item}} state=latest
   with_items:
     - openshift-origin-broker
     - rubygem-bundler

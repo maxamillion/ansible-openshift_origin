@@ -22,7 +22,7 @@
     - openshift-origin-console
 
 - name: Configure OpenShift Origin Console
-  template: src=console.conf.j2 dest=$console_conf_path
+  template: src=console.conf.j2 dest={{console_conf_path}}
             owner=apache group=apache mode=0644
   notify: restart console
 
@@ -31,7 +31,7 @@
   notify: restart console
 
 - name: SELinux settings for OpenShift Origin Console
-  seboolean:  name=$item state=true persistent=yes
+  seboolean:  name={{item}} state=true persistent=yes
   with_items:
    - httpd_can_network_connect
    - httpd_can_network_relay
