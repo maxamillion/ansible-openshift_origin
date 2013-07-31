@@ -30,5 +30,5 @@
     - role: qpidd
     - role: named
   tags:
-    - suuport_nodes
+    - support_nodes
 
