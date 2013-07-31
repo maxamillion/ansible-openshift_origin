@@ -13,8 +13,6 @@
   yum: pkg=mongodb state=latest
 - name: Install MongoDB Server
   yum: pkg=mongodb-server state=latest
-- name: Ensure MongoDB daemon stopped
-  service: name=mongod state=stopped
 
 - name: Ensure ruby installed for MongoDB Auth conf
   yum: pkg=ruby state=installed
@@ -24,6 +22,10 @@
   register: e_checkmongoauth
 
 # FIXME - This is ugly, should find something better.
+- name: Ensure MongoDB daemon stopped
+  service: name=mongod state=stopped
+  when: e_checkmongoauth.rc != 0
+
 - name: Configure MongoDB
   template: src=mongodb.conf.j2 dest=/etc/mongodb.conf backup=yes
   when: e_checkmongoauth.rc != 0

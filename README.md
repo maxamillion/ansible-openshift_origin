@@ -118,6 +118,9 @@ As with any pet project, it might get stale but I will do my best to keep it
 up to date as well as expand on it as time goes on to handle more sophisticated
 configrations and deployments.
 
+1. All shell commands run (currently firewall-cmd is a big one) return "changed"
+in the playbook summary but once Ansible 1.3 releases stable this will change as
+we can set conditions for command execution to have considered a change
 
 # Contact Info
 
