@@ -28,6 +28,9 @@
   roles:
     - role: mongod
     - role: qpidd
+      when: mq_provider == "qpid"
+    - role: activemq
+      when: mq_provider == "activemq"
     - role: named
   tags:
     - support_nodes
