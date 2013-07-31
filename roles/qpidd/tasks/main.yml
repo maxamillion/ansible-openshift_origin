@@ -17,9 +17,3 @@
 
 - name: Start and Enable qpidd
   service: name=qpidd state=started enabled=yes
-
-- name: Configure qpidd
-  template: src=qpidd.conf.j2 dest=/etc/qpidd.conf
-            owner=root group=root mode=0644
-  notify: restart qpidd
-
