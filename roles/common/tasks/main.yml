@@ -9,8 +9,8 @@
   template: src=openshift-origin-nightly.repo.j2
             dest=/etc/yum.repos.d/openshift-origin-nightly.repo
 - name: Setup OpenShift Origin Nightly Supplemental Repo
-  template: src=openshift-origin-supplemental.repo.j2
-            dest=/etc/yum.repos.d/openshift-origin-supplemental.repo
+  template: src=openshift-origin-deps.repo.j2
+            dest=/etc/yum.repos.d/openshift-origin-deps.repo
 
 # SELinux Stuff 
 - name: SELinux Enforcing (Targeted)
