@@ -32,13 +32,13 @@
     - selinux
 
 - name: Configure Persistent FirewallD for http console
-  shell: firewall-cmd --permanent --add-port http
+  shell: firewall-cmd --permanent --add-service http
 - name: Configure Persistent FirewallD for https console
-  shell: firewall-cmd --permanent --add-port https
+  shell: firewall-cmd --permanent --add-service https
 - name: Configure FirewallD for http console
-  shell: firewall-cmd --add-port http
+  shell: firewall-cmd --add-service http
 - name: Configure FirewallD for https console
-  shell: firewall-cmd --add-port https
+  shell: firewall-cmd --add-service https
       
 
 ### Dev tools needed by some gem installs for native modules/extensions 
