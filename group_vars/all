@@ -11,6 +11,22 @@ gem: /usr/bin/gem
 mongo: /usr/bin/mongo
 
 # config vars
+## Update the broker_auth_salt using:
+#		
+#		$ openssl rand -base64 64
+#
+## Ouput will look something like:
+#
+#  	ds+R5kYI5Jvr0uanclmkavrXBSl0KQ34y3Uw4HrsiUNaKjYjgN/tVxV5mYPukpFR
+#  	radl1SiQ5lmr41zDo4QQww==
+#
+## Use that value (minus the newline):
+#
+#		broker_auth_salt: "ds+R5kYI5Jvr0uanclmkavrXBSl0KQ34y3Uw4HrsiUNaKjYjgN/tVxV5mYPukpFRradl1SiQ5lmr41zDo4QQww=="
+#
+## For more information:
+#		http://openshift.github.io/documentation/oo_deployment_guide_comprehensive.html#understand-and-change-the-broker-configuration
+#
 broker_auth_salt: "ClWqe5zKtEW4CJEMyjzQ"
 broker_auth_key_passwd: ""
 broker_fqdn: broker.example.com
