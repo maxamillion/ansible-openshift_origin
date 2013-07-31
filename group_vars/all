@@ -28,6 +28,11 @@ mongo: /usr/bin/mongo
 #		http://openshift.github.io/documentation/oo_deployment_guide_comprehensive.html#understand-and-change-the-broker-configuration
 #
 broker_auth_salt: "ClWqe5zKtEW4CJEMyjzQ"
+
+# Follow similar steps for broker_session_secret as you did for 
+# broker_auth_salt but do *NOT* make them the same.
+#FIXME - This should probably be stored externally or $something
+broker_session_secret: "rFeKpEGI0TlTECvLgBPD"
 broker_auth_key_passwd: ""
 broker_fqdn: broker.example.com
 broker_auth_pubkey_path: /etc/openshift/server_pub.pem
