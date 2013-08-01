@@ -48,7 +48,11 @@ infra_domain: example.com
 cloud_domain: app.example.com
 
 #FIXME - activemq doesn't work in F19, using qpid instead
-mq_provider: qpid
+# ---	ActiveMQ from the openshift deps repo works, needs to be fixed in 
+# 		the upstream Fedora repo.
+#
+# mq_provider are: activemq, qpid
+mq_provider: activemq
 
 mq_fqdn: "{{broker_fqdn}}"
 mq_server_user: mcollective
