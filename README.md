@@ -122,6 +122,20 @@ configrations and deployments.
 in the playbook summary but once Ansible 1.3 releases stable this will change as
 we can set conditions for command execution to have considered a change
 
+2. Upstream Fedora ActiveMQ is broken so the option to use QPID is in the 
+   group vars file "all" but the ActiveMQ package in the OpenShift Origin deps
+   repo is fixed. There's a trello card open on our public board to get all the
+   deps into Fedora proper as well as fix those that are already there:
+
+   https://trello.com/c/v3SYHVHF/27-get-all-openshift-origin-dependencies-packaged-and-into-fedora
+
+3. There's an issue with FirewallD on a fresh launch of a Fedora AMI cloud image
+   where sometimes on the first (and only the first) run of the playbook, when
+   it gets to the firewalld config steps something happens that's causing a
+   timeout and fails the step/playbook. If you run again (and on all following
+   runs) this issue is no longer there. Plan to investigate this moving forward
+   but for now, this note will have to do.
+
 # Contact Info
 
 If you'd like, just open an issue against this on github and I'll get to is asap.
