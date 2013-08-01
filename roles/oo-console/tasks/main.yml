@@ -21,6 +21,7 @@
     - make
     - openshift-origin-console
 
+#FIXME - Should parameterize this later to allow for setup of different auth
 - name: Configure Basic Auth
   template: src=auth-remote-user-basic.conf.j2
             dest=/var/www/openshift/console/httpd/conf.d/openshift-origin-auth-remote-user-basic.conf
