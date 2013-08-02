@@ -5,6 +5,7 @@ bundle: /usr/bin/bundle
 restorecon: /sbin/restorecon
 egrep: /usr/bin/egrep
 awk: /usr/bin/awk
+oo-register-dns: /usr/sbin/oo-register-dns
 
 #FIXME - gem and mongo have ansible modules now
 gem: /usr/bin/gem

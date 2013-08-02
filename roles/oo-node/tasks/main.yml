@@ -79,12 +79,21 @@
   yum: pkg={{item}} state=latest
   with_items:
     - rubygem-openshift-origin-node
-    - rubygem-openshift-origin-container-selinux
-    - openshift-origin-node-util
-    - pam_openshift
-    - openshift-origin-node-proxy
+    - rubygem-passenger-native
     - openshift-origin-port-proxy
+    - openshift-origin-node-util
+    - rubygem-openshift-origin-container-selinux
     - openshift-origin-msg-node-mcollective
+    - git
+    - make
+    - cronie
+  async: 5400
+  poll: 10
+
+### Install cartridge pkgs for OpenShift Origin Node
+- name: Install OpenShift Cartridge Packages
+  yum: pkg={{item}} state=latest
+  with_items:
     - openshift-origin-cartridge-abstract
     - openshift-origin-cartridge-10gen-mms-agent
     - openshift-origin-cartridge-cron
@@ -101,23 +110,26 @@
     - openshift-origin-cartridge-php
     - openshift-origin-cartridge-perl
     - openshift-origin-cartridge-phpmyadmin
-    - git
-    - make
-    - cronie
   async: 5400
   poll: 10
+
+### Register DNS
+#FIXME - Should parameterize this later
+- name: Register DNS
+  shell: "{{oo-register-dns}} -h {{ansible_fqdn}} -n {{ansible_default_ipv4.address}}"
+
+#FIXME - Need to add a config option for namserver config for not-all-in-one
 
 ### Install mq_provider
 - name: Install MCollective Provider
   yum: pkg=mcollective-qpid-plugin state=installed
   when: mq_provider == "qpid"
-  tags:
-    - mq
+
 - name: Install MCollective Provider
   yum: pkg=activemq state=installed
   when: mq_provider == "activemq"
 
-### Install libvirt bits for sanboxing
+### Install libvirt bits for sandboxing
 - name: Install libvirt requirements
   yum: pkg={{item}} state=installed
   with_items:
@@ -126,6 +138,16 @@
 - name: Start and Enable libvirtd
   service: name=libvirtd state=started enabled=yes
 
+### Configure dhclient FIXME - for not-all-in-one
+
+### FIXME - This is a fix for a bug in Fedora's MCollective
+# BZ to follow, kraman said he's filing
+- name: MCollective.service temporary work around
+  file: src=mcollective.service
+        dest=/usr/lib/systemd/system/mcollective.service
+        owner=root group=root mode=0644
+  notify:
+    - reload systemd
 
 ### Post pkginstall config
 - name: node.conf
@@ -155,6 +177,8 @@
   template: src=pam.sshd-fedora.j2
             dest=/etc/pam.d/sshd
             owner=root group=root mode=0644
+
+### Configure PAM
 - name: openshift node pam runuser
   copy: src=pam.runuser-fedora
         dest=/etc/pam.d/runuser owner=root group=root mode=0644
@@ -179,14 +203,15 @@
   template: src=namespace-d-vartmp.conf.j2
         dest=/etc/security/namespace.d/vartmp.conf
         owner=root group=root mode=0644
+
+
 - name: openshift node sshd config
   copy: src=sshd_config dest=/etc/ssh/sshd_config
         owner=root group=root mode=0600
 - name: broker and console route for node
   copy: src=node_routes.txt dest=/tmp/nodes.broker_routes.txt
         owner=root group=root mode=0644
-- name: regen node routes
-  script: scripts/node/regen_node_routes.sh
+
 - name: Restore SELinux context "{{gear_root_dir}}"
   command: "{{restorecon}} -Rv {{gear_root_dir}}"
 - name: Restore SELinux context "{{gear_httpd_dir}}"
@@ -201,24 +226,22 @@
 - name: start/enable cgred service
   service: name=cgred state=started enabled=yes
   when: configure_cgroups == 'true'
-- name: Verify origin-node rubygem installed for openshift-cgroups
-  yum: pkg=rubygem-openshift-origin-node state=installed
-- name: start/enable openshift-cgroups service
-  service: name=openshift-cgroups state=started enabled=yes
-  when: configure_cgroups == 'true'
-  #FIXME - BZ#982808 https://bugzilla.redhat.com/show_bug.cgi?id=982808
-  ignore_errors: yes 
-- name: Verify origin-port-proxy installed
-  yum: pkg=openshift-origin-port-proxy state=installed
+
 - name: start/enable openshift-port-proxy service
   service: name=openshift-port-proxy state=started enabled=yes
   when: configure_cgroups == 'true'
+
 - name: start/enable crond
   service: name=crond state=started enabled=yes
-- name: start/enable openshift-gears
-  service: name=openshift-gears state=started enabled=yes
+
 - name: start/enable openshift-node-web-proxy
   service: name=openshift-node-web-proxy state=started enabled=yes
+
 - name: start/enable mcollective
   service: name=mcollective state=started enabled=yes
 
+- name: start/enable oddjobd
+  service: name=oddjobd state=started enabled=yes
+
+- name: start/enable sshd
+  service: name=sshd state=started enabled=yes

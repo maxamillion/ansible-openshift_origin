@@ -1,0 +1,9 @@
+---
+### main.yml - oo-node handlers for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+
+#FIXME - Part of the MCollective work around
+- name: reload systemd
+  shell: /usr/bin/systemctl --system daemon-reload
