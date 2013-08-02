@@ -122,11 +122,11 @@
 #FIXME - Need to add a config option for namserver config for not-all-in-one
 
 ### Install mq_provider
-- name: Install MCollective Provider
+- name: Install MCollective Provider - QPID
   yum: pkg=mcollective-qpid-plugin state=installed
   when: mq_provider == "qpid"
 
-- name: Install MCollective Provider
+- name: Install MCollective Provider - ActiveMQ
   yum: pkg=activemq state=installed
   when: mq_provider == "activemq"
 
