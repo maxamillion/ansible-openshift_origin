@@ -52,75 +52,23 @@
     - gcc 
     - make
 
-### Big honking broker package list
-#FIXME - This can't be right, I don't even remember why this list is like this
+### Broker package list
 - name: Install OpenShift Package List
   yum: pkg={{item}} state=latest
   with_items:
     - rhc
     - openshift-origin-broker
+    - openshift-origin-broker-util 
+    - rubygem-openshift-origin-auth-remote-user
     - rubygem-openshift-origin-msg-broker-mcollective 
+    - rubygem-openshift-origin-auth-mongo
     - rubygem-openshift-origin-dns-nsupdate 
     - rubygem-openshift-origin-dns-bind 
-    - rubygem-openshift-origin-dns-bind 
-    - rubygem-openshift-origin-controller 
-    - rubygem-openshift-origin-auth-mongo
-    - rubygem-openshift-origin-auth-remote-user
-    - openshift-origin-broker-util 
+    - rubygem-openshift-origin-dns-avahi 
+    - rubygem-openshift-origin-dns-route53
     - rubygem-passenger 
     - openssh 
-    - httpd
-    - mod_passenger 
-    - rubygem-rails
-    - rubygem-railties
-    - rubygem-actionpack
-    - rubygem-activemodel
-    - rubygem-activerecord
-    - rubygem-activeresource
-    - rubygem-arel
-    - rubygem-bigdecimal
-    - rubygem-bson
-    - rubygem-bson_ext
-    - rubygem-builder
-    - rubygem-bundler
-    - rubygem-cucumber
-    - rubygem-diff-lcs
-    - rubygem-dnsruby
-    - rubygem-erubis
-    - rubygem-gherkin
-    - rubygem-hike
-    - rubygem-i18n
-    - rubygem-mail
-    - rubygem-metaclass
-    - rubygem-mime-types
-    - rubygem-minitest
-    - rubygem-mocha
-    - rubygem-mongo
-    - rubygem-multi_json
-    - rubygem-netrc
-    - rubygem-open4
-    - rubygem-parseconfig
-    - rubygem-rack
-    - rubygem-rack-cache
-    - rubygem-rack-ssl
-    - rubygem-rack-test
-    - rubygem-rake
-    - rubygem-rdoc
-    - rubygem-regin
-    - rubygem-rest-client
-    - rubygem-simplecov
-    - rubygem-sprockets
-    - rubygem-state_machine
-    - rubygem-stomp
-    - rubygem-systemu
-    - rubygem-term-ansicolor
-    - rubygem-thor
-    - rubygem-tilt
-    - rubygem-treetop
-    - rubygem-tzinfo
-    - rubygem-xml-simple
-    - rubygem-webmock
-    - rubygem-fakefs
+    - openssl
   async: 5400
   poll: 10
 
@@ -139,11 +87,6 @@
 - name: broker-dev.conf
   template: src=broker.conf.j2 dest=/etc/openshift/broker-dev.conf
             owner=apache group=apache mode=0644
-- name: Verify openssh and openssl installed for keygen
-  yum: pkg={{item}} state=latest
-  with_items:
-    - openssl
-    - openssh
 - name: Generate broker auth keys
   script: gen_broker_auth_keys.sh
           creates={{broker_auth_pubkey_path}}

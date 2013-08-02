@@ -33,7 +33,7 @@
   notify: restart console
 
 - name: Bundle install and build Rails assets
-  script: scripts/broker/console_bundle_install.sh
+  script: console_bundle_install.sh
   notify: restart console
 
 - name: SELinux settings for OpenShift Origin Console

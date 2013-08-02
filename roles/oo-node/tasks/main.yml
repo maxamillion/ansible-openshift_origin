@@ -114,9 +114,10 @@
   poll: 10
 
 ### Register DNS
+#FIXME === This doesn't work, need to sort that out
 #FIXME - Should parameterize this later
-- name: Register DNS
-  shell: "{{oo-register-dns}} -h {{ansible_fqdn}} -n {{ansible_default_ipv4.address}}"
+#- name: Register DNS
+#  shell: "{{oo-register-dns}} -h {{ansible_fqdn}} -n {{ansible_default_ipv4.address}}"
 
 #FIXME - Need to add a config option for namserver config for not-all-in-one
 
