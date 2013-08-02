@@ -4,7 +4,7 @@
 # then recompile the rails assets
 pushd /var/www/openshift/broker/
   rm -f Gemfile.lock
-  bundle install
+  bundle install --local
   rm -fr tmp/cache/*
   chown apache:apache Gemfile.lock
 popd

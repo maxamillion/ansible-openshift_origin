@@ -4,7 +4,7 @@
 # then recompile the rails assets
 pushd /var/www/openshift/console/
   rm -f Gemfile.lock
-  bundle install
+  bundle install --local
   rm -fr tmp/cache/*
   rake assets:precompile
   chown -R apache:apache ./*
