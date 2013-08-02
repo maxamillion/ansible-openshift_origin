@@ -5,7 +5,6 @@
 #
 
 
-##FIXME - need to parameter this out for different message providers
-- name: Configure mcollective client using qpid
+- name: Configure mcollective client
   template: src=client.cfg.j2 dest=/etc/mcollective/client.cfg
             owner=root group=root mode=0644 backup=yes

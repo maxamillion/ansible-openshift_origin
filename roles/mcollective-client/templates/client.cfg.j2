@@ -3,16 +3,24 @@ main_collective = mcollective
 collectives = mcollective
 libdir = /usr/libexec/mcollective
 loglevel = debug
-logfile = /var/log/mcollective-client.log
+direct_addressing = 1
 
 # Plugins
 securityprovider = psk
 plugin.psk = unset
-connector = {{ mq_provider }}
+
+connector = {{mq_provider}}
+
+{% if mq_provider == "activemq" %}
+plugin.activemq.pool.size = 1
+plugin.activemq.pool.1.host = {{ mq_fqdn }}
+plugin.activemq.pool.1.port = 61613
+plugin.activemq.pool.1.user = {{ mq_server_user }}
+plugin.activemq.pool.1.password = {{ mq_server_password }}
+{% endif %}
+
+{% if mq_provider == "qpid" %}
 plugin.qpid.host={{ mq_fqdn }}
 plugin.qpid.secure=false
 plugin.qpid.timeout=5
-
-# Facts
-factsource = yaml
-plugin.yaml = /etc/mcollective/facts.yamlD
+{% endif %}

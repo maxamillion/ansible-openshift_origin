@@ -163,10 +163,6 @@
   template: src=mcollective-server.cfg.j2
             dest=/etc/mcollective/server.cfg
             owner=root group=root mode=0644
-- name: mcollective client config
-  template: src=mcollective-client.cfg.j2
-            dest=/etc/mcollective/client.cfg
-            owner=root group=root mode=0644
 - name: Find root mount point of gear dir
   shell: df -P /var/lib/openshift | tail -1 | awk '{ print $6 }'
   register: gear_root_mount
