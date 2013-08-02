@@ -11,7 +11,7 @@ I will update this as I find time.
 
 # About
 
-This playbook helps install [OpenShift Origin](https://openshift.redhat.com/community/open-source) Platform As A Service.
+This playbook helps install [OpenShift Origin](https://www.openshift.com/open-source) Platform As A Service.
 
 Currently this playbook only supports installing on a single machine or 
 (single-node install) which that the OpenShift Broker and OpenShift Node 
@@ -19,9 +19,15 @@ services are running on the same machine. This can be done on bare metal, in a
 virtual machine, or in a cloud instance as OpenShift only depends upon the 
 Operating System (with SELinux, cgroups, and PAM magic under the hood).
 
+
+The playbook is based on the [OpenShift Origin Comprehensive Deployment Guide](http://openshift.github.io/documentation/oo_deployment_guide_comprehensive.html)
+
 # Requirements
 
+Install Target:
 * Fedora 19 - at least @standard if using a kickstart installation.
+
+Machine Deploying From (The Orchestration Machine)
 * Ansible >= 1.2
 
 # Installation
