@@ -129,3 +129,13 @@
   service: name=httpd state=started enabled=yes
 - name: start and enable openshift-console
   service: name=openshift-console state=started enabled=yes
+
+#FIXME - This is probably a bug in OpenShift code but the broker can't 
+#   access /var/log/openshift/user_action.log by default so here's a
+#   work around
+- name: Workaround for user_action.log - File creation
+  copy: src=user_action.log dest=/var/log/openshift/user_action.log
+        force=no
+- name: Workaround for user_action.log - SELinux/perms
+  file: path=/var/log/openshift/user_action.log owner=apache
+        group=apache setype=httpd_log_t mode=0660
