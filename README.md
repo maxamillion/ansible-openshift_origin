@@ -2,12 +2,14 @@
 
 Author: Adam Miller
 
-#NOTE - THIS IS A WORK IN PROGRESS, THINK "ALPHA" QUALITY.
+#NOTE - THIS IS A WORK IN PROGRESS, THINK "BETA" QUALITY.
 This playbook is currently undergoing a refactor for the ansible 1.2 newly 
 introduced "roles" layout for playbooks. If you'd like to find the old version
 then feel free to checkout the branch named v0.9.
 
-I will update this as I find time.
+I've bumped this from "Alpha" to "Beta" quality because I've done a full deploy
+using the playbook but there are still a couple rough edges I want to clean up
+as well as refactor some tasks to be "cleaner".
 
 # About
 
