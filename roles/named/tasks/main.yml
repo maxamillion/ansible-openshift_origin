@@ -47,9 +47,9 @@
             owner=root group=root mode=0500
 - name: Run named DNSSEC script 
   action: raw /root/00-setup_dnssec.sh
+
 - name: Clean up after named DNSSEC script
   file: path=/root/00-setup_dnssec.sh state=absent
-
 
 - name: Configure dhclient for DNS
   template: src=dhclient.conf.j2
