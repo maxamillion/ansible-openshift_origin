@@ -130,3 +130,5 @@
 - name: Workaround for user_action.log - SELinux/perms
   file: path=/var/log/openshift/user_action.log owner=apache
         group=apache setype=httpd_log_t mode=0660
+  notify:
+    - restart broker

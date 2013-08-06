@@ -1,0 +1,8 @@
+---
+### main.yml - broker handlers for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+
+- name: restart broker 
+  service: name=openshift-broker state=restarted
