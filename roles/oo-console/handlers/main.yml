@@ -5,4 +5,4 @@
 #
 
 - name: restart console 
-  service: name=console state=restarted
+  service: name=openshift-console state=restarted
