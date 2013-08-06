@@ -9,7 +9,7 @@ $TTL 1800       ; 30 minutes
         )
       NS        ns1.{{ infra_domain }}.
 $ORIGIN {{ infra_domain }}
-ns1                     A       {{ ansible_default_ipv4.address }}
-broker                  A       {{ ansible_default_ipv4.address }}
-msg1                    A       {{ ansible_default_ipv4.address }}
-node1                   A       {{ ansible_default_ipv4.address }}
+ns1                     A       {{ oo_ipaddr }}
+broker                  A       {{ oo_ipaddr }}
+msg1                    A       {{ oo_ipaddr }}
+node1                   A       {{ oo_ipaddr }}

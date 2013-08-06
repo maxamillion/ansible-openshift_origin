@@ -6,7 +6,7 @@ logpath=/var/log/mongodb/mongodb.log
 # fork and run in background
 fork = true
 
-bind_ip = 127.0.0.1,{{ ansible_default_ipv4.address }}
+bind_ip = 127.0.0.1,{{ oo_ipaddr }}
 #port = 27017
 
 dbpath=/var/lib/mongodb

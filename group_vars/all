@@ -11,6 +11,16 @@ oo-register-dns: /usr/sbin/oo-register-dns
 gem: /usr/bin/gem
 mongo: /usr/bin/mongo
 
+# oo_ipaddr - This is the default ip address used for serving
+#
+# The term "serving" is a bit vague but this var is a little overloaded
+# and will be re-evaluated per machine/host/server/whatever_you_like_to_call_it
+#
+#	This is set here as a variable mostly in the event it would like to be set to
+#	something other than the non-default ipv4 address (multiple NICs), or
+#	anything similar. We could probably make this rather sophisticated.
+oo_ipaddr: {{ansible_default_ipv4.address}}
+
 # OpenShift Origin Version - nightly or stable?
 #
 # You can technically set both to true, but because of the package versions

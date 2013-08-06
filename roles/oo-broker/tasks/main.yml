@@ -6,8 +6,8 @@
 #
 - name: Set broker_fqdn in /etc/hosts
   lineinfile: dest=/etc/hosts
-              regexp="{{ansible_default_ipv4.address}} {{broker_fqdn}}"
-              line='{{ansible_default_ipv4.address}} {{broker_fqdn}}'
+              regexp="{{oo_ipaddr}} {{broker_fqdn}}"
+              line='{{oo_ipaddr}} {{broker_fqdn}}'
 
 - name: SELinux - configure sebooleans
   seboolean:  name={{item}} state=true persistent=yes
