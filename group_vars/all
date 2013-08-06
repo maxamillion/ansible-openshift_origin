@@ -11,6 +11,17 @@ oo-register-dns: /usr/sbin/oo-register-dns
 gem: /usr/bin/gem
 mongo: /usr/bin/mongo
 
+# OpenShift Origin Version - nightly or stable?
+#
+# You can technically set both to true, but because of the package versions
+# oo_nightly will "win" at install/update time
+#
+# oo_stable - if set to true it must be paired with a oo_stable_ver number
+# 						at the time of this writing version 2 is most recent.
+oo_nightly = "false"
+oo_stable = "true"
+oo_stable_ver = "2"
+
 # config vars
 ## Update the broker_auth_salt using:
 #		
@@ -55,10 +66,12 @@ cloud_domain: app.example.com
 # mq_provider are: activemq, qpid
 mq_provider: activemq
 
+# mq_ variable for are message queuing 
 mq_fqdn: "{{broker_fqdn}}"
 mq_server_user: mcollective
 mq_server_password: marionette
 
+# MongoDB information
 mongo_auth_user: openshift
 mongo_db_name: openshift_broker_dev
 mongo_db_fqdn: "{{broker_fqdn}}"

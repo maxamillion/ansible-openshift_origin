@@ -1,0 +1,6 @@
+[openshift-origin-stable-deps]
+name=OpenShift Origin Supplemental Deps
+baseurl=https://mirror.openshift.com/pub/openshift-origin/release/{{oo_stable_ver}}/{{ ansible_distribution.lower() }}-{{ ansible_distribution_version}}/dependencies/{{ ansible_architecture }}/
+enabled=1
+gpgcheck=0
+sslverify=false
