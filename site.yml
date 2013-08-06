@@ -10,6 +10,17 @@
     - brokers
     - support_nodes
 
+- hosts: support_nodes
+  roles:
+    - role: mongod
+    - role: qpidd
+      when: mq_provider == "qpid"
+    - role: activemq
+      when: mq_provider == "activemq"
+    - role: named
+  tags:
+    - support_nodes
+
 - hosts: nodes
   roles:
     - role: oo-node
@@ -23,15 +34,3 @@
     - role: mcollective-client
   tags:
     - brokers
-
-- hosts: support_nodes
-  roles:
-    - role: mongod
-    - role: qpidd
-      when: mq_provider == "qpid"
-    - role: activemq
-      when: mq_provider == "activemq"
-    - role: named
-  tags:
-    - support_nodes
-
