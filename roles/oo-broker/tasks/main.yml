@@ -49,7 +49,7 @@
 - name: Install OpenShift Package List
   yum: pkg={{item}} state=latest
   with_items:
-    - rhc
+    - rubygem-rhc
     - openshift-origin-broker
     - openshift-origin-broker-util 
     - rubygem-openshift-origin-auth-remote-user
