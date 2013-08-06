@@ -18,9 +18,9 @@ mongo: /usr/bin/mongo
 #
 # oo_stable - if set to true it must be paired with a oo_stable_ver number
 # 						at the time of this writing version 2 is most recent.
-oo_nightly = "false"
-oo_stable = "true"
-oo_stable_ver = "2"
+oo_nightly: "false"
+oo_stable: "true"
+oo_stable_ver: "2"
 
 # config vars
 ## Update the broker_auth_salt using:
