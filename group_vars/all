@@ -81,10 +81,6 @@ mongo_admin_passwd: admin
 
 console_conf_path: /etc/openshift/console.conf
 
-
-node_fqdn: "{{broker_fqdn}}"
-node_ip: "{{ansible_default_ipv4.address}}"
-
 os_unmanaged_users: "root,adm,apache"
 
 configure_cgroups: "true"

@@ -8,9 +8,6 @@
 - name: Setup OpenShift Origin Nightly Supplemental Repo
   copy: src=jenkins.repo dest=/etc/yum.repos.d/jenkins.repo
 
-- name: Hostname config
-  template: src=hostname.j2 dest=/etc/hostname
-            owner=root group=root mode=0644 backup=yes
 - name: check for hostname in /etc/hosts
   shell: grep '{{ansible_default_ipv4.address}} {{broker_fqdn}}' /etc/hosts
   ignore_errors: yes 
