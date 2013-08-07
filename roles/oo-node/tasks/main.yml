@@ -215,9 +215,14 @@
   service: name=cgred state=started enabled=yes
   when: configure_cgroups == 'true'
 
+- name: start/enable traffic control
+  service: name=openshift-tc state=started enabled=yes
+
+- name: start/enable openshift-gears
+  service: name=openshift-gears state=started enabled=yes
+
 - name: start/enable openshift-port-proxy service
   service: name=openshift-port-proxy state=started enabled=yes
-  when: configure_cgroups == 'true'
 
 - name: start/enable crond
   service: name=crond state=started enabled=yes
