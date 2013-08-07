@@ -40,7 +40,7 @@
   with_items:
     - ruby-devel 
     - audit
-    - mysql-devel 
+    - mariadb-devel 
     - mongodb-devel 
     - gcc 
     - make
@@ -72,7 +72,7 @@
   with_items: 
     - mongoid 
     - origin 
-    - mysql
+    - mariadb
 
 - name: broker.conf
   template: src=broker.conf.j2 dest=/etc/openshift/broker.conf

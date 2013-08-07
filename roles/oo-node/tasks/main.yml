@@ -60,7 +60,7 @@
   with_items:
     - ruby-devel 
     - audit
-    - mysql-devel 
+    - mariadb-devel 
     - mongodb-devel 
     - gcc 
     - make
@@ -91,7 +91,7 @@
     - openshift-origin-cartridge-diy
     - openshift-origin-cartridge-haproxy
     - openshift-origin-cartridge-mongodb
-    - openshift-origin-cartridge-mysql
+    - openshift-origin-cartridge-mariadb
     - openshift-origin-cartridge-nodejs
     - openshift-origin-cartridge-jenkins
     - openshift-origin-cartridge-jenkins-client
