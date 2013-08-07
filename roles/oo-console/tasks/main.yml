@@ -30,6 +30,10 @@
             dest=/var/www/openshift/console/httpd/conf.d/openshift-origin-auth-remote-user-basic.conf
             owner=apache group=apache mode=0640
 
+- name: Configure Demo user with htpasswd
+  copy: src=console_htpasswd dest=/etc/openshift/htpasswd
+        owner=apache group=apache mode=0640
+
 - name: Configure OpenShift Origin Console
   template: src=console.conf.j2 dest={{console_conf_path}}
             owner=apache group=apache mode=0644
