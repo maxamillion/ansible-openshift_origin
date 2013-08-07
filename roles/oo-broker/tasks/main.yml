@@ -86,10 +86,10 @@
 - name: Generate broker rsync keys
   script: gen_broker_rsync_keys.sh
           creates={{broker_rsync_key_path}}
-#- name: Install base servername.conf
-#  template: src=broker_servername.conf.j2
-#            dest=/etc/httpd/conf.d/000000_openshift_origin_broker_servername.conf
-#            owner=root group=root mode=0644
+- name: Install base servername.conf
+  template: src=broker_servername.conf.j2
+            dest=/etc/httpd/conf.d/000000_openshift_origin_broker_servername.conf
+            owner=root group=root mode=0644
 - name: Configure mcollective broker plugin 
   copy: src=msg-broker-mcollective.conf
             dest=/etc/openshift/plugins.d/openshift-origin-msg-broker-mcollective.conf
@@ -112,12 +112,17 @@
             dest=/etc/openshift/plugins.d/openshift-origin-dns-bind.conf
             owner=root group=root mode=0644
 
+- name: Make sure routes file exists for all-in-one host config
+  copy: src=nodes.txt dest=/etc/httpd/conf.d/openshift/nodes.txt
+        force=no
+  when: oo_single_host == "true"
+
 - name: Set route for all-in-one host
   lineinfile: dest=/etc/httpd/conf.d/openshift/nodes.txt
               regexp="__default__ REDIRECT:/console"
               line="__default__ REDIRECT:/console"
               state=present
-  when: oo_singe_host == "true"
+  when: oo_single_host == "true"
   notify:
     - regenerate broker routes
 
@@ -126,7 +131,7 @@
               regexp="__default__/console TOHTTPS:127.0.0.1:8118/console"
               line="__default__/console TOHTTPS:127.0.0.1:8118/console"
               state=present
-  when: oo_singe_host == "true"
+  when: oo_single_host == "true"
   notify:
     - regenerate broker routes
 
@@ -135,7 +140,7 @@
               regexp="__default__/broker TOHTTPS:127.0.0.1:8080/broker"
               line="__default__/broker TOHTTPS:127.0.0.1:8080/broker"
               state=present
-  when: oo_singe_host == "true"
+  when: oo_single_host == "true"
   notify:
     - regenerate broker routes
 
