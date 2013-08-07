@@ -34,6 +34,15 @@ oo_single_host: "true"
 #	anything similar. We could probably make this rather sophisticated.
 oo_ipaddr: "{{ansible_default_ipv4.address}}"
 
+# oo_external_iface - This is the default interface used for node config
+#
+# Tis will be re-evaluated per machine/host
+#
+#	This is set here as a variable mostly in the event it would like to be set to
+#	something other than the non-default ipv4 address (multiple NICs), or
+#	anything similar. We could probably make this rather sophisticated.
+oo_external_iface: "{{ansible_default_ipv4.interface}}"
+
 # OpenShift Origin Version - nightly or stable?
 #
 # You can technically set both to true, but because of the package versions

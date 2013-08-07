@@ -8,7 +8,7 @@ BROKER_HOST="{{ broker_fqdn }}"                     # IP or DNS name of broker s
 CLOUD_DOMAIN="{{ cloud_domain }}"                        # Domain suffix to use for applications (Must match broker config)
 
 # You may want these, depending on the complexity of your networking:
-# EXTERNAL_ETH_DEV='eth0'                                 # Specify the internet facing public ethernet device
+EXTERNAL_ETH_DEV='{{ oo_external_iface }}'                                 # Specify the internet facing public ethernet device
 # INTERNAL_ETH_DEV='eth1'                                 # Specify the internal cluster facing ethernet device
 
 # Generally the following should not be changed:
