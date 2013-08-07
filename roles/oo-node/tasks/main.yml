@@ -23,8 +23,6 @@
     - httpd_read_user_content
     - httpd_enable_homedirs
     - httpd_execmem
-  tags:
-    - selinux
 
 # FirewallD Configs
 - name: Configure Persistent FirewallD for http console
@@ -148,10 +146,10 @@
   template: src=node.conf.j2
             dest=/etc/openshift/node.conf
             owner=root group=root mode=0644
-- name: openshift_origin_node_severname.conf
-  template: src=openshift-origin-node_servername.conf.j2
-            dest=/etc/httpd/conf.d/000001_openshift_origin_node_servername.conf
-            owner=root group=root mode=0644
+#- name: openshift_origin_node_severname.conf
+#  template: src=openshift-origin-node_servername.conf.j2
+#            dest=/etc/httpd/conf.d/000001_openshift_origin_node_servername.conf
+#            owner=root group=root mode=0644
 - name: mcollective server config
   template: src=mcollective-server.cfg.j2
             dest=/etc/mcollective/server.cfg

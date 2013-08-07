@@ -20,9 +20,6 @@
     - gcc
     - make
     - openshift-origin-console
-  tags:
-    - consolepkgs
-
 
 #FIXME - Should parameterize this later to allow for setup of different auth
 - name: Configure Basic Auth

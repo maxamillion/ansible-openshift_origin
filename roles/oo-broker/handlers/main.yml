@@ -6,3 +6,5 @@
 
 - name: restart broker 
   service: name=openshift-broker state=restarted
+- name: regenerate broker routes
+  script: regenerate_broker_routes.sh

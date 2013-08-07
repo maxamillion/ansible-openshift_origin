@@ -8,8 +8,21 @@ awk: /usr/bin/awk
 oo-register-dns: /usr/sbin/oo-register-dns
 
 #FIXME - gem and mongo have ansible modules now
+# Need ansible 1.3 for gem global installs
 gem: /usr/bin/gem
 mongo: /usr/bin/mongo
+
+# single_host - Is this deploying to a single host or multiple hosts?
+#
+# There are special considerations needed for deploying all components to a 
+# single machine and these will be executed conditionally based on the value
+# of this variable
+#
+# Should be set to one of the following:
+# 		"true"
+# 		"false"
+oo_single_host: "true"
+
 
 # oo_ipaddr - This is the default ip address used for serving
 #

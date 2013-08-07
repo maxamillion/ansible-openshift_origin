@@ -111,6 +111,34 @@
   template: src=dns-bind.conf.j2
             dest=/etc/openshift/plugins.d/openshift-origin-dns-bind.conf
             owner=root group=root mode=0644
+
+- name: Set route for all-in-one host
+  lineinfile: dest=/etc/httpd/conf.d/openshift/nodes.txt
+              regexp="__default__ REDIRECT:/console"
+              line="__default__ REDIRECT:/console"
+              state=present
+  when: oo_singe_host == "true"
+  notify:
+    - regenerate broker routes
+
+- name: Set route for all-in-one host
+  lineinfile: dest=/etc/httpd/conf.d/openshift/nodes.txt
+              regexp="__default__/console TOHTTPS:127.0.0.1:8118/console"
+              line="__default__/console TOHTTPS:127.0.0.1:8118/console"
+              state=present
+  when: oo_singe_host == "true"
+  notify:
+    - regenerate broker routes
+
+- name: Set route for all-in-one host
+  lineinfile: dest=/etc/httpd/conf.d/openshift/nodes.txt
+              regexp="__default__/broker TOHTTPS:127.0.0.1:8080/broker"
+              line="__default__/broker TOHTTPS:127.0.0.1:8080/broker"
+              state=present
+  when: oo_singe_host == "true"
+  notify:
+    - regenerate broker routes
+
 - name: Verify origin-broker and rubygem-bundler are installed
   yum: pkg={{item}} state=latest
   with_items:
