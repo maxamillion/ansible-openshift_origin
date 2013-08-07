@@ -89,7 +89,23 @@ mongo_auth_passwd: mooo
 mongo_admin_user: admin
 mongo_admin_passwd: admin
 
+# The console's default login is 
+# 		username: demo 
+# 		password: demo
+#
+# This should obviously be changed if necessary post-installation
+# 
+# The authentication mechanism for this demo is htpasswd and was generated
+# using the following command:
+#     
+#     htpasswd -c console_htpasswd demo
+#
+# The console_htpasswd was then installed to the location on the oo-console:
+#
+# 		/etc/openshift/htpasswd
+#
 console_conf_path: /etc/openshift/console.conf
+
 
 os_unmanaged_users: "root,adm,apache"
 

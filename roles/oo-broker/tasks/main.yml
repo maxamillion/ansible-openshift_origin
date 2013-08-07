@@ -86,10 +86,10 @@
 - name: Generate broker rsync keys
   script: gen_broker_rsync_keys.sh
           creates={{broker_rsync_key_path}}
-- name: Install base servername.conf
-  template: src=broker_servername.conf.j2
-            dest=/etc/httpd/conf.d/000000_openshift_origin_broker_servername.conf
-            owner=root group=root mode=0644
+#- name: Install base servername.conf
+#  template: src=broker_servername.conf.j2
+#            dest=/etc/httpd/conf.d/000000_openshift_origin_broker_servername.conf
+#            owner=root group=root mode=0644
 - name: Configure mcollective broker plugin 
   copy: src=msg-broker-mcollective.conf
             dest=/etc/openshift/plugins.d/openshift-origin-msg-broker-mcollective.conf
@@ -98,10 +98,12 @@
   template: src=mongo.conf.plugin.j2
             dest=/etc/openshift/plugins.d/openshift-origin-auth-mongo.conf
             owner=root group=root mode=0644
+
 - name: Remote User Auth Plugin
-  template: src=htpasswd.j2
-            dest=/etc/openshift/plugins.d/openshift-origin-auth-remote-user.example
+  template: src=auth_remote_user.conf.j2
+            dest=/etc/openshift/plugins.d/openshift-origin-auth-remote-user.conf
             owner=root group=root mode=0644
+
 - name: Register dnssec key for nsupdate plugin
   shell: "{{awk}} '/^Key:/{print $2}' /var/named/K${cloud_domain}*.private"
   register: nsupdate_key
