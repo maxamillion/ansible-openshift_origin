@@ -144,6 +144,22 @@ we can set conditions for command execution to have considered a change
 4. For some reason the first time you set the kernel semaphors with sysctl the 
    ansible playbook hangs but on every rerun it's fine.
 
+5. The openshift-tc service which deals with transport control and traffic 
+   throttling, will often fail to start on a fresh reboot due to some finer
+   points of systemd. Details here:
+
+   http://www.freedesktop.org/wiki/Software/systemd/NetworkTarget
+
+   Also note, this is a known issue and the OpenShift Origin developers are 
+   working on resolving this.
+
+   A workaround is:
+
+      ansible nodes -m shell -a 'service openshift-tc stop && service openshift-tc start' -i inventory.txt
+   And if you chose to use sudo with the user "fedora":
+
+      ansible nodes -m shell -a 'service openshift-tc stop && service openshift-tc start' -i inventory.txt -u fedora -s
+
 # Contact Info
 
 If you'd like, just open an issue against this on github and I'll get to is asap.
