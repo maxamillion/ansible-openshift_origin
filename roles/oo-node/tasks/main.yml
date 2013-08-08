@@ -46,13 +46,13 @@
 # sysctl changes needed by OpenShift Origin Node
 - name: sysctl - kernel.sem 
   sysctl: name=kernel.sem state=present value="250  32000 32  4096"
-          checks=both reload=yes
+          reload=yes
 - name: sysctl - net.ipv4.ip_local_port_range
   sysctl: name=net.ipv4.ip_local_port_range state=present 
-          value="15000 35530" checks=both reload=yes
+          value="15000 35530" reload=yes
 - name: sysctl - net.netfilter.nf_conntrack_max
   sysctl: name=net.netfilter.nf_conntrack_max state=present 
-          value="1048576" checks=both reload=yes
+          value="1048576" reload=yes
 
 ### Dev tools needed by some gem installs for native modules/extensions 
 - name: Install dev-tool deps for gem installs

@@ -141,10 +141,7 @@ configrations and deployments.
   where sometimes it will just timeout talking to dbus and the operation will
   hang. This needs further investigation when I can find time.
 
-4. For some reason the first time you set the kernel semaphors with sysctl the 
-  ansible playbook hangs but on every rerun it's fine.
-
-5. The openshift-tc service which deals with transport control and traffic 
+4. The openshift-tc service which deals with transport control and traffic 
   throttling, will often fail to start on a fresh reboot due to some finer
   points of systemd. Details here: http://www.freedesktop.org/wiki/Software/systemd/NetworkTarget
   Also note, this is a known issue and the OpenShift Origin developers are 
