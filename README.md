@@ -131,34 +131,33 @@ in the playbook summary but once Ansible 1.3 releases stable this will change as
 we can set conditions for command execution to have considered a change
 
 2. Upstream Fedora ActiveMQ is broken so the option to use QPID is in the 
-   group vars file "all" but the ActiveMQ package in the OpenShift Origin deps
-   repo is fixed. There's a trello card open on our public board to get all the
-   deps into Fedora proper as well as fix those that are already there:
+group vars file "all" but the ActiveMQ package in the OpenShift Origin deps
+repo is fixed. There's a trello card open on our public board to get all the
+deps into Fedora proper as well as fix those that are already there:
 
-   https://trello.com/c/v3SYHVHF/27-get-all-openshift-origin-dependencies-packaged-and-into-fedora
+https://trello.com/c/v3SYHVHF/27-get-all-openshift-origin-dependencies-packaged-and-into-fedora
 
 3. There's an issue with FirewallD on a fresh launch of a Fedora AMI cloud image
-   where sometimes it will just timeout talking to dbus and the operation will
-   hang. This needs further investigation when I can find time.
+where sometimes it will just timeout talking to dbus and the operation will
+hang. This needs further investigation when I can find time.
 
 4. For some reason the first time you set the kernel semaphors with sysctl the 
-   ansible playbook hangs but on every rerun it's fine.
+ansible playbook hangs but on every rerun it's fine.
 
 5. The openshift-tc service which deals with transport control and traffic 
-   throttling, will often fail to start on a fresh reboot due to some finer
-   points of systemd. Details here:
+throttling, will often fail to start on a fresh reboot due to some finer
+points of systemd. Details here:
 
-   http://www.freedesktop.org/wiki/Software/systemd/NetworkTarget
+http://www.freedesktop.org/wiki/Software/systemd/NetworkTarget
 
-   Also note, this is a known issue and the OpenShift Origin developers are 
-   working on resolving this.
+Also note, this is a known issue and the OpenShift Origin developers are 
+working on resolving this.
 
-   A workaround is:
-
+A workaround is:
 
     ansible nodes -m shell -a 'service openshift-tc stop && service openshift-tc start' -i inventory.txt
 
-   And if you chose to use sudo with the user "fedora":
+And if you chose to use sudo with the user "fedora":
 
     ansible nodes -m shell -a 'service openshift-tc stop && service openshift-tc start' -i inventory.txt -u fedora -s
 
