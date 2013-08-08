@@ -72,7 +72,7 @@
   with_items: 
     - mongoid 
     - origin 
-    - mariadb
+    - mysql
 
 - name: broker.conf
   template: src=broker.conf.j2 dest=/etc/openshift/broker.conf
