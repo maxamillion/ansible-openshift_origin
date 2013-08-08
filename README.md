@@ -139,7 +139,9 @@ configrations and deployments.
 
 3. There's an issue with FirewallD on a fresh launch of a Fedora AMI cloud image
   where sometimes it will just timeout talking to dbus and the operation will
-  hang. This needs further investigation when I can find time.
+  hang. It only seems to happen the first time you run and doesn't always 
+  occur, but if you restart the firewalld service it never happens again.
+  This needs further investigation when I can find time.
 
 4. The openshift-tc service which deals with transport control and traffic 
   throttling, will often fail to start on a fresh reboot due to some finer
