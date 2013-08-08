@@ -51,3 +51,9 @@
   command: /usr/sbin/ntpdate clock.redhat.com
 - name: Start and Enable ntp daemon
   service: name=ntpd state=started enabled=yes
+
+# Configure dhclient
+- name: Configure dhclient for DNS
+  template: src=dhclient.conf.j2
+            dest="/etc/dhcp/dhclient-{{oo_external_iface}}.conf"
+            backup=yes

@@ -43,3 +43,4 @@
     - nodes
     - brokers
     - support_nodes
+    - post_deploy

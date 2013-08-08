@@ -51,11 +51,5 @@
 - name: Clean up after named DNSSEC script
   file: path=/root/00-setup_dnssec.sh state=absent
 
-- name: Configure dhclient for DNS
-  template: src=dhclient.conf.j2
-            dest=/etc/dhcp/dhclient-oso.conf
-            backup=yes
-  notify:
-  - restart named
 - name: restart/enable named daemon
   service: name=named state=started enabled=yes

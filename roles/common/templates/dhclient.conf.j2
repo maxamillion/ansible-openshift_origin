@@ -1,5 +1,5 @@
 interface "{{ ansible_default_ipv4.interface }}" {
-  prepend domain-name-servers {{ ansible_default_ipv4 }};
+  prepend domain-name-servers {{ oo_ns_server_ip }};
   supersede host-name "{{ ansible_hostname }}";
   supersede domain-name "{{ cloud_domain }}";
 }
