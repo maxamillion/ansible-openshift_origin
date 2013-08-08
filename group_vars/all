@@ -59,7 +59,7 @@ oo_stable_ver: "2"
 # oo_ns_server_ip - the DNS server that is authoritative for your environment
 #
 # Most likely your named server
-oo_ns_server_ip: "172.16.0.85"
+oo_ns_server_ip: "172.16.0.99"
 
 # config vars
 ## Update the broker_auth_salt using:
