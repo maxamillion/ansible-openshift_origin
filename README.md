@@ -155,10 +155,15 @@ we can set conditions for command execution to have considered a change
 
    A workaround is:
 
+      
       ansible nodes -m shell -a 'service openshift-tc stop && service openshift-tc start' -i inventory.txt
+
+
    And if you chose to use sudo with the user "fedora":
 
+      
       ansible nodes -m shell -a 'service openshift-tc stop && service openshift-tc start' -i inventory.txt -u fedora -s
+      
 
 # Contact Info
 
