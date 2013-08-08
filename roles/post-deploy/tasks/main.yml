@@ -1,0 +1,10 @@
+---
+### main.yml - post-deploy role for an OpenShift Origin deployment 
+#
+# Ansible playbook to deploy OpenShift Origin using nightly builds
+#
+
+# Set resolv.conf
+- name: Set resolv.conf
+  template: src=resolv.conf.j2
+            dest=/etc/resolv.conf

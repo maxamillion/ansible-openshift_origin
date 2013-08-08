@@ -54,6 +54,13 @@ oo_nightly: "false"
 oo_stable: "true"
 oo_stable_ver: "2"
 
+
+# TODO - support multiple NS servers
+# oo_ns_server_ip - the DNS server that is authoritative for your environment
+#
+# Most likely your named server
+oo_ns_server_ip: "172.16.0.85"
+
 # config vars
 ## Update the broker_auth_salt using:
 #		

@@ -34,3 +34,12 @@
     - role: mcollective-client
   tags:
     - brokers
+
+- hosts: all
+  roles:
+   - role: post-deploy
+  tags:
+    - common
+    - nodes
+    - brokers
+    - support_nodes
