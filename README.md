@@ -138,11 +138,11 @@ we can set conditions for command execution to have considered a change
    https://trello.com/c/v3SYHVHF/27-get-all-openshift-origin-dependencies-packaged-and-into-fedora
 
 3. There's an issue with FirewallD on a fresh launch of a Fedora AMI cloud image
-   where sometimes on the first (and only the first) run of the playbook, when
-   it gets to the firewalld config steps something happens that's causing a
-   timeout and fails the step/playbook. If you run again (and on all following
-   runs) this issue is no longer there. Plan to investigate this moving forward
-   but for now, this note will have to do.
+   where sometimes it will just timeout talking to dbus and the operation will
+   hang. This needs further investigation when I can find time.
+
+4. For some reason the first time you set the kernel semaphors with sysctl the 
+   ansible playbook hangs but on every rerun it's fine.
 
 # Contact Info
 
