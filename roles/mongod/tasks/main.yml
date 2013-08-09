@@ -9,15 +9,15 @@
 - name: Configure Running FirewallD for mongod
   shell: firewall-cmd --add-port 27017/tcp
 
-- name: Install MongoDB
-  yum: pkg=mongodb state=latest
-- name: Install MongoDB Server
-  yum: pkg=mongodb-server state=latest
+- name: Install MongoDB pkgs
+  yum: pkg="{{item}}" state=latest
+  with_items:
+    - mongodb
+    - mongodb-server
+    - ruby
 
-- name: Ensure ruby installed for MongoDB Auth conf
-  yum: pkg=ruby state=installed
 - name: Check for mongo auth
-  command: "{{egrep}} '^auth = true' /etc/mongodb.conf || echo $?"
+  shell: "{{egrep}} '^auth = true' /etc/mongodb.conf || echo $?"
   register: r_checkmongoauth
 
 # FIXME - This is ugly, should find something better.
