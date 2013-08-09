@@ -95,11 +95,10 @@
             dest=/etc/openshift/plugins.d/openshift-origin-msg-broker-mcollective.conf
             owner=root group=root mode=0644
 
-## TODO: Make this a config option
-#- name: Broker Auth Plugin
-#  template: src=mongo.conf.plugin.j2
-#            dest=/etc/openshift/plugins.d/openshift-origin-auth-mongo.conf
-#            owner=root group=root mode=0644
+- name: Broker Auth Plugin
+  template: src=mongo.conf.plugin.j2
+            dest=/etc/openshift/plugins.d/openshift-origin-auth-mongo.conf
+            owner=root group=root mode=0644
 
 - name: Remote User Auth Plugin
   template: src=auth_remote_user.conf.j2
