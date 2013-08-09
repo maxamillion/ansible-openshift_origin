@@ -50,8 +50,8 @@ oo_external_iface: "{{ansible_default_ipv4.interface}}"
 #
 # oo_stable - if set to true it must be paired with a oo_stable_ver number
 # 						at the time of this writing version 2 is most recent.
-oo_nightly: "false"
-oo_stable: "true"
+oo_nightly: "true"
+oo_stable: "false"
 oo_stable_ver: "2"
 
 
@@ -59,7 +59,7 @@ oo_stable_ver: "2"
 # oo_ns_server_ip - the DNS server that is authoritative for your environment
 #
 # Most likely your named server
-oo_ns_server_ip: "172.16.0.99"
+oo_ns_server_ip: "172.16.0.8"
 
 # config vars
 ## Update the broker_auth_salt using:

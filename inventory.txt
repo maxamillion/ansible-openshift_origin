@@ -7,24 +7,24 @@
 ## The Nodes are where the OpenShift gears and applications will run
 ## - replace the ip addresses with your config
 [nodes]
-#10.3.1.58 #nightly
+10.3.1.58 #nightly
 #10.3.1.84 #stable
 #10.3.1.92 #manual
-10.3.1.97 #testing
+#10.3.1.97 #testing
 
 ## The broker is where the OpenShift orchestration occurs
 ## - replace the ip addresses with your config
 [brokers]
-#10.3.1.58 #nightly
+10.3.1.58 #nightly
 #10.3.1.84 #stable
 #10.3.1.92 #manual
-10.3.1.97 #testing
+#10.3.1.97 #testing
 
 ## The support_nodes are where various supporting infrastructure services
 ## will be run within our OpenShift environment
 ## - replace the ip addresses with your config
 [support_nodes]
-#10.3.1.58 #nightly
+10.3.1.58 #nightly
 #10.3.1.84 #stable
 #10.3.1.92 #manual
-10.3.1.97 #testing
+#10.3.1.97 #testing
