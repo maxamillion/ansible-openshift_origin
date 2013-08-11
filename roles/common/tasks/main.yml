@@ -48,7 +48,7 @@
 - name: Stop ntp daemon for ntpdate sync
   service: name=ntpd state=stopped
 - name: Synchronize Clock with ntpdate
-  command: /usr/sbin/ntpdate clock.redhat.com
+  command: /usr/sbin/ntpdate -u {{ ntpserver }}
 - name: Start and Enable ntp daemon
   service: name=ntpd state=started enabled=yes
 
