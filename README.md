@@ -30,7 +30,13 @@ Install Target:
 * Fedora 19 - at least @standard if using a kickstart installation.
 
 Machine Deploying From (The Orchestration Machine)
-* Ansible >= 1.2
+* Ansible >= 1.3 - this is not yet in Fedora 19's repo. To install:
+
+```bash
+git clone https://github.com/ansible/ansible
+cd ansible
+python setup.py install
+```
 
 # Installation
 
