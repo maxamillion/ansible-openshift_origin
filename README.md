@@ -149,6 +149,9 @@ configrations and deployments.
   Also note, this is a known issue and the OpenShift Origin developers are 
   working on resolving this.
 
+5. For some reason the first run of the sysctl ansible module fails, I've filed 
+  an issue ticket with them: https://github.com/ansible/ansible/issues/3931
+
 A workaround is:
 
     ansible nodes -m shell -a 'service openshift-tc stop && service openshift-tc start' -i inventory.txt
