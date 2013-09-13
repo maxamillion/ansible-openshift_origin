@@ -132,15 +132,6 @@
 
 ### Configure dhclient FIXME - for not-all-in-one
 
-### FIXME - This is a fix for a bug in Fedora's MCollective
-# BZ to follow, kraman said he's filing
-- name: MCollective.service temporary work around
-  file: src=mcollective.service
-        dest=/usr/lib/systemd/system/mcollective.service
-        owner=root group=root mode=0644
-  notify:
-    - reload systemd
-
 ### Post pkginstall config
 - name: node.conf
   template: src=node.conf.j2
