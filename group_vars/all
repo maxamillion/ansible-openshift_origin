@@ -142,3 +142,7 @@ configure_cgroups: "true"
 
 gear_httpd_dir: /var/lib/openshift/.httpd.d/
 gear_root_dir: /var/lib/openshift/
+
+#
+# ntp timeserver
+ntpserver: clock.redhat.com
