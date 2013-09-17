@@ -7,7 +7,9 @@
 //
 
 options {
-    listen-on port 53 { any; };
+    #FIXME - Something in Fedora/BIND changed, this doesn't work anymore
+    #        but works if you comment it out ... because $reasons
+    #listen-on port 53 { any; };
     directory "/var/named";
     dump-file "/var/named/data/cache_dump.db";
     statistics-file "/var/named/data/named_stats.txt";
