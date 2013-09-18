@@ -3,9 +3,11 @@
 Author: Adam Miller
 
 #NOTE - THIS IS A WORK IN PROGRESS, THINK "BETA" QUALITY.
-This playbook is currently undergoing a refactor for the ansible 1.2 newly 
-introduced "roles" layout for playbooks. If you'd like to find the old version
-then feel free to checkout the branch named v0.9.
+This playbook is currently undergoing a refactor in order to take advantage
+of some of the new features available in Ansible 1.3.
+
+If you'd like to find the old version then feel free to checkout the branch 
+named v0.9.
 
 I've bumped this from "Alpha" to "Beta" quality because I've done a full deploy
 using the playbook but there are still a couple rough edges I want to clean up
@@ -30,13 +32,8 @@ Install Target:
 * Fedora 19 - at least @standard if using a kickstart installation.
 
 Machine Deploying From (The Orchestration Machine)
-* Ansible >= 1.3 - this is not yet in Fedora 19's repo. To install:
+* Ansible >= 1.3
 
-```bash
-git clone https://github.com/ansible/ansible
-cd ansible
-python setup.py install
-```
 
 # Installation
 
@@ -102,7 +99,7 @@ use sudo with the default fedora user provided with these images:
 
 Once the installation is complete, navigate to your machine (we'll assume here 
 that the DNS pointer is broker.example.com) to https://broker.example.com/console
-and the default username/password is admin/admin .... you SHOULD CHANGE THIS 
+and the default username/password is demo/demo .... you SHOULD CHANGE THIS 
 IMMEDIATELY if you plan to do anything of any amount of seriousness with your 
 deployment.
 
@@ -132,31 +129,30 @@ As with any pet project, it might get stale but I will do my best to keep it
 up to date as well as expand on it as time goes on to handle more sophisticated
 configrations and deployments.
 
-1. All shell commands run (currently firewall-cmd is a big one) return "changed"
-  in the playbook summary but once Ansible 1.3 releases stable this will change as
-  we can set conditions for command execution to have considered a change
-
-2. Upstream Fedora ActiveMQ is broken so the option to use QPID is in the 
+1. Upstream Fedora ActiveMQ is broken so the option to use QPID is in the 
   group vars file "all" but the ActiveMQ package in the OpenShift Origin deps
   repo is fixed. There's a trello card open on our public board to get all the
   deps into Fedora proper as well as fix those that are already there: 
   
   https://trello.com/c/v3SYHVHF/27-get-all-openshift-origin-dependencies-packaged-and-into-fedora
 
-3. There's an issue with FirewallD on a fresh launch of a Fedora AMI cloud image
+  UPDATE:
+  We're currently working around this by using the ActiveMQ package in the 
+  dependencies repo, it's not quite compliant with Fedora Packaging Guidelines
+  for Java so we're not able to get it into Fedora proper at this time. It's 
+  still on the list of things to fix though.
+
+2. There's an issue with FirewallD on a fresh launch of a Fedora AMI cloud image
   where sometimes it will just timeout talking to dbus and the operation will
   hang. It only seems to happen the first time you run and doesn't always 
   occur, but if you restart the firewalld service it never happens again.
   This needs further investigation when I can find time.
 
-4. The openshift-tc service which deals with transport control and traffic 
+3. The openshift-tc service which deals with transport control and traffic 
   throttling, will often fail to start on a fresh reboot due to some finer
   points of systemd. Details here: http://www.freedesktop.org/wiki/Software/systemd/NetworkTarget
   Also note, this is a known issue and the OpenShift Origin developers are 
   working on resolving this.
-
-5. For some reason the first run of the sysctl ansible module fails, I've filed 
-  an issue ticket with them: https://github.com/ansible/ansible/issues/3931
 
 A workaround is:
 
@@ -168,7 +164,7 @@ And if you chose to use sudo with the user "fedora":
 
 # Contact Info
 
-If you'd like, just open an issue against this on github and I'll get to is asap.
+If you'd like, just open an issue against this on github and I'll get to it asap.
 
 If you'd like to try for more immediate feedback, feel free to ping me on irc. I
 only frequent freenode and am in more channels than is healthy, but below are 
