@@ -68,7 +68,7 @@
 ### Install gems not packaged in Fedora (we should package these)
 #FIXME - Need to get these into Fedora proper
 - name: Install gems not in Fedora repos
-  command: "{{gem}} install {{item}}"
+  gem: name={{item}} user_install=no 
   with_items: 
     - mongoid 
     - origin 
