@@ -162,11 +162,11 @@ time warrant some amount of mention. This section will be updated as necessary.
 
 4. Sometimes you'll get this error:
 
-    Unable to complete the requested operation due to: Dnsruby::TsigError.
+    ```Unable to complete the requested operation due to: Dnsruby::TsigError.```
 
   Restarting BIND(named) will resolve this.
 
-    systemctl restart named.service
+    ```systemctl restart named.service```
 
 
 5. The openshift-tc service which deals with transport control and traffic 
