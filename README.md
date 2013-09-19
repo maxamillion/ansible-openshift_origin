@@ -149,18 +149,19 @@ for Java so we're not able to get it into Fedora proper at this time. It's
 still on the list of things to fix though.
 
 2. There's an odd issue where ansible 1.3 thinks a directory doesn't exist but 
-you re-run, then it does. I've filed an issue ticket.
+  you re-run, then it does. I've filed an issue ticket.
 
 https://github.com/ansible/ansible/issues/4177
 
 3. Sometimes firewalld hangs on OpenStack images (I can't reproduce on real 
-hardware or in a KVM based VM on my laptop, but if you rerun the playbook it
-works just fine. I hope my firewalld module will solve this if/when it's
-included in Ansible.
+  hardware or in a KVM based VM on my laptop, but if you rerun the playbook it
+  works just fine. I hope my firewalld module will solve this if/when it's
+  included in Ansible.
 
 https://github.com/ansible/ansible/pull/3834
 
-4. Sometimes you'll get this error:
+4. Sometimes you'll get 
+this error:
 
     Unable to complete the requested operation due to: Dnsruby::TsigError.
 
@@ -170,10 +171,10 @@ Restarting BIND(named) will resolve this.
 
 
 5. The openshift-tc service which deals with transport control and traffic 
-throttling, will often fail to start on a fresh reboot due to some finer
-points of systemd. Details here: http://www.freedesktop.org/wiki/Software/systemd/NetworkTarget
-Also note, this is a known issue and the OpenShift Origin developers are 
-working on resolving this.
+  throttling, will often fail to start on a fresh reboot due to some finer
+  points of systemd. Details here: http://www.freedesktop.org/wiki/Software/systemd/NetworkTarget
+  Also note, this is a known issue and the OpenShift Origin developers are 
+  working on resolving this.
 
 A workaround is:
 
