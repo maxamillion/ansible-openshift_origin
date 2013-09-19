@@ -142,11 +142,10 @@ configrations and deployments.
   for Java so we're not able to get it into Fedora proper at this time. It's 
   still on the list of things to fix though.
 
-2. There's an issue with FirewallD on a fresh launch of a Fedora AMI cloud image
-  where sometimes it will just timeout talking to dbus and the operation will
-  hang. It only seems to happen the first time you run and doesn't always 
-  occur, but if you restart the firewalld service it never happens again.
-  This needs further investigation when I can find time.
+2. There's an odd issue where ansible 1.3 thinks a directory doesn't exist but 
+   if you re-run, then it does. I've filed an issue ticket.
+
+   https://github.com/ansible/ansible/issues/4177
 
 3. The openshift-tc service which deals with transport control and traffic 
   throttling, will often fail to start on a fresh reboot due to some finer
