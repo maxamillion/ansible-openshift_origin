@@ -160,7 +160,16 @@ configrations and deployments.
 
    https://github.com/ansible/ansible/pull/3834
 
-4. The openshift-tc service which deals with transport control and traffic 
+4. Sometimes you'll get this error:
+
+    Unable to complete the requested operation due to: Dnsruby::TsigError.
+
+  Restarting BIND(named) will resolve this.
+
+    systemctl restart named.service
+
+
+5. The openshift-tc service which deals with transport control and traffic 
   throttling, will often fail to start on a fresh reboot due to some finer
   points of systemd. Details here: http://www.freedesktop.org/wiki/Software/systemd/NetworkTarget
   Also note, this is a known issue and the OpenShift Origin developers are 
