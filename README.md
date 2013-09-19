@@ -117,6 +117,18 @@ Example:
     ## NOTE: Need the -k because we're using a self signed cert in our example.
     rhc -k setup --server=192.168.1.100
 
+NOTE: If you aren't seeing a full list of cartridges or 'oo-admin-cartridge --list'
+is showing a different list than what 'rhc cartridge list' is showing, there are
+two possible causes.
+
+1) mcollective cartridge_repository needs reloading, just restart mcollective.
+
+    systemctl restart mcollective.service
+
+2) need to clear the OpenShift Broker cache
+
+    oo-admin-broker-cache -c
+
 
 # Notes
 
