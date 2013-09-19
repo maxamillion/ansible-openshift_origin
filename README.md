@@ -130,23 +130,23 @@ Just some fun little "gotchyas" that are being worked through, but in the mean
 time warrant some amount of mention. This section will be updated as necessary.
 
 0. This is a pet project that I've been fortunate enough to carve off a little 
-time to work on during my $dayjob because my job, boss, and company are awesome.
-As with any pet project, it might get stale but I will do my best to keep it 
-up to date as well as expand on it as time goes on to handle more sophisticated
-configrations and deployments.
+  time to work on during my $dayjob because my job, boss, and company are awesome.
+  As with any pet project, it might get stale but I will do my best to keep it 
+  up to date as well as expand on it as time goes on to handle more sophisticated
+  configrations and deployments.
 
 1. Upstream Fedora ActiveMQ is broken so the option to use QPID is in the 
-group vars file "all" but the ActiveMQ package in the OpenShift Origin deps
-repo is fixed. There's a trello card open on our public board to get all the
-deps into Fedora proper as well as fix those that are already there: 
+  group vars file "all" but the ActiveMQ package in the OpenShift Origin deps
+  repo is fixed. There's a trello card open on our public board to get all the
+  deps into Fedora proper as well as fix those that are already there: 
   
-https://trello.com/c/v3SYHVHF/27-get-all-openshift-origin-dependencies-packaged-and-into-fedora
+  https://trello.com/c/v3SYHVHF/27-get-all-openshift-origin-dependencies-packaged-and-into-fedora
 
-UPDATE:
-We're currently working around this by using the ActiveMQ package in the 
-dependencies repo, it's not quite compliant with Fedora Packaging Guidelines
-for Java so we're not able to get it into Fedora proper at this time. It's 
-still on the list of things to fix though.
+  UPDATE:
+  We're currently working around this by using the ActiveMQ package in the 
+  dependencies repo, it's not quite compliant with Fedora Packaging Guidelines
+  for Java so we're not able to get it into Fedora proper at this time. It's 
+  still on the list of things to fix though.
 
 2. There's an odd issue where ansible 1.3 thinks a directory doesn't exist but 
   you re-run, then it does. I've filed an issue ticket.
@@ -160,8 +160,7 @@ https://github.com/ansible/ansible/issues/4177
 
 https://github.com/ansible/ansible/pull/3834
 
-4. Sometimes you'll get 
-this error:
+4. Sometimes you'll get this error:
 
     Unable to complete the requested operation due to: Dnsruby::TsigError.
 
