@@ -2,23 +2,16 @@
 
 Author: Adam Miller
 
-#NOTE - THIS IS A WORK IN PROGRESS, THINK "BETA" QUALITY.
-This playbook is currently undergoing a refactor in order to take advantage
-of some of the new features available in Ansible 1.3.
-
-If you'd like to find the old version then feel free to checkout the branch 
-named v0.9.
-
-I've bumped this from "Alpha" to "Beta" quality because I've done a full deploy
-using the playbook but there are still a couple rough edges I want to clean up
-as well as refactor some tasks to be "cleaner".
+This playbook will continue to go through refactoring to support more sophisticated
+deployments of OpenShift but it works in it's current state for "All in One" 
+OpenShift deployments.
 
 # About
 
-This playbook helps install [OpenShift Origin](https://www.openshift.com/open-source) Platform As A Service.
+This playbook helps install [OpenShift Origin](https://openshift.github.io) Platform As A Service.
 
 Currently this playbook only supports installing on a single machine or 
-(single-node install) which that the OpenShift Broker and OpenShift Node 
+(all-in-one install) which that the OpenShift Broker and OpenShift Node 
 services are running on the same machine. This can be done on bare metal, in a 
 virtual machine, or in a cloud instance as OpenShift only depends upon the 
 Operating System (with SELinux, cgroups, and PAM magic under the hood).
@@ -77,21 +70,22 @@ without a non-default inventory file.
 
 Example with default inventory file (/etc/ansible/hosts):
     
-    ansible-playbook site.yml
+    ansible-playbook site.yml -u root
 
 Example with non-default inventory file (inventory.txt):
     
-    ansible-playbook site.yml -i inventory.txt
+    ansible-playbook site.yml -i inventory.txt -u root
 
 Example running only against nodes (note: this is a tag from the site.yml):
 
-    ansible-playbook site.yml -i inventory.txt -t nodes 
+    ansible-playbook site.yml -i inventory.txt -t nodes -u root
 
 If you would like to use the Fedora 19 cloud images provided 
 [here](https://fedoraproject.org/en/get-fedora-options#clouds) then you should
-use sudo with the default fedora user provided with these images:
+use sudo with the default fedora user provided with these images unless you 
+care to configure it before hand to allow root login:
 
-    ansible-playbook site.yml -s -u fedora -i inventory.txt
+    ansible-playbook site.yml -i inventory.txt -s -u fedora 
     
 
 
