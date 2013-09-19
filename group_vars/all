@@ -7,9 +7,8 @@ egrep: /usr/bin/egrep
 awk: /usr/bin/awk
 oo-register-dns: /usr/sbin/oo-register-dns
 
-#FIXME - gem and mongo have ansible modules now
+#FIXME - mongo have ansible modules now
 # Need ansible 1.3 for gem global installs
-gem: /usr/bin/gem
 mongo: /usr/bin/mongo
 
 # single_host - Is this deploying to a single host or multiple hosts?
@@ -50,8 +49,8 @@ oo_external_iface: "{{ansible_default_ipv4.interface}}"
 #
 # oo_stable - if set to true it must be paired with a oo_stable_ver number
 # 						at the time of this writing version 2 is most recent.
-oo_nightly: "true"
-oo_stable: "false"
+oo_nightly: "false"
+oo_stable: "true"
 oo_stable_ver: "2"
 
 
@@ -59,7 +58,9 @@ oo_stable_ver: "2"
 # oo_ns_server_ip - the DNS server that is authoritative for your environment
 #
 # Most likely your named server
-oo_ns_server_ip: "172.16.0.8"
+# 
+# This needs to be 127.0.0.1 for all-in-one OpenShift Origin install.
+oo_ns_server_ip: "127.0.0.1"
 
 # config vars
 ## Update the broker_auth_salt using:
