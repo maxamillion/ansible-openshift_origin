@@ -1,5 +1,4 @@
 # paths for executables we don't have ansible modules for
-firewall_cmd: /usr/bin/firewall-cmd
 rake: /usr/bin/rake
 bundle: /usr/bin/bundle
 restorecon: /sbin/restorecon

@@ -5,13 +5,13 @@
 #
 
 - name: Configure Persistent FirewallD for http console
-  shell: firewall-cmd --permanent --add-service http
+  firewalld: service=http permanent=true state=enabled
 - name: Configure Persistent FirewallD for https console
-  shell: firewall-cmd --permanent --add-service https
+  firewalld: service=https permanent=true state=enabled
 - name: Configure FirewallD for http console
-  shell: firewall-cmd --add-service http
+  firewalld: service=http permanent=false state=enabled
 - name: Configure FirewallD for https console
-  shell: firewall-cmd --add-service https
+  firewalld: service=https permanent=false state=enabled
 
 - name: Ensure Install - console pkgs
   yum: pkg={{item}} state=latest

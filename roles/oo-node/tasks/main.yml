@@ -26,22 +26,21 @@
 
 # FirewallD Configs
 - name: Configure Persistent FirewallD for http console
-  shell: firewall-cmd --permanent --add-service http
+  firewalld: service=http permanent=true state=enabled
 - name: Configure Persistent FirewallD for https console
-  shell: firewall-cmd --permanent --add-service https
+  firewalld: service=https permanent=true state=enabled
 - name: Configure Persistent FirewallD for port 8000/tcp
-  shell: firewall-cmd --permanent --add-port 8000/tcp
+  firewalld: port=8000/tcp permanent=true state=enabled
 - name: Configure Persistent FirewallD for port 8443/tcp
-  shell: firewall-cmd --permanent --add-port 8443/tcp
+  firewalld: port=8443/tcp permanent=true state=enabled
 - name: Configure FirewallD for http console
-  shell: firewall-cmd --add-service http
+  firewalld: service=http permanent=false state=enabled
 - name: Configure FirewallD for https console
-  shell: firewall-cmd --add-service https
+  firewalld: service=https permanent=false state=enabled
 - name: Configure FirewallD for port 8000/tcp
-  shell: firewall-cmd --add-port 8000/tcp
+  firewalld: port=8000/tcp permanent=false state=enabled
 - name: Configure FirewallD for port 8443/tcp
-  shell: firewall-cmd --add-port 8443/tcp
-      
+  firewalld: port=8443/tcp permanent=false state=enabled
 
 # sysctl changes needed by OpenShift Origin Node
 - name: sysctl - kernel.sem 
@@ -114,16 +113,16 @@
 
 ### Install mq_provider
 - name: Install MCollective Provider - QPID
-  yum: pkg=mcollective-qpid-plugin state=installed
+  yum: pkg=mcollective-qpid-plugin state=latest
   when: mq_provider == "qpid"
 
 - name: Install MCollective Provider - ActiveMQ
-  yum: pkg=activemq state=installed
+  yum: pkg=activemq state=latest
   when: mq_provider == "activemq"
 
 ### Install libvirt bits for sandboxing
 - name: Install libvirt requirements
-  yum: pkg={{item}} state=installed
+  yum: pkg={{item}} state=latest
   with_items:
     - libvirt-daemon
     - libvirt-sandbox
@@ -149,7 +148,7 @@
   shell: df -P /var/lib/openshift | tail -1 | awk '{ print $6 }'
   register: gear_root_mount
 - name: Verify origin-node-util installed for quota init
-  yum: pkg=openshift-origin-node-util state=installed
+  yum: pkg=openshift-origin-node-util state=latest
 - name: Initialize quota db
   shell: oo-init-quota creates={{gear_root_mount.stdout}}/aquota.user
 - name: openshift node pam sshd config
@@ -198,7 +197,7 @@
 
 ### Verify all services are up
 - name: Verify libcgroup-tools are installed for cgconfig/cgred
-  yum: pkg=libcgroup-tools state=installed
+  yum: pkg=libcgroup-tools state=latest
 - name: start/enable cgconfig service
   service: name=cgconfig state=started enabled=yes
   when: configure_cgroups == 'true'

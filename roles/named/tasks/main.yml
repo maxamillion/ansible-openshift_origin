@@ -5,9 +5,9 @@
 #
 
 - name: Configure Persistent FirewallD for BIND
-  shell: firewall-cmd --permanent --add-service dns
+  firewalld: service=dns permanent=true state=enabled
 - name: Configure Running FirewallD for BIND
-  shell: firewall-cmd --add-service dns
+  firewalld: service=dns permanent=false state=enabled
 
 - name: Install bind
   yum: pkg={{item}} state=latest

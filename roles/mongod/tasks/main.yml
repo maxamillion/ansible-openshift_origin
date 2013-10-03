@@ -5,9 +5,9 @@
 #
 
 - name: Configure Persistent FirewallD for mongod
-  shell: firewall-cmd --permanent --add-port 27017/tcp
+  firewalld: port=27017/tcp permanent=true state=enabled
 - name: Configure Running FirewallD for mongod
-  shell: firewall-cmd --add-port 27017/tcp
+  firewalld: port=27017/tcp permanent=false state=enabled
 
 - name: Install MongoDB pkgs
   yum: pkg="{{item}}" state=latest

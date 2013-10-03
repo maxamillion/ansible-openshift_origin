@@ -5,9 +5,9 @@
 #
 
 - name: Configure Persistent FirewallD for ActiveMQ
-  shell: firewall-cmd --permanent --add-port 61613/tcp
+  firewalld: port=61613/tcp permanent=true state=enabled
 - name: Configure Running FirewallD for ActiveMQ
-  shell: firewall-cmd --add-port 61613/tcp
+  firewalld: port=61613/tcp permanent=false state=enabled
 
 - name: Install ActiveMQ
   yum: pkg=activemq state=latest
