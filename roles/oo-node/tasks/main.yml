@@ -114,16 +114,16 @@
 
 ### Install mq_provider
 - name: Install MCollective Provider - QPID
-  yum: pkg=mcollective-qpid-plugin state=installed
+  yum: pkg=mcollective-qpid-plugin state=latest
   when: mq_provider == "qpid"
 
 - name: Install MCollective Provider - ActiveMQ
-  yum: pkg=activemq state=installed
+  yum: pkg=activemq state=latest
   when: mq_provider == "activemq"
 
 ### Install libvirt bits for sandboxing
 - name: Install libvirt requirements
-  yum: pkg={{item}} state=installed
+  yum: pkg={{item}} state=latest
   with_items:
     - libvirt-daemon
     - libvirt-sandbox
@@ -149,7 +149,7 @@
   shell: df -P /var/lib/openshift | tail -1 | awk '{ print $6 }'
   register: gear_root_mount
 - name: Verify origin-node-util installed for quota init
-  yum: pkg=openshift-origin-node-util state=installed
+  yum: pkg=openshift-origin-node-util state=latest
 - name: Initialize quota db
   shell: oo-init-quota creates={{gear_root_mount.stdout}}/aquota.user
 - name: openshift node pam sshd config
@@ -198,7 +198,7 @@
 
 ### Verify all services are up
 - name: Verify libcgroup-tools are installed for cgconfig/cgred
-  yum: pkg=libcgroup-tools state=installed
+  yum: pkg=libcgroup-tools state=latest
 - name: start/enable cgconfig service
   service: name=cgconfig state=started enabled=yes
   when: configure_cgroups == 'true'

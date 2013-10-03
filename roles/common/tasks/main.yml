@@ -27,13 +27,13 @@
 - name: SELinux Enforcing (Targeted)
   selinux: policy=targeted state=enforcing
 - name: Ensure Installed - policycoreutils
-  yum: pkg=policycoreutils state=installed
+  yum: pkg=policycoreutils state=latest
 - name: Ensure Installed - policycoreutils-python
-  yum: pkg=policycoreutils-python state=installed
+  yum: pkg=policycoreutils-python state=latest
 
 # Default firewalld configs
 - name: Ensure Install - firewalld
-  yum: pkg=firewalld state=installed
+  yum: pkg=firewalld state=latest
 - name: Start and Enable firewalld daemon
   service: name=firewalld state=started enabled=yes
   async: 10
@@ -42,9 +42,9 @@
 
 # Ensure NTP installed and configured
 - name: Ensure Install - ntpdate
-  yum: pkg=ntpdate state=installed
+  yum: pkg=ntpdate state=latest
 - name: Ensure Install - ntp
-  yum: pkg=ntp state=installed
+  yum: pkg=ntp state=latest
 - name: Stop ntp daemon for ntpdate sync
   service: name=ntpd state=stopped
 - name: Synchronize Clock with ntpdate

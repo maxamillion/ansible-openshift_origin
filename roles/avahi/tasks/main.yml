@@ -6,6 +6,6 @@
 
 # Ensure avahi installed and configured
 - name: Ensure Install - avahi-cname-manager
-  yum: pkg=avahi-cname-manager state=installed
+  yum: pkg=avahi-cname-manager state=latest
 
 #FIXME - need to spend a little more time on avahi before I write this
