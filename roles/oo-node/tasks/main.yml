@@ -75,6 +75,8 @@
     - openshift-origin-node-util
     - rubygem-openshift-origin-container-selinux
     - openshift-origin-msg-node-mcollective
+    - mcollective-common
+    - mcollective
     - git
     - make
     - cronie
