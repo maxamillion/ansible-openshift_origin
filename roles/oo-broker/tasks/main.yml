@@ -110,7 +110,7 @@
             owner=root group=root mode=0644
 
 - name: Register dnssec key for nsupdate plugin
-  shell: "{{awk}} '/^Key:/{print $2}' /var/named/K${cloud_domain}*.private"
+  shell: "{{awk}} '/^Key:/{print $2}' /var/named/K{{cloud_domain}}*.private"
   register: nsupdate_key
 - name: bind dns plugin conf
   template: src=dns-bind.conf.j2
