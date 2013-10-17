@@ -76,6 +76,8 @@
 - name: broker.conf
   template: src=broker.conf.j2 dest=/etc/openshift/broker.conf
             owner=apache group=apache mode=0644
+- name: Verify origin-broker installed
+  yum: pkg=openshift-origin-broker state=latest
 - name: broker remote auth
   copy: src=broker_remote_auth.conf
             dest=/var/www/openshift/broker/httpd/conf.d/openshift-origin-auth-remote-user-basic.conf
