@@ -149,6 +149,7 @@
 - name: Find root mount point of gear dir
   shell: df -P /var/lib/openshift | tail -1 | awk '{ print $6 }'
   register: gear_root_mount
+  changed_when: False
 - name: Verify origin-node-util installed for quota init
   yum: pkg=openshift-origin-node-util state=latest
 - name: Initialize quota db
@@ -188,14 +189,16 @@
 - name: openshift node sshd config
   copy: src=sshd_config dest=/etc/ssh/sshd_config
         owner=root group=root mode=0600
-- name: broker and console route for node
-  copy: src=node_routes.txt dest=/tmp/nodes.broker_routes.txt
-        owner=root group=root mode=0644
+#- name: broker and console route for node
+#  copy: src=node_routes.txt dest=/tmp/nodes.broker_routes.txt
+#        owner=root group=root mode=0644
 
 - name: Restore SELinux context "{{gear_root_dir}}"
   command: "{{restorecon}} -Rv {{gear_root_dir}}"
+  changed_when: False
 - name: Restore SELinux context "{{gear_httpd_dir}}"
   command: "{{restorecon}} -Rv {{gear_httpd_dir}}"
+  changed_when: False
 
 ### Verify all services are up
 - name: Verify libcgroup-tools are installed for cgconfig/cgred
