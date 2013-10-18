@@ -19,6 +19,7 @@
 - name: Check for mongo auth
   shell: "{{egrep}} '^auth = true' /etc/mongodb.conf || echo $?"
   register: r_checkmongoauth
+  changed_when: False
 
 # FIXME - This is ugly, should find something better.
 - name: Ensure MongoDB daemon stopped

@@ -1,34 +1,50 @@
 #!/bin/bash
 
-# Get the domain (defined in varfiles/broker_vars.yml)
-domain={{ cloud_domain }}
-keyfile=/var/named/${domain}.key
+f_dnssec_keys()
+{
+  changed=0
 
-# Remove old keys
-rm -vf /var/named/K${domain}*
+  # Get the domain (defined in varfiles/broker_vars.yml)
+  domain={{ cloud_domain }}
+  keyfile=/var/named/${domain}.key
 
-# Generate keys
-pushd /var/named
-  dnssec-keygen -a HMAC-MD5 -b 512 -n USER -r /dev/urandom ${domain}
-  KEY="$(grep Key: K${domain}*.private | cut -d ' ' -f 2)"
-popd
+  if ! cat /var/named/K${domain}*.key > /dev/null 2>&1; then
+    # Remove old keys
+    rm -vf /var/named/K${domain}*
 
-# Verify we have a key for the broker to communicate with
-rndc-confgen -a -r /dev/urandom
+    # Generate keys
+    pushd /var/named
+      dnssec-keygen -a HMAC-MD5 -b 512 -n USER -r /dev/urandom ${domain}
+      KEY="$(grep Key: K${domain}*.private | cut -d ' ' -f 2)"
+    popd
+    changed=1
+    if ! [ -f $keyfile ]; then
+      # Verify we have a key for the broker to communicate with
+      rndc-confgen -a -r /dev/urandom
 
-# Get SELinux and perms in order 
-restorecon -v /etc/rndc.* /etc/named.*
-chown -v root:named /etc/rndc.key
-chmod -v 640 /etc/rndc.key
+      # Get SELinux and perms in order 
+      restorecon -v /etc/rndc.* /etc/named.*
+      chown -v root:named /etc/rndc.key
+      chmod -v 640 /etc/rndc.key
 
-# Put the config in place
-cat <<EOF > /var/named/${domain}.key
-key ${domain} {
-  algorithm HMAC-MD5;
-  secret "${KEY}";
-};
+      # Put the config in place
+      cat <<-EOF > $keyfile
+        key ${domain} {
+          algorithm HMAC-MD5;
+          secret "${KEY}";
+        };
 EOF
+      changed=2
+    fi
+  fi
 
-# More SELinux and perms
-chown -Rv named:named /var/named
-restorecon -rv /var/named
+
+  # More SELinux and perms
+  chown -Rv named:named /var/named
+  restorecon -rv /var/named
+
+  return $changed
+}
+
+#Call the function, play with return codes
+f_dnssec_keys

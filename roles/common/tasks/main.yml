@@ -47,10 +47,13 @@
   yum: pkg=ntp state=latest
 - name: Stop ntp daemon for ntpdate sync
   service: name=ntpd state=stopped
+  changed_when: False
 - name: Synchronize Clock with ntpdate
   command: /usr/sbin/ntpdate -u {{ ntpserver }}
+  changed_when: False
 - name: Start and Enable ntp daemon
   service: name=ntpd state=started enabled=yes
+  changed_when: False
 
 # Configure dhclient
 - name: Configure dhclient for DNS
