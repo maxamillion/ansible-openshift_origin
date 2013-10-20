@@ -49,6 +49,7 @@
 - name: Run named DNSSEC script 
   command: /root/00-setup_dnssec.sh
   register: command_result
+  ignore_errors: True
   changed_when: "command_result.rc != 0"
   notify:
   - restart named
