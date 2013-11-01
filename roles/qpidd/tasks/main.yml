@@ -10,7 +10,7 @@
   firewalld: port=5672/tcp permanent=false state=enabled
 
 - name: Install qpidd
-  yum: pkg=qpid-cpp-server state=latest
+  yum: pkg={{item}} state=latest
   with_items:
     - qpid-cpp-server
     - mcollective-qpid-plugin
