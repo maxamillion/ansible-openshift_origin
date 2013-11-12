@@ -82,6 +82,16 @@
   async: 5400
   poll: 10
 
+### FIXME - Workaround to verify dir exists
+- name: Verify /var/lib/openshift/.httpd.d/ exists
+  file: path=/var/lib/openshift/.httpd.d/ owner=root group=apache mode=0750
+        state=directory
+
+### FIXME - Workaround to verify symlink exists
+- name: Verify /var/lib/openshift/.httpd.d/ exists
+  file: src=/var/lib/openshift/.httpd.d/ dest=/etc/http/conf.d/openshift
+        state=link
+
 ### Install cartridge pkgs for OpenShift Origin Node
 - name: Install OpenShift Cartridge Packages
   yum: pkg={{item}} state=latest
