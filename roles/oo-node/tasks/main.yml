@@ -88,8 +88,8 @@
         state=directory
 
 ### FIXME - Workaround to verify symlink exists
-- name: Verify /var/lib/openshift/.httpd.d/ exists
-  file: src=/var/lib/openshift/.httpd.d/ dest=/etc/http/conf.d/openshift
+- name: Verify /etc/httpd/conf.d/openshift symlink exists
+  file: src=/var/lib/openshift/.httpd.d/ dest=/etc/httpd/conf.d/openshift
         state=link
 
 ### Install cartridge pkgs for OpenShift Origin Node
