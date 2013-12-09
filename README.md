@@ -26,11 +26,6 @@ Install Target:
 
 Machine Deploying From (The Orchestration Machine)
 * Ansible >= 1.4
-Ansible 1.4 is currently under development, in order to use this playbook you
-will either need to checkout Ansible's devel branch located [here](https://github.com/ansible/ansible)
-
-Or checkout the v1.3 branch of this playbook which is written for Ansible
-version 1.3, which is located [here](https://github.com/maxamillion/ansible-openshift_origin/tree/v1.3)
 
 # Installation
 
