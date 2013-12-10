@@ -9,7 +9,7 @@
   template: src=openshift-origin-nightly.repo.j2
             dest=/etc/yum.repos.d/openshift-origin-nightly.repo
   when: oo_nightly == "true"
-- name: Setup OpenShift Origin Nightly Supplemental Repo
+- name: Setup OpenShift Origin Nightly Dependencies Repo
   template: src=openshift-origin-nightly-deps.repo.j2
             dest=/etc/yum.repos.d/openshift-origin-nightly-deps.repo
   when: oo_nightly == "true"
@@ -18,7 +18,7 @@
   template: src=openshift-origin-stable.repo.j2
             dest=/etc/yum.repos.d/openshift-origin-stable.repo
   when: oo_stable == "true"
-- name: Setup OpenShift Origin Nightly Supplemental Repo
+- name: Setup OpenShift Origin Stable Dependencies Repo
   template: src=openshift-origin-stable-deps.repo.j2
             dest=/etc/yum.repos.d/openshift-origin-stable-deps.repo
   when: oo_stable == "true"
