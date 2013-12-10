@@ -152,6 +152,8 @@
   template: src=openshift-origin-node_servername.conf.j2
             dest=/etc/httpd/conf.d/000001_openshift_origin_node_servername.conf
             owner=root group=root mode=0644
+- name: ensure mcollective dir in place
+  file: path="/etc/mcollective/" owner=root group=root mode=0755 state=directory
 - name: mcollective server config
   template: src=mcollective-server.cfg.j2
             dest=/etc/mcollective/server.cfg
